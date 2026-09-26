@@ -1,141 +1,131 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { WingSprite } from "@/components/brand/winged-mark";
 import { cn } from "@/lib/utils";
-
-/** Single feather-wing silhouette (no tile) */
-function WingGlyph({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 64 48"
-      fill="none"
-      className={cn("block", className)}
-      aria-hidden
-    >
-      <path
-        d="M4 36c10-3 18-11 23-20 1.5-2.8 4.6-3.6 7.2-2.2 1.8.9 2.6 2.9 2.1 4.8C34.8 25 30.5 31.5 24 36.5 19.8 39.8 14 42 8.2 43c-.9.1-1.5-.6-1.3-1.4.2-1.5.9-3.2 1.8-5.1Z"
-        fill="currentColor"
-      />
-      <path
-        d="M28 10c4 1.6 8.4 5.4 11.6 11.2 1.2 2.2.1 4.8-2.1 5.6l-3.6 1.5c-1.9.8-4-.4-4.4-2.4L27.8 17c-.5-2 .8-4 2.8-4.7.1 0 .2-.1.3-.1Z"
-        fill="currentColor"
-        opacity=".92"
-      />
-      <path
-        d="M36 6c5.4 2.6 11 8.2 14.6 16 1.1 2.2-.1 4.8-2.4 5.4l-2.8.8c-1.7.5-3.5-.7-3.8-2.4l-1.2-6.6c-.4-2.2 1-4.3 3.2-5 .2 0 .4-.1.6-.2Z"
-        fill="currentColor"
-        opacity=".75"
-      />
-      <path
-        d="M44 4c4.2 2.8 8.4 8 11.2 14.8.8 1.9-.3 4-2.2 4.5l-1.8.6c-1.3.4-2.7-.4-3-1.7L47 16.4c-.4-1.7.6-3.4 2.3-3.9.2 0 .4-.1.6-.2Z"
-        fill="currentColor"
-        opacity=".55"
-      />
-    </svg>
-  );
-}
 
 type Flyer = {
   id: number;
-  top: string;
-  left: string;
+  /** start off / at edge */
+  start: { x: string; y: string };
   size: number;
   duration: number;
   delay: number;
-  driftX: number;
-  driftY: number;
-  rotate: number;
-  opacity: number;
-  color: string;
+  driftX: number[];
+  driftY: number[];
+  rotate: number[];
+  opacity: number[];
   flip?: boolean;
+  flap?: number;
 };
 
-/** Paired left/right so the welcome canvas frames symmetrically */
+/**
+ * Large, obvious flying wings for welcome — sprite-based, opacity peaks ≥ 0.35.
+ * Not dust motes.
+ */
 const FLYERS: Flyer[] = [
   {
     id: 1,
-    top: "10%",
-    left: "4%",
-    size: 68,
-    duration: 14,
+    start: { x: "-18%", y: "8%" },
+    size: 148,
+    duration: 9,
     delay: 0,
-    driftX: 28,
-    driftY: 16,
-    rotate: -10,
-    opacity: 0.14,
-    color: "var(--romance)",
+    driftX: [0, 70, 40, 90, 0],
+    driftY: [0, 30, 70, 20, 0],
+    rotate: [-18, -6, 8, -12, -18],
+    opacity: [0.2, 0.55, 0.7, 0.45, 0.2],
+    flap: 1.15,
   },
   {
     id: 2,
-    top: "10%",
-    left: "78%",
-    size: 68,
-    duration: 14,
-    delay: 0.4,
-    driftX: -28,
-    driftY: 16,
-    rotate: 10,
-    opacity: 0.14,
-    color: "var(--wing)",
+    start: { x: "78%", y: "6%" },
+    size: 140,
+    duration: 10,
+    delay: 0.5,
+    driftX: [0, -80, -50, -100, 0],
+    driftY: [0, 40, 80, 30, 0],
+    rotate: [18, 6, -8, 14, 18],
+    opacity: [0.22, 0.6, 0.72, 0.4, 0.22],
     flip: true,
+    flap: 1.12,
   },
   {
     id: 3,
-    top: "42%",
-    left: "0%",
-    size: 80,
-    duration: 17,
-    delay: 0.8,
-    driftX: 36,
-    driftY: -12,
-    rotate: -12,
-    opacity: 0.1,
-    color: "var(--text-primary)",
+    start: { x: "-22%", y: "38%" },
+    size: 176,
+    duration: 11,
+    delay: 0.2,
+    driftX: [0, 90, 120, 60, 0],
+    driftY: [40, -20, 10, -40, 40],
+    rotate: [-22, -8, 4, -16, -22],
+    opacity: [0.25, 0.58, 0.65, 0.42, 0.25],
+    flap: 1.2,
   },
   {
     id: 4,
-    top: "42%",
-    left: "82%",
-    size: 80,
-    duration: 17,
-    delay: 1.2,
-    driftX: -36,
-    driftY: -12,
-    rotate: 12,
-    opacity: 0.1,
-    color: "var(--romance)",
+    start: { x: "82%", y: "40%" },
+    size: 168,
+    duration: 11.5,
+    delay: 0.8,
+    driftX: [0, -95, -110, -55, 0],
+    driftY: [30, -30, 0, -50, 30],
+    rotate: [22, 10, -4, 16, 22],
+    opacity: [0.28, 0.62, 0.68, 0.4, 0.28],
     flip: true,
+    flap: 1.18,
   },
   {
     id: 5,
-    top: "72%",
-    left: "12%",
-    size: 48,
-    duration: 13,
-    delay: 0.5,
-    driftX: 22,
-    driftY: -18,
-    rotate: -6,
-    opacity: 0.11,
-    color: "var(--wing)",
+    start: { x: "8%", y: "72%" },
+    size: 120,
+    duration: 8.5,
+    delay: 0.3,
+    driftX: [0, 50, 90, 30, 0],
+    driftY: [20, -50, -90, -40, 20],
+    rotate: [-10, 6, 14, -4, -10],
+    opacity: [0.35, 0.65, 0.55, 0.4, 0.35],
+    flap: 1.1,
   },
   {
     id: 6,
-    top: "72%",
-    left: "70%",
-    size: 48,
-    duration: 13,
-    delay: 1.6,
-    driftX: -22,
-    driftY: -18,
-    rotate: 8,
-    opacity: 0.11,
-    color: "var(--text-primary)",
+    start: { x: "68%", y: "74%" },
+    size: 124,
+    duration: 9,
+    delay: 1.1,
+    driftX: [0, -55, -85, -25, 0],
+    driftY: [10, -60, -100, -30, 10],
+    rotate: [12, -4, -14, 8, 12],
+    opacity: [0.32, 0.68, 0.58, 0.38, 0.32],
     flip: true,
+    flap: 1.14,
+  },
+  {
+    id: 7,
+    start: { x: "28%", y: "-8%" },
+    size: 110,
+    duration: 12,
+    delay: 0.6,
+    driftX: [0, 40, -20, 50, 0],
+    driftY: [0, 80, 140, 90, 0],
+    rotate: [-6, 10, -8, 4, -6],
+    opacity: [0.2, 0.5, 0.45, 0.35, 0.2],
+    flap: 1.08,
+  },
+  {
+    id: 8,
+    start: { x: "48%", y: "88%" },
+    size: 132,
+    duration: 10,
+    delay: 1.4,
+    driftX: [0, -30, 20, -40, 0],
+    driftY: [0, -70, -120, -60, 0],
+    rotate: [8, -12, 6, -4, 8],
+    opacity: [0.3, 0.6, 0.55, 0.4, 0.3],
+    flip: true,
+    flap: 1.16,
   },
 ];
 
-/** Ambient flying wings — elegant, transform/opacity only */
 export function FlyingWings({
   className,
   density = "full",
@@ -144,19 +134,27 @@ export function FlyingWings({
   density?: "full" | "light";
 }) {
   const reduced = useReducedMotion();
-  const set = density === "light" ? FLYERS.slice(0, 3) : FLYERS;
+  const set = density === "light" ? FLYERS.slice(0, 4) : FLYERS;
 
   if (reduced) {
     return (
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute inset-0 overflow-hidden opacity-40",
+          "pointer-events-none absolute inset-0 overflow-hidden",
           className
         )}
       >
-        <WingGlyph className="absolute left-[8%] top-[18%] size-14 text-romance/30" />
-        <WingGlyph className="absolute right-[10%] top-[55%] size-12 scale-x-[-1] text-wing/30" />
+        <WingSprite className="absolute left-[4%] top-[14%] w-28 opacity-40" />
+        <WingSprite
+          flip
+          className="absolute right-[2%] top-[22%] w-32 opacity-45"
+        />
+        <WingSprite className="absolute left-[8%] bottom-[18%] w-36 opacity-35" />
+        <WingSprite
+          flip
+          className="absolute right-[6%] bottom-[22%] w-28 opacity-40"
+        />
       </div>
     );
   }
@@ -164,30 +162,33 @@ export function FlyingWings({
   return (
     <div
       aria-hidden
-      className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}
+      className={cn(
+        "pointer-events-none absolute inset-0 overflow-hidden",
+        className
+      )}
     >
       {set.map((w) => (
         <motion.div
           key={w.id}
-          className="absolute"
+          className="absolute will-change-transform"
           style={{
-            top: w.top,
-            left: w.left,
+            top: w.start.y,
+            left: w.start.x,
             width: w.size,
-            color: w.color,
-            opacity: w.opacity,
           }}
           initial={{
             x: 0,
             y: 0,
-            rotate: w.rotate,
+            rotate: w.rotate[0],
+            opacity: 0,
             scaleY: 1,
           }}
           animate={{
-            x: [0, w.driftX, 0],
-            y: [0, w.driftY, 0],
-            rotate: [w.rotate, w.rotate + 10, w.rotate - 6, w.rotate],
-            scaleY: [1, 0.86, 1.06, 1],
+            x: w.driftX,
+            y: w.driftY,
+            rotate: w.rotate,
+            opacity: w.opacity,
+            scaleY: [1, 0.82, w.flap ?? 1.12, 0.9, 1],
           }}
           transition={{
             duration: w.duration,
@@ -196,14 +197,14 @@ export function FlyingWings({
             ease: "easeInOut",
           }}
         >
-          <WingGlyph className={cn("w-full", w.flip && "scale-x-[-1]")} />
+          <WingSprite flip={w.flip} className="h-auto w-full drop-shadow-sm" />
         </motion.div>
       ))}
     </div>
   );
 }
 
-/** Soft flutter for interactive CTAs */
+/** Soft flutter for interactive CTAs — uses sprite so it reads as a wing */
 export function FlutterWing({
   className,
   side = "right",
@@ -215,19 +216,23 @@ export function FlutterWing({
   return (
     <motion.span
       aria-hidden
-      className={cn("inline-flex text-current", className)}
+      className={cn("inline-flex", className)}
       animate={
         reduced
           ? undefined
-          : { rotate: side === "right" ? [0, 8, -4, 0] : [0, -8, 4, 0], scaleY: [1, 0.9, 1.05, 1] }
+          : {
+              rotate: side === "right" ? [0, 14, -8, 0] : [0, -14, 8, 0],
+              scaleY: [1, 0.78, 1.12, 1],
+            }
       }
       transition={{ duration: 0.55, ease: "easeOut" }}
     >
-      <WingGlyph
-        className={cn("size-4", side === "left" && "scale-x-[-1]")}
+      <WingSprite
+        flip={side === "left"}
+        className="size-5"
       />
     </motion.span>
   );
 }
 
-export { WingGlyph };
+export { WingSprite as WingGlyph };

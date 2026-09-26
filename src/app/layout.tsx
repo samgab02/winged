@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     description:
       "Friends plan it. You show up. Bachelor + Wing co-op matchmaking.",
     siteName: "Winged",
-    images: [{ url: "/brand/winged-lockup.png" }],
+    images: [{ url: "/brand/winged-lockup-v2.png" }],
   },
   appleWebApp: {
     capable: true,

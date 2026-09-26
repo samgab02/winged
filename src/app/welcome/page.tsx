@@ -33,23 +33,23 @@ export default function WelcomePage() {
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         className="relative z-10 flex flex-1 flex-col items-center text-center"
       >
-        <div className="flex flex-col items-center pt-6">
-          <AnimatedWingMark className="size-16" />
+        <div className="flex flex-col items-center pt-4">
+          <AnimatedWingMark className="size-24" />
           <motion.span
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mt-3 font-display text-4xl font-extrabold tracking-tight text-foreground"
+            transition={{ delay: 0.22 }}
+            className="mt-2 font-display text-4xl font-extrabold tracking-tight text-foreground"
           >
             Winged
           </motion.span>
           {!reduced && (
             <motion.div
               aria-hidden
-              className="mt-3 h-px w-14 origin-center bg-romance/45"
+              className="mt-3 h-px w-16 origin-center bg-romance/50"
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
-              transition={{ delay: 0.35, duration: 0.5 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
             />
           )}
         </div>

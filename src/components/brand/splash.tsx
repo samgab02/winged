@@ -10,9 +10,9 @@ export function SplashScreen() {
   return (
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-canvas">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,var(--glow-a),transparent_55%),radial-gradient(ellipse_at_80%_80%,var(--glow-b),transparent_50%)]" />
-      <FlyingWings density="light" />
+      <FlyingWings density="full" />
       <div className="relative z-10 flex flex-col items-center">
-        <AnimatedWingMark className="size-20" />
+        <AnimatedWingMark className="size-28" />
         <motion.p
           initial={reduced ? { opacity: 0 } : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}

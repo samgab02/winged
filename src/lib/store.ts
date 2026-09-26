@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Gender, LookingFor, ProfilePrompt } from "@/lib/seed-catalog";
 import { deleteAccount, signOut as authSignOut } from "@/lib/auth";
+import { clearDevLoginSeedFlag, ensureDevLogins } from "@/lib/dev-logins";
 
 export type AppRole = "bachelor" | "shark";
 
@@ -37,7 +38,7 @@ type AppState = {
 
   hydrateSession: (accountId: string | null) => void;
   setAccount: (accountId: string) => void;
-  upsertProfile: ( partial: Partial<UserProfile> & { accountId: string }) => void;
+  upsertProfile: (partial: Partial<UserProfile> & { accountId: string }) => void;
   completeOnboarding: () => void;
   lockDate: (id: string) => void;
   setFlashVerdict: (id: string, verdict: "keep" | "skip") => void;
@@ -47,6 +48,8 @@ type AppState = {
   wipeLocalAccount: () => void;
   resetLocalData: () => void;
   switchShell: () => void;
+  /** Merge seeded default-login profiles (keeps any richer local edits). */
+  bootstrapDevLogins: () => Promise<void>;
 };
 
 const emptyProfile = (accountId: string): UserProfile => ({
@@ -166,9 +169,11 @@ export const useApp = create<AppState>()(
       },
 
       resetLocalData: () => {
-        const id = get().accountId;
         authSignOut();
-        if (id) deleteAccount(id);
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("povi-accounts-v1");
+        }
+        clearDevLoginSeedFlag();
         set({
           accountId: null,
           profile: null,
@@ -176,6 +181,21 @@ export const useApp = create<AppState>()(
           lockedDateIds: [],
           flashVerdicts: {},
           toast: null,
+        });
+      },
+
+      bootstrapDevLogins: async () => {
+        const seeded = await ensureDevLogins();
+        const map = { ...get().profilesByAccount };
+        for (const [id, profile] of Object.entries(seeded)) {
+          if (!map[id]?.onboardingComplete) {
+            map[id] = profile as UserProfile;
+          }
+        }
+        const accountId = get().accountId;
+        set({
+          profilesByAccount: map,
+          profile: accountId ? map[accountId] ?? get().profile : get().profile,
         });
       },
 

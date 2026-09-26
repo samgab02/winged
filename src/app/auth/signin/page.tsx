@@ -1,36 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PoviMark } from "@/components/brand/povi-mark";
 import { Button } from "@/components/ui/button";
+import { DevLoginBootstrap } from "@/components/auth/dev-login-bootstrap";
 import { signIn } from "@/lib/auth";
+import { DEV_LOGINS, DEV_PASSWORD } from "@/lib/dev-logins";
 import { useApp } from "@/lib/store";
 
 export default function SignInPage() {
   const router = useRouter();
   const setAccount = useApp((s) => s.setAccount);
-  const profilesByAccount = useApp((s) => s.profilesByAccount);
+  const bootstrapDevLogins = useApp((s) => s.bootstrapDevLogins);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    setError("");
-    const result = await signIn(email, password);
-    setBusy(false);
-    if (!result.ok) {
-      setError(result.error);
-      return;
-    }
-    setAccount(result.account.id);
-    const profile =
-      useApp.getState().profilesByAccount[result.account.id] ??
-      profilesByAccount[result.account.id];
+  useEffect(() => {
+    void bootstrapDevLogins();
+  }, [bootstrapDevLogins]);
+
+  async function finishSignIn(accountId: string) {
+    setAccount(accountId);
+    await bootstrapDevLogins();
+    const profile = useApp.getState().profilesByAccount[accountId];
     if (!profile?.role) {
       router.replace("/auth/role");
       return;
@@ -48,8 +44,39 @@ export default function SignInPage() {
     );
   }
 
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setError("");
+    const result = await signIn(email, password);
+    if (!result.ok) {
+      setBusy(false);
+      setError(result.error);
+      return;
+    }
+    await finishSignIn(result.account.id);
+    setBusy(false);
+  }
+
+  async function quickLogin(loginEmail: string) {
+    setBusy(true);
+    setError("");
+    setEmail(loginEmail);
+    setPassword(DEV_PASSWORD);
+    await bootstrapDevLogins();
+    const result = await signIn(loginEmail, DEV_PASSWORD);
+    if (!result.ok) {
+      setBusy(false);
+      setError(result.error);
+      return;
+    }
+    await finishSignIn(result.account.id);
+    setBusy(false);
+  }
+
   return (
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-6 pb-10 pt-10">
+      <DevLoginBootstrap />
       <Link href="/welcome" className="inline-flex items-center gap-2">
         <PoviMark className="size-9" />
         <span className="font-display text-lg font-extrabold">POVI</span>
@@ -81,6 +108,27 @@ export default function SignInPage() {
           {busy ? "Signing in…" : "Sign in"}
         </Button>
       </form>
+
+      <div className="mt-6 space-y-2">
+        <p className="text-xs font-semibold uppercase tracking-wider text-subtle">
+          Local defaults
+        </p>
+        <p className="text-xs text-secondary">
+          Password for both: <span className="font-semibold">{DEV_PASSWORD}</span>
+        </p>
+        {DEV_LOGINS.map((login) => (
+          <button
+            key={login.id}
+            type="button"
+            disabled={busy}
+            onClick={() => void quickLogin(login.email)}
+            className="flex h-12 w-full items-center justify-between rounded-2xl border border-border bg-surface px-4 text-sm font-semibold disabled:opacity-60"
+          >
+            <span>{login.label}</span>
+            <span className="text-xs font-medium text-subtle">{login.email}</span>
+          </button>
+        ))}
+      </div>
 
       <p className="mt-8 text-center text-sm text-secondary">
         New here?{" "}

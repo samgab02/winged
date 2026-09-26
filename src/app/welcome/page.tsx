@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { PoviMark } from "@/components/brand/povi-mark";
+import { DevLoginBootstrap } from "@/components/auth/dev-login-bootstrap";
 
 export default function WelcomePage() {
   return (
     <div className="relative mx-auto flex min-h-dvh max-w-lg flex-col overflow-hidden px-6 pb-10 pt-14">
+      <DevLoginBootstrap />
       <div className="pointer-events-none absolute inset-0 -z-10">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

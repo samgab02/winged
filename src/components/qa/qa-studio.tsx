@@ -78,7 +78,7 @@ export function QaStudio() {
         type="button"
         aria-label="Open QA Studio"
         onClick={() => setOpen(true)}
-        className="fixed bottom-[5.75rem] left-3 z-[80] flex h-11 items-center gap-1.5 rounded-full bg-foreground px-3.5 text-xs font-bold tracking-wide text-white shadow-card safe-bottom md:bottom-6"
+        className="fixed bottom-[5.75rem] left-3 z-[80] flex h-11 items-center gap-1.5 rounded-full bg-wing px-3.5 text-xs font-bold tracking-wide text-white shadow-card safe-bottom md:bottom-6"
         whileTap={reduced ? undefined : { scale: 0.96 }}
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}

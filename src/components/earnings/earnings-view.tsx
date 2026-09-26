@@ -52,8 +52,7 @@ export function EarningsView({
           Earnings
         </h1>
         <p className="mt-1 text-sm text-secondary">
-          Quiet payouts for dates you helped lock — not shown on the main app
-          chrome.
+          Quiet payouts for dates you helped lock — Shark profile only.
         </p>
       </header>
 

@@ -27,7 +27,7 @@ Open [http://127.0.0.1:4317](http://127.0.0.1:4317).
 | `/` | Dual Card Feed — photo, vibe, Shark vouch, Skip / Vouch |
 | `/deal-room` | Plan the date — countdown, chat, Lock the date |
 | `/dates` | Upcoming locked dates |
-| `/earnings` | Discreet Shark earnings (not in main nav) |
+| `/earnings` | Shark earnings via profile avatar menu only (not in header/tabs) |
 
 ## Project layout
 

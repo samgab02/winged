@@ -2,6 +2,8 @@
 
 Mobile-first Next.js app for co-op matchmaking: Sharks vouch for Bachelors, lock real-world dates in a 3-minute Deal Room, and earn via escrowed Date Passes.
 
+Visual direction: calm dark UI (late-night café × fintech) — soft coral primary, muted teal for Shark/trust, no neon glow chrome. See `docs/art-direction-v2` in the project brief store.
+
 ## Stack
 
 - Next.js 15 (App Router) + React 19

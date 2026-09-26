@@ -1,30 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  /* Dopamine dark neon palette */
-  --obsidian: #0b0c10;
-  --charcoal: #12131c;
-  --surface: #1a1b27;
-  --surface-elevated: #22233a;
-  --border-muted: rgba(255, 255, 255, 0.08);
+  --canvas: #0e1014;
+  --surface: #171a21;
+  --elevated: #1e222b;
+  --border: #2a303c;
 
-  --aqua: #00f2fe;
-  --cyan: #4facfe;
-  --pink: #ff0844;
-  --coral: #ffb199;
-  --gold: #ffd700;
+  --text-primary: #f2f3f5;
+  --text-secondary: #9aa3b2;
+  --text-muted: #6b7382;
 
-  --background: var(--obsidian);
-  --foreground: #f4f6fb;
-  --muted: #9aa3b5;
-  --card: var(--charcoal);
-  --ring: var(--aqua);
+  --accent: #e85a4f;
+  --accent-soft: rgba(232, 90, 79, 0.14);
+  --trust: #3d9b8f;
+  --trust-soft: rgba(61, 155, 143, 0.14);
 
-  --glow-aqua: 0 0 24px rgba(0, 242, 254, 0.45);
-  --glow-pink: 0 0 24px rgba(255, 8, 68, 0.45);
-  --glow-gold: 0 0 24px rgba(255, 215, 0, 0.4);
+  --success: #3fae7c;
+  --warning: #d4a017;
+  --danger: #c94444;
 
-  --radius: 1rem;
+  --background: var(--canvas);
+  --foreground: var(--text-primary);
+  --muted: var(--text-secondary);
+  --card: var(--surface);
+  --ring: var(--trust);
+
+  --radius: 0.875rem;
 }
 
 @theme inline {
@@ -32,17 +33,20 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-card: var(--card);
+  --color-canvas: var(--canvas);
   --color-surface: var(--surface);
-  --color-surface-elevated: var(--surface-elevated);
-  --color-obsidian: var(--obsidian);
-  --color-charcoal: var(--charcoal);
-  --color-aqua: var(--aqua);
-  --color-cyan: var(--cyan);
-  --color-pink: var(--pink);
-  --color-coral: var(--coral);
-  --color-gold: var(--gold);
-  --color-border: var(--border-muted);
-  --font-sans: var(--font-space-grotesk);
+  --color-elevated: var(--elevated);
+  --color-border: var(--border);
+  --color-secondary: var(--text-secondary);
+  --color-subtle: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-trust: var(--trust);
+  --color-trust-soft: var(--trust-soft);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-dm-sans);
   --font-display: var(--font-space-grotesk);
   --radius-lg: var(--radius);
 }
@@ -57,97 +61,21 @@ html {
 
 body {
   min-height: 100dvh;
-  background:
-    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(0, 242, 254, 0.12), transparent 55%),
-    radial-gradient(ellipse 70% 45% at 90% 10%, rgba(255, 8, 68, 0.1), transparent 50%),
-    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(255, 215, 0, 0.06), transparent 55%),
-    var(--obsidian);
+  background: var(--canvas);
   color: var(--foreground);
-  font-family: var(--font-space-grotesk), ui-sans-serif, sans-serif;
+  font-family: var(--font-dm-sans), ui-sans-serif, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: rgba(0, 242, 254, 0.35);
-  color: white;
+  background: rgba(61, 155, 143, 0.28);
+  color: var(--text-primary);
 }
 
-.neon-border-aqua {
-  border: 1px solid rgba(0, 242, 254, 0.45);
-  box-shadow: var(--glow-aqua), inset 0 0 20px rgba(0, 242, 254, 0.06);
-}
-
-.neon-border-pink {
-  border: 1px solid rgba(255, 8, 68, 0.45);
-  box-shadow: var(--glow-pink), inset 0 0 20px rgba(255, 8, 68, 0.06);
-}
-
-.neon-border-gold {
-  border: 1px solid rgba(255, 215, 0, 0.45);
-  box-shadow: var(--glow-gold), inset 0 0 20px rgba(255, 215, 0, 0.06);
-}
-
-.neon-text-aqua {
-  color: var(--aqua);
-  text-shadow: 0 0 12px rgba(0, 242, 254, 0.55);
-}
-
-.neon-text-pink {
-  color: var(--pink);
-  text-shadow: 0 0 12px rgba(255, 8, 68, 0.55);
-}
-
-.neon-text-gold {
-  color: var(--gold);
-  text-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
-}
-
-.countdown-ring {
-  background: conic-gradient(
-    var(--aqua) calc(var(--progress, 1) * 1turn),
-    rgba(255, 255, 255, 0.08) 0
-  );
+.font-display {
+  font-family: var(--font-space-grotesk), ui-sans-serif, sans-serif;
 }
 
 .safe-bottom {
-  padding-bottom: max(1rem, env(safe-area-inset-bottom));
-}
-
-@keyframes pulse-glow {
-  0%,
-  100% {
-    opacity: 0.7;
-    filter: brightness(1);
-  }
-  50% {
-    opacity: 1;
-    filter: brightness(1.25);
-  }
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 1.6s ease-in-out infinite;
-}
-
-@keyframes shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  20% {
-    transform: translateX(-6px);
-  }
-  40% {
-    transform: translateX(6px);
-  }
-  60% {
-    transform: translateX(-4px);
-  }
-  80% {
-    transform: translateX(4px);
-  }
-}
-
-.animate-shake {
-  animation: shake 0.4s ease-in-out;
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
 }

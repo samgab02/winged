@@ -5,10 +5,20 @@ import {
   mockProfiles,
 } from "@/lib/mock-data";
 
+export const dynamic = "force-dynamic";
+
 export default function DealRoomPage() {
+  const started = Date.now() - 45_000;
+  const room = {
+    ...mockDealRoom,
+    started_at: new Date(started).toISOString(),
+    ends_at: new Date(started + 180_000).toISOString(),
+    status: "active" as const,
+  };
+
   return (
     <DealRoomView
-      room={mockDealRoom}
+      room={room}
       messages={mockDealMessages}
       sharkA={mockProfiles.shark_noa}
       sharkB={mockProfiles.shark_dani}

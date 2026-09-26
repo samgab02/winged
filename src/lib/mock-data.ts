@@ -8,6 +8,7 @@ import {
   seedPeople,
   type CatalogPerson,
 } from "@/lib/seed-catalog";
+import { IDENTITY_PHOTO, avatarFrom } from "@/lib/photo-sets";
 
 export type { Gender, LookingFor } from "@/lib/seed-catalog";
 
@@ -51,10 +52,10 @@ export const people: Record<string, Person> = Object.fromEntries(
 );
 
 export const wingAvatars = {
-  noa: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop",
-  dani: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
-  omi: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
-  tamar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop",
+  noa: avatarFrom(IDENTITY_PHOTO.noa),
+  dani: avatarFrom(IDENTITY_PHOTO.dani),
+  omi: avatarFrom(IDENTITY_PHOTO.omi),
+  tamar: avatarFrom(IDENTITY_PHOTO.tamar),
 };
 
 export const discoverCards: DuoCard[] = catalogAsDuoCards();

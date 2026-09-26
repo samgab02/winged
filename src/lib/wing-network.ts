@@ -1,5 +1,7 @@
 /** Wings network mock + tier helpers */
 
+import { IDENTITY_PHOTO, avatarFrom } from "@/lib/photo-sets";
+
 export type WingMode = "friend" | "pro" | "both";
 
 export type WingTierId =
@@ -53,8 +55,7 @@ export const mockNetworkWings: NetworkWing[] = [
     id: "nw_noa",
     name: "Noa",
     city: "Tel Aviv",
-    avatar:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop",
+    avatar: avatarFrom(IDENTITY_PHOTO.noa),
     bio: "Rooftop jazz, sharp vouch lines, zero fluff.",
     vouchStyle: "Warm roast → soft close",
     tier: "rizz_master",
@@ -71,8 +72,7 @@ export const mockNetworkWings: NetworkWing[] = [
     id: "nw_dani",
     name: "Dani",
     city: "Herzliya",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
+    avatar: avatarFrom(IDENTITY_PHOTO.dani),
     bio: "Product brain, date logistics nerd.",
     vouchStyle: "Straight talk + venue picks",
     tier: "pro_matchmaker",
@@ -89,8 +89,7 @@ export const mockNetworkWings: NetworkWing[] = [
     id: "nw_omi",
     name: "Omi",
     city: "Jaffa",
-    avatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
+    avatar: avatarFrom(IDENTITY_PHOTO.omi),
     bio: "Winging her best friend — and loving it.",
     vouchStyle: "Sisterly hype",
     tier: "friend_wing",
@@ -107,8 +106,7 @@ export const mockNetworkWings: NetworkWing[] = [
     id: "nw_tamar",
     name: "Tamar",
     city: "Tel Aviv",
-    avatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop",
+    avatar: avatarFrom(IDENTITY_PHOTO.tamar),
     bio: "New to Pro — open evenings, Date Pass ready.",
     vouchStyle: "Curious + kind",
     tier: "baby_wing",
@@ -125,8 +123,7 @@ export const mockNetworkWings: NetworkWing[] = [
     id: "nw_leo",
     name: "Leo",
     city: "Ramot",
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
+    avatar: avatarFrom(IDENTITY_PHOTO.leo),
     bio: "Weekend Pro slots. Locks patio dates fast.",
     vouchStyle: "Logistics king",
     tier: "pro_matchmaker",
@@ -143,8 +140,7 @@ export const mockNetworkWings: NetworkWing[] = [
     id: "nw_sira",
     name: "Sira",
     city: "Florentin",
-    avatar:
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&h=200&fit=crop",
+    avatar: avatarFrom(IDENTITY_PHOTO.maya),
     bio: "Friend Wing for two roommates. No paid gigs.",
     vouchStyle: "Playful vouch clips",
     tier: "friend_wing",
@@ -164,8 +160,7 @@ export const mockMyWing = {
   id: "nw_noa",
   name: "Noa",
   city: "Tel Aviv",
-  avatar:
-    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop",
+  avatar: avatarFrom(IDENTITY_PHOTO.noa),
   bio: "Your Friend Wing — also open for Pro Date Pass work.",
   vouchStyle: "Warm roast → soft close",
   tier: "rizz_master" as WingTierId,

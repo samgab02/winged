@@ -171,7 +171,7 @@ export default function WingHubPage() {
             <span>
               <span className="block font-semibold">Wings network</span>
               <span className="block text-sm text-secondary">
-                Feed · Pros · Fair-Play leaderboard
+                Radar · briefs · collab rooms · one-tap hire
               </span>
             </span>
           </span>

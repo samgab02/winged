@@ -8,12 +8,12 @@ import {
   type AccountRecord,
 } from "@/lib/auth";
 import {
-  PHOTO_STARTER_PACK,
   seedPeople,
   type Gender,
   type LookingFor,
   type ProfilePrompt,
 } from "@/lib/seed-catalog";
+import { IDENTITY_PHOTO, samePersonPhotos } from "@/lib/photo-sets";
 import type { AppearancePref } from "@/lib/theme";
 import type { WingMode, WingStats, WingTierId } from "@/lib/wing-network";
 
@@ -56,7 +56,7 @@ export type SeededProfile = DevProfileSeed & { accountId: string };
 
 const maya = seedPeople.maya;
 const eli = seedPeople.eli;
-const noaPhoto = PHOTO_STARTER_PACK[4];
+const noaPhotos = samePersonPhotos(IDENTITY_PHOTO.noa, 4);
 
 export const DEV_LOGINS: DevLogin[] = [
   {
@@ -134,7 +134,7 @@ export const DEV_LOGINS: DevLogin[] = [
       displayName: "Noa",
       birthday: "1995-03-20",
       city: "Tel Aviv",
-      photos: [noaPhoto],
+      photos: noaPhotos,
       prompts: [
         {
           question: "What’s their most magnetic trait in a room?",

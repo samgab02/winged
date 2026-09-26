@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Crosshair, X } from "lucide-react";
@@ -22,6 +22,40 @@ import {
   loadTickets,
   type QaTicket,
 } from "@/lib/qa/tickets";
+
+const QA_POS_KEY = "winged-qa-fab-pos";
+const FAB_SIZE = 48;
+const DRAG_THRESHOLD = 8;
+
+type FabPos = { x: number; y: number };
+
+function loadFabPos(): FabPos | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(QA_POS_KEY);
+    if (!raw) return null;
+    const p = JSON.parse(raw) as FabPos;
+    if (typeof p.x !== "number" || typeof p.y !== "number") return null;
+    return p;
+  } catch {
+    return null;
+  }
+}
+
+function clampFab(x: number, y: number): FabPos {
+  const pad = 8;
+  const maxX = Math.max(pad, window.innerWidth - FAB_SIZE - pad);
+  const maxY = Math.max(pad, window.innerHeight - FAB_SIZE - pad);
+  return {
+    x: Math.min(maxX, Math.max(pad, x)),
+    y: Math.min(maxY, Math.max(pad, y)),
+  };
+}
+
+function defaultFabPos(): FabPos {
+  if (typeof window === "undefined") return { x: 12, y: 400 };
+  return clampFab(12, window.innerHeight - FAB_SIZE - 92);
+}
 
 const ROUTES = [
   { label: "Welcome", href: "/welcome" },
@@ -58,8 +92,26 @@ export function QaStudio() {
   const [ticketNote, setTicketNote] = useState("");
   const [tickets, setTickets] = useState<QaTicket[]>([]);
   const [busy, setBusy] = useState(false);
+  const [fabPos, setFabPos] = useState<FabPos>(() => loadFabPos() ?? defaultFabPos());
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const longPressed = useRef(false);
+  const dragRef = useRef<{
+    active: boolean;
+    moved: boolean;
+    startX: number;
+    startY: number;
+    origX: number;
+    origY: number;
+    pointerId: number | null;
+  }>({
+    active: false,
+    moved: false,
+    startX: 0,
+    startY: 0,
+    origX: 0,
+    origY: 0,
+    pointerId: null,
+  });
   const reduced = useReducedMotion();
   const router = useRouter();
   const pathname = usePathname();
@@ -74,7 +126,17 @@ export function QaStudio() {
   useEffect(() => {
     void bootstrapDevLogins();
     setTickets(loadTickets());
+    const saved = loadFabPos();
+    setFabPos(saved ? clampFab(saved.x, saved.y) : defaultFabPos());
   }, [bootstrapDevLogins]);
+
+  useEffect(() => {
+    function onResize() {
+      setFabPos((p) => clampFab(p.x, p.y));
+    }
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   useEffect(() => {
     if (!picking) {
@@ -141,6 +203,10 @@ export function QaStudio() {
   }
 
   function toggleFab() {
+    if (dragRef.current.moved) {
+      dragRef.current.moved = false;
+      return;
+    }
     if (longPressed.current) {
       longPressed.current = false;
       return;
@@ -159,13 +225,23 @@ export function QaStudio() {
       setOpen(false);
       return;
     }
-    // Primary: enter pick mode
     startPick();
   }
 
-  function onFabPointerDown() {
+  function onFabPointerDown(e: ReactPointerEvent<HTMLButtonElement>) {
     longPressed.current = false;
+    dragRef.current = {
+      active: true,
+      moved: false,
+      startX: e.clientX,
+      startY: e.clientY,
+      origX: fabPos.x,
+      origY: fabPos.y,
+      pointerId: e.pointerId,
+    };
+    e.currentTarget.setPointerCapture(e.pointerId);
     longPressTimer.current = setTimeout(() => {
+      if (dragRef.current.moved) return;
       longPressed.current = true;
       setPicking(false);
       setHoverRect(null);
@@ -175,10 +251,45 @@ export function QaStudio() {
     }, 500);
   }
 
-  function onFabPointerUp() {
+  function onFabPointerMove(e: ReactPointerEvent<HTMLButtonElement>) {
+    if (!dragRef.current.active) return;
+    const dx = e.clientX - dragRef.current.startX;
+    const dy = e.clientY - dragRef.current.startY;
+    if (!dragRef.current.moved) {
+      if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+      dragRef.current.moved = true;
+      if (longPressTimer.current) {
+        clearTimeout(longPressTimer.current);
+        longPressTimer.current = null;
+      }
+    }
+    const next = clampFab(dragRef.current.origX + dx, dragRef.current.origY + dy);
+    setFabPos(next);
+  }
+
+  function onFabPointerUp(e: ReactPointerEvent<HTMLButtonElement>) {
     if (longPressTimer.current) {
       clearTimeout(longPressTimer.current);
       longPressTimer.current = null;
+    }
+    if (dragRef.current.active && dragRef.current.moved) {
+      setFabPos((p) => {
+        const clamped = clampFab(p.x, p.y);
+        try {
+          localStorage.setItem(QA_POS_KEY, JSON.stringify(clamped));
+        } catch {
+          /* ignore */
+        }
+        return clamped;
+      });
+    }
+    dragRef.current.active = false;
+    if (dragRef.current.pointerId != null) {
+      try {
+        e.currentTarget.releasePointerCapture(dragRef.current.pointerId);
+      } catch {
+        /* ignore */
+      }
     }
   }
 
@@ -234,26 +345,30 @@ export function QaStudio() {
 
   return (
     <>
-      {/* Circular text-only FAB */}
+      {/* Circular text-only FAB — centered label, draggable, tap = pick */}
       <motion.button
         type="button"
         data-qa-chrome
         aria-label={picking ? "Cancel pick mode" : "QA pick mode"}
-        title="Tap to pick · hold for tools"
+        title="Drag to move · tap to pick · hold for tools"
         onClick={toggleFab}
         onPointerDown={onFabPointerDown}
+        onPointerMove={onFabPointerMove}
         onPointerUp={onFabPointerUp}
-        onPointerLeave={onFabPointerUp}
         onPointerCancel={onFabPointerUp}
+        style={{ left: fabPos.x, top: fabPos.y, width: FAB_SIZE, height: FAB_SIZE }}
         className={cn(
-          "fixed bottom-[5.75rem] left-3 z-[100] flex size-12 items-center justify-center rounded-full text-xs font-extrabold tracking-wide text-white shadow-card safe-bottom md:bottom-6",
-          picking ? "bg-romance ring-2 ring-romance/40" : "bg-wing"
+          "fixed z-[100] flex touch-none items-center justify-center rounded-full p-0 text-[11px] font-extrabold leading-none tracking-[0.06em] text-white shadow-soft select-none",
+          picking ? "bg-romance ring-2 ring-romance/40" : "bg-wing",
+          dragRef.current.moved ? "cursor-grabbing" : "cursor-grab"
         )}
-        whileTap={reduced ? undefined : { scale: 0.94 }}
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
+        whileTap={reduced || dragRef.current.moved ? undefined : { scale: 0.94 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
       >
-        QA
+        <span className="pointer-events-none flex size-full items-center justify-center">
+          QA
+        </span>
       </motion.button>
 
       {/* Pick highlight + banner */}

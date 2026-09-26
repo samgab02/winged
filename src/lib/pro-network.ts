@@ -1,6 +1,7 @@
 /** Rich Pro Wings social network seed data */
 
 import type { WingTierId } from "@/lib/wing-network";
+import { IDENTITY_PHOTO, avatarFrom, unsplashShot } from "@/lib/photo-sets";
 
 export type ProStats = {
   datesLocked: number;
@@ -60,6 +61,31 @@ export type ProProfile = {
   availability: string[];
   collabWith: string[];
   openToHire: boolean;
+  availableNow: boolean;
+  liveStatus?: string;
+};
+
+export type MatchBrief = {
+  id: string;
+  from: "bachelor" | "wing";
+  authorName: string;
+  avatar: string;
+  city: string;
+  when: string;
+  title: string;
+  body: string;
+  tags: string[];
+  applicants: number;
+  open: boolean;
+};
+
+export type CollabRoom = {
+  id: string;
+  title: string;
+  wings: { id: string; name: string; avatar: string }[];
+  pitch: string;
+  city: string;
+  when: string;
 };
 
 export const proProfiles: ProProfile[] = [
@@ -68,15 +94,19 @@ export const proProfiles: ProProfile[] = [
     name: "Noa",
     city: "Tel Aviv",
     languages: ["Hebrew", "English"],
-    avatar:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop",
-    cover:
-      "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1200&h=600&fit=crop",
+    avatar: avatarFrom(IDENTITY_PHOTO.noa, 400),
+    cover: unsplashShot("photo-1514933651103-005eec06c04b", {
+      w: 1200,
+      h: 600,
+      crop: "entropy",
+    }),
     bio: "Rooftop jazz, sharp vouch lines, zero fluff. I lock dates that feel like a film still.",
     tier: "rizz_master",
     priceBand: "₪₪₪",
     specialties: ["First dates", "25–35", "Queer-friendly", "Hebrew/English"],
     vouchStyle: "Warm roast → soft close",
+    availableNow: true,
+    liveStatus: "Open · Tel Aviv tonight",
     vibeTape: [
       {
         q: "How I wing",
@@ -141,15 +171,19 @@ export const proProfiles: ProProfile[] = [
     name: "Dani",
     city: "Herzliya",
     languages: ["Hebrew", "English"],
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-    cover:
-      "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1200&h=600&fit=crop",
+    avatar: avatarFrom(IDENTITY_PHOTO.dani, 400),
+    cover: unsplashShot("photo-1559339352-11d035aa65de", {
+      w: 1200,
+      h: 600,
+      crop: "entropy",
+    }),
     bio: "Product brain, date logistics nerd. I treat Deal Room like a sprint.",
     tier: "pro_matchmaker",
     priceBand: "₪₪",
     specialties: ["First dates", "Tech crowd", "Weeknights"],
     vouchStyle: "Straight talk + venue picks",
+    availableNow: true,
+    liveStatus: "Replying in ~12m",
     vibeTape: [
       {
         q: "How I wing",
@@ -197,15 +231,19 @@ export const proProfiles: ProProfile[] = [
     name: "Tamar",
     city: "Tel Aviv",
     languages: ["Hebrew", "English", "French"],
-    avatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop",
-    cover:
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=600&fit=crop",
+    avatar: avatarFrom(IDENTITY_PHOTO.tamar, 400),
+    cover: unsplashShot("photo-1517248135467-4c7edcad34c4", {
+      w: 1200,
+      h: 600,
+      crop: "entropy",
+    }),
     bio: "New to Pro — open evenings, Date Pass ready. Soft landings only.",
     tier: "baby_wing",
     priceBand: "₪",
     specialties: ["Soft first dates", "22–28", "Artsy"],
     vouchStyle: "Curious + kind",
+    availableNow: false,
+    liveStatus: "Thu evenings",
     vibeTape: [
       { q: "How I wing", a: "I ask better questions than a dating app form." },
     ],
@@ -238,15 +276,19 @@ export const proProfiles: ProProfile[] = [
     name: "Leo",
     city: "Ramot",
     languages: ["Hebrew", "English"],
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
-    cover:
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&h=600&fit=crop",
+    avatar: avatarFrom(IDENTITY_PHOTO.leo, 400),
+    cover: unsplashShot("photo-1414235077428-338989a2e8c0", {
+      w: 1200,
+      h: 600,
+      crop: "entropy",
+    }),
     bio: "Weekend Pro slots. Locks patio dates fast without the bro energy.",
     tier: "pro_matchmaker",
     priceBand: "₪₪",
     specialties: ["Weekends", "Outdoor", "28–40"],
     vouchStyle: "Logistics king",
+    availableNow: false,
+    liveStatus: "Weekend radar",
     vibeTape: [
       { q: "How I wing", a: "I pre-clear the patio and the oat milk." },
     ],
@@ -274,6 +316,89 @@ export const proProfiles: ProProfile[] = [
     availability: ["Sat–Sun afternoons"],
     collabWith: ["nw_noa", "nw_dani"],
     openToHire: true,
+  },
+];
+
+export const matchBriefs: MatchBrief[] = [
+  {
+    id: "br_1",
+    from: "bachelor",
+    authorName: "Maya",
+    avatar: avatarFrom(IDENTITY_PHOTO.maya),
+    city: "Tel Aviv",
+    when: "Tonight",
+    title: "Need a Wing for rooftop energy",
+    body: "Looking for someone who can vouch me in 3 lines — funny, not salesy. Date Pass ready.",
+    tags: ["Tonight", "Rooftop", "Hebrew/English"],
+    applicants: 3,
+    open: true,
+  },
+  {
+    id: "br_2",
+    from: "wing",
+    authorName: "Noa",
+    avatar: avatarFrom(IDENTITY_PHOTO.noa),
+    city: "Tel Aviv",
+    when: "Now",
+    title: "I can wing tonight",
+    body: "Open slot 20:00–22:30. Soft first dates + queer-friendly. Fair-Play Excellent.",
+    tags: ["Available now", "First dates"],
+    applicants: 1,
+    open: true,
+  },
+  {
+    id: "br_3",
+    from: "bachelor",
+    authorName: "Eli",
+    avatar: avatarFrom(IDENTITY_PHOTO.eli),
+    city: "Herzliya",
+    when: "Thu",
+    title: "Quiet bar + sharp talker",
+    body: "Need a Pro who won’t oversell me. Logistics + one good roast.",
+    tags: ["Weeknight", "₪₪"],
+    applicants: 2,
+    open: true,
+  },
+];
+
+export const collabRooms: CollabRoom[] = [
+  {
+    id: "cr_1",
+    title: "Double setup · Florentin patio",
+    wings: [
+      {
+        id: "nw_noa",
+        name: "Noa",
+        avatar: avatarFrom(IDENTITY_PHOTO.noa),
+      },
+      {
+        id: "nw_dani",
+        name: "Dani",
+        avatar: avatarFrom(IDENTITY_PHOTO.dani),
+      },
+    ],
+    pitch: "Two Wings, two singles — co-pitching a patio lock for Thursday.",
+    city: "Tel Aviv",
+    when: "Thu evening",
+  },
+  {
+    id: "cr_2",
+    title: "Soft-landing pair",
+    wings: [
+      {
+        id: "nw_tamar",
+        name: "Tamar",
+        avatar: avatarFrom(IDENTITY_PHOTO.tamar),
+      },
+      {
+        id: "nw_leo",
+        name: "Leo",
+        avatar: avatarFrom(IDENTITY_PHOTO.leo),
+      },
+    ],
+    pitch: "Baby + Pro collab — weekend brunch energy, no pressure.",
+    city: "Ramot",
+    when: "Sat brunch",
   },
 ];
 

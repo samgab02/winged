@@ -51,11 +51,11 @@ export default function FindWingPage() {
           ← My Wing
         </Link>
         <h1 className="mt-2 font-display text-2xl font-extrabold tracking-tight">
-          Find a Pro Wing
+          Pro Wing radar
         </h1>
         <p className="mx-auto mt-0.5 max-w-xs text-sm text-secondary">
-          Hire opens a Date Pass in escrow. Cash releases only after
-          Proof-of-Stay — never for recycled pairs.
+          Live Pros with Fair-Play trust. Hire holds a Date Pass until
+          Proof-of-Stay — never recycled cash.
         </p>
       </header>
 

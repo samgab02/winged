@@ -3,7 +3,7 @@
 import { AlertCircle } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { AnimatedWingMark } from "@/components/motion/animated-wing-mark";
+import { WingedMark } from "@/components/brand/winged-mark";
 
 export function LoadingState({ label = "Loading…" }: { label?: string }) {
   const reduced = useReducedMotion();
@@ -13,7 +13,7 @@ export function LoadingState({ label = "Loading…" }: { label?: string }) {
         animate={reduced ? undefined : { y: [0, -5, 0], rotate: [-2, 2, -2] }}
         transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
       >
-        <AnimatedWingMark className="size-10" flap={false} />
+        <WingedMark className="h-10 w-10" />
       </motion.div>
       <p className="text-sm font-medium text-secondary">{label}</p>
     </div>
@@ -47,7 +47,7 @@ export function EmptyState({
         }
         transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
       >
-        <AnimatedWingMark className="size-9" flap={false} />
+        <WingedMark className="h-9 w-9" />
       </motion.div>
       <h2 className="font-display text-xl font-extrabold">{title}</h2>
       <p className="max-w-xs text-sm text-secondary">{body}</p>

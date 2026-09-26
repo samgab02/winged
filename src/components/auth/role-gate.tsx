@@ -60,7 +60,7 @@ export function RoleGate({
   ) {
     return (
       <div className="mx-auto flex min-h-dvh max-w-lg flex-col items-center justify-center gap-3">
-        <WingedMark className="size-12 animate-pulse" />
+        <WingedMark className="h-12 w-12 animate-pulse" />
         <LoadingState label="Opening Winged…" />
       </div>
     );

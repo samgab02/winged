@@ -35,9 +35,8 @@ export default function SignUpPage() {
   return (
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-6 pb-10 pt-10">
       <ToastHost />
-      <Link href="/welcome" className="inline-flex items-center gap-2">
-        <WingedMark className="size-9" />
-        <span className="font-display text-lg font-extrabold">Winged</span>
+      <Link href="/welcome" className="inline-flex items-center" aria-label="Winged">
+        <WingedMark className="h-10 w-10" />
       </Link>
       <h1 className="mt-8 font-display text-3xl font-extrabold tracking-tight">
         Create your account

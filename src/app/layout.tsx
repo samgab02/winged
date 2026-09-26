@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Syne } from "next/font/google";
 import { AppearanceProvider } from "@/components/theme/appearance-provider";
+import { QaHost } from "@/components/qa/qa-host";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -16,20 +17,20 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "Winged — Dates with a wingman",
+  title: "Winged — Friends plan it. You show up.",
   description:
-    "The dating app where friends vouch and lock real dates. Discover, wing, Deal Room in 3 minutes.",
+    "The dating app where friends vouch and lock real dates. Discover, vouch as a Wing, Deal Room in 3 minutes.",
   applicationName: "Winged",
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/winged-mark.svg" }],
+    apple: [{ url: "/brand/winged-mark.svg" }],
   },
   openGraph: {
-    title: "Winged — Dates with a wingman",
+    title: "Winged — Friends plan it. You show up.",
     description:
-      "Dates planned by friends. Not dry chat. Bachelor + Wing co-op matchmaking.",
+      "Friends plan it. You show up. Bachelor + Wing co-op matchmaking.",
     siteName: "Winged",
-    images: [{ url: "/winged-mark.svg" }],
+    images: [{ url: "/brand/winged-lockup.png" }],
   },
   appleWebApp: {
     capable: true,
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F3F1EE",
+  themeColor: "#FBF7F4",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -56,7 +57,9 @@ export default function RootLayout({
       <body
         className={`${jakarta.variable} ${syne.variable} min-h-dvh bg-canvas font-sans text-foreground antialiased`}
       >
-        <AppearanceProvider>{children}</AppearanceProvider>
+        <AppearanceProvider>
+          <QaHost>{children}</QaHost>
+        </AppearanceProvider>
       </body>
     </html>
   );

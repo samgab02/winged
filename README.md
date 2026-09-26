@@ -1,4 +1,4 @@
-# Winged — Dates with a wingman
+# Winged — Friends plan it. You show up.
 
 Mobile dating app where **Wings** (friends / matchmakers) vouch for **Bachelors** and lock real-world dates in a 3-minute Deal Room.
 

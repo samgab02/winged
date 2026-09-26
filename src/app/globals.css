@@ -1,38 +1,38 @@
 @import "tailwindcss";
 
-/* Default = dating-neutral (non-binary / unset) */
+/* Neutral dating — ivory + rose + sage (not black/orange) */
 :root,
 [data-appearance="neutral"] {
-  --canvas: #f3f1ee;
-  --canvas-deep: #e4e0da;
+  --canvas: #fbf7f4;
+  --canvas-deep: #f0e8e2;
   --surface: #ffffff;
-  --elevated: #ebe8e3;
-  --border: #ddd6ce;
+  --elevated: #f5efe9;
+  --border: #e8ddd4;
 
-  --text-primary: #1c2430;
-  --text-secondary: #5a6270;
-  --text-muted: #8a919c;
+  --text-primary: #2a2421;
+  --text-secondary: #6b615c;
+  --text-muted: #9a8f89;
 
-  /* Accent: confident coral — CTAs only */
-  --romance: #e85d4c;
-  --romance-soft: rgba(232, 93, 76, 0.12);
-  --romance-deep: #d04838;
+  /* Rose / berry — romance CTAs */
+  --romance: #d4516c;
+  --romance-soft: rgba(212, 81, 108, 0.12);
+  --romance-deep: #b83d58;
 
-  /* Wing / trust: slate-teal */
-  --wing: #2a9d8f;
-  --wing-soft: rgba(42, 157, 143, 0.14);
-  --wing-deep: #21867a;
+  /* Wing trust — muted sage */
+  --wing: #6b8f9c;
+  --wing-soft: rgba(107, 143, 156, 0.14);
+  --wing-deep: #557a87;
 
-  --success: #3d9b6e;
-  --spark: #c9a227;
-  --spark-soft: rgba(201, 162, 39, 0.18);
+  --success: #5a9a78;
+  --spark: #c4a35a;
+  --spark-soft: rgba(196, 163, 90, 0.18);
 
-  --glow-a: rgba(28, 36, 48, 0.06);
-  --glow-b: rgba(232, 93, 76, 0.1);
-  --glow-c: rgba(42, 157, 143, 0.08);
+  --glow-a: rgba(212, 81, 108, 0.1);
+  --glow-b: rgba(107, 143, 156, 0.1);
+  --glow-c: rgba(240, 200, 180, 0.2);
 
-  --shadow-card: 0 8px 28px rgba(28, 36, 48, 0.08);
-  --shadow-soft: 0 2px 12px rgba(28, 36, 48, 0.06);
+  --shadow-card: 0 8px 28px rgba(42, 36, 33, 0.07);
+  --shadow-soft: 0 2px 12px rgba(42, 36, 33, 0.05);
 
   --background: var(--canvas);
   --foreground: var(--text-primary);
@@ -43,60 +43,60 @@
   --radius: 1.25rem;
 }
 
-/* Woman / warm override */
+/* Warm — peach atmosphere + rose */
 [data-appearance="warm"] {
-  --canvas: #fff6f3;
-  --canvas-deep: #ffe6df;
+  --canvas: #fff5f0;
+  --canvas-deep: #ffe8df;
   --surface: #ffffff;
-  --elevated: #fff0eb;
-  --border: #f0dcd5;
+  --elevated: #fff0ea;
+  --border: #f0d9d0;
 
-  --text-primary: #1f1a1c;
-  --text-secondary: #6b5c62;
-  --text-muted: #9a8a90;
+  --text-primary: #2c221f;
+  --text-secondary: #7a6560;
+  --text-muted: #a8948e;
 
-  --romance: #f05a78;
-  --romance-soft: rgba(240, 90, 120, 0.14);
-  --romance-deep: #d94462;
+  --romance: #d9637a;
+  --romance-soft: rgba(217, 99, 122, 0.14);
+  --romance-deep: #c24a63;
 
-  --wing: #2ec4b6;
-  --wing-soft: rgba(46, 196, 182, 0.14);
-  --wing-deep: #22a99d;
+  --wing: #7a9ea8;
+  --wing-soft: rgba(122, 158, 168, 0.14);
+  --wing-deep: #5f8691;
 
-  --glow-a: rgba(240, 90, 120, 0.14);
-  --glow-b: rgba(46, 196, 182, 0.1);
-  --glow-c: rgba(255, 180, 140, 0.16);
+  --glow-a: rgba(217, 99, 122, 0.14);
+  --glow-b: rgba(122, 158, 168, 0.1);
+  --glow-c: rgba(255, 200, 170, 0.22);
 
-  --shadow-card: 0 8px 28px rgba(90, 40, 50, 0.08);
-  --shadow-soft: 0 2px 12px rgba(90, 40, 50, 0.06);
+  --shadow-card: 0 8px 28px rgba(90, 50, 45, 0.07);
+  --shadow-soft: 0 2px 12px rgba(90, 50, 45, 0.05);
 }
 
-/* Man / cool override */
+/* Cool — soft blue-gray + periwinkle (not navy sports) */
 [data-appearance="cool"] {
-  --canvas: #eef1f6;
-  --canvas-deep: #dde3ed;
+  --canvas: #f4f5f9;
+  --canvas-deep: #e6e8f0;
   --surface: #ffffff;
-  --elevated: #e6ebf3;
-  --border: #cfd6e2;
+  --elevated: #eef0f6;
+  --border: #d8dce8;
 
-  --text-primary: #121826;
-  --text-secondary: #4a5568;
-  --text-muted: #7a8496;
+  --text-primary: #2a2d38;
+  --text-secondary: #5c6275;
+  --text-muted: #8b91a3;
 
-  --romance: #3b6ced;
-  --romance-soft: rgba(59, 108, 237, 0.14);
-  --romance-deep: #2a55c8;
+  --romance: #7b8fd4;
+  --romance-soft: rgba(123, 143, 212, 0.14);
+  --romance-deep: #6376bc;
 
-  --wing: #0d9488;
-  --wing-soft: rgba(13, 148, 136, 0.14);
-  --wing-deep: #0f766e;
+  --wing: #6b8f9c;
+  --wing-soft: rgba(107, 143, 156, 0.14);
+  --wing-deep: #557a87;
 
-  --glow-a: rgba(59, 108, 237, 0.12);
-  --glow-b: rgba(13, 148, 136, 0.1);
-  --glow-c: rgba(18, 24, 38, 0.06);
+  --glow-a: rgba(123, 143, 212, 0.12);
+  --glow-b: rgba(107, 143, 156, 0.1);
+  --glow-c: rgba(200, 210, 230, 0.25);
 
-  --shadow-card: 0 8px 28px rgba(18, 24, 38, 0.1);
-  --shadow-soft: 0 2px 12px rgba(18, 24, 38, 0.07);
+  --shadow-card: 0 8px 28px rgba(42, 45, 56, 0.08);
+  --shadow-soft: 0 2px 12px rgba(42, 45, 56, 0.06);
 }
 
 @theme inline {

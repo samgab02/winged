@@ -137,7 +137,7 @@ export default function BachelorOnboardingPage() {
   return (
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-5 pb-8 pt-8">
       <div className="flex items-center justify-between">
-        <WingedMark className="size-9" />
+        <WingedMark className="h-9 w-9" />
         <span className="text-xs font-semibold text-subtle">
           {step + 1} / {STEPS}
         </span>

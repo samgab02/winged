@@ -13,11 +13,12 @@ export function AppHeader({
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-canvas/90 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-md items-center justify-between px-4">
-        <Link href={href} className="inline-flex items-center gap-2">
-          <WingedMark className="size-8" />
-          <span className="font-display text-lg font-extrabold tracking-tight">
-            Winged
-          </span>
+        <Link
+          href={href}
+          className="inline-flex items-center"
+          aria-label="Winged home"
+        >
+          <WingedMark className="h-9 w-9" />
         </Link>
         {badge ? (
           <span className="text-xs font-semibold text-subtle">{badge}</span>

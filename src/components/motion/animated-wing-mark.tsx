@@ -1,9 +1,13 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import {
+  WingedMark,
+  WingedLockup,
+  WingedMarkLockup,
+} from "@/components/brand/winged-mark";
 import { cn } from "@/lib/utils";
 
-/** Logo mark with optional wing-flap on mount */
 export function AnimatedWingMark({
   className,
   flap = true,
@@ -17,48 +21,40 @@ export function AnimatedWingMark({
   const animate = flap && !reduced;
 
   return (
-    <motion.svg
-      viewBox="0 0 64 64"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={cn("shrink-0", className)}
-      role="img"
-      aria-label={title}
-      initial={animate ? { scale: 0.86, rotate: -6 } : false}
-      animate={{ scale: 1, rotate: 0 }}
-      transition={{ type: "spring", stiffness: 260, damping: 16 }}
+    <motion.div
+      className={cn("inline-block", className)}
+      initial={animate ? { scale: 0.9, opacity: 0, rotate: -4 } : false}
+      animate={{ scale: 1, opacity: 1, rotate: 0 }}
+      transition={{ type: "spring", stiffness: 260, damping: 18 }}
     >
-      <rect width="64" height="64" rx="18" fill="#1C2430" />
-      <motion.path
-        d="M15 41c4.4-12.4 12.8-20 21.6-20.4 3.6-.2 6.4 2.4 6.4 6v.8c0 2.8-1.6 5.4-4 6.8L24.6 42.6c-2.8 1.6-6.4-.4-6.4-3.6v-.4c0-1.2.4-2.4.8-3.6Z"
-        fill="#F4F1EC"
-        initial={animate ? { pathLength: 0, opacity: 0.4 } : false}
-        animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      />
-      <motion.path
-        d="M32.4 19.6c4.8.8 9.2 4.4 12.4 10.4 1.2 2.4-.4 5.2-3 5.6l-4.8.6c-2.4.4-4.4-1.4-4.8-3.8l-.8-5.2c-.4-2.6 1.6-5 4.2-5.4.2 0 .6-.2.8-.2Z"
-        fill="#E85D4C"
-        initial={animate ? { rotate: -18, scale: 0.7, opacity: 0 } : false}
-        animate={
-          animate
-            ? {
-                rotate: [ -18, 8, 0 ],
-                scale: [0.7, 1.06, 1],
-                opacity: 1,
-              }
-            : undefined
-        }
-        style={{ originX: "0.45", originY: "0.55" }}
-        transition={{ duration: 0.75, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-      />
-      <path
-        d="M18.4 36.4c3.2-5.6 7.2-8.8 11.2-10"
-        stroke="#1C2430"
-        strokeWidth="2"
-        strokeLinecap="round"
-        opacity=".2"
-      />
-    </motion.svg>
+      <WingedMark className="size-full" title={title} />
+    </motion.div>
+  );
+}
+
+export function AnimatedWingLockup({
+  className,
+  title = "Winged",
+  variant = "horizontal",
+}: {
+  className?: string;
+  title?: string;
+  variant?: "horizontal" | "stacked";
+}) {
+  const reduced = useReducedMotion();
+
+  return (
+    <motion.div
+      className={cn("inline-block", className)}
+      initial={reduced ? { opacity: 0 } : { scale: 0.92, opacity: 0, y: 8 }}
+      animate={{ scale: 1, opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 240, damping: 20 }}
+    >
+      {variant === "stacked" ? (
+        <WingedMarkLockup className="size-full" title={title} />
+      ) : (
+        <WingedLockup className="size-full" title={title} />
+      )}
+    </motion.div>
   );
 }

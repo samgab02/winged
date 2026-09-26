@@ -1,1 +1,7 @@
-export { WingedMark as PoviMark, WingedWordmark as PoviWordmark, WingedMark, WingedWordmark } from "@/components/brand/winged-mark";
+export {
+  WingedMark as PoviMark,
+  WingedWordmark as PoviWordmark,
+  WingedMark,
+  WingedWordmark,
+  WingedLockup,
+} from "@/components/brand/winged-mark";

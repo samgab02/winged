@@ -35,7 +35,7 @@ export default function RolePickPage() {
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-6 pb-10 pt-10">
-      <WingedMark className="size-12" />
+      <WingedMark className="h-14 w-14" />
       <h1 className="mt-6 font-display text-3xl font-extrabold tracking-tight">
         How will you use Winged?
       </h1>

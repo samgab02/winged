@@ -92,7 +92,7 @@ export default function WingOnboardingPage() {
   return (
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-5 pb-8 pt-8">
       <div className="flex items-center justify-between">
-        <WingedMark className="size-9" />
+        <WingedMark className="h-9 w-9" />
         <span className="text-xs font-semibold text-subtle">
           Wing · {step + 1}/4
         </span>
@@ -101,7 +101,7 @@ export default function WingOnboardingPage() {
       <h1 className="mt-6 font-display text-2xl font-extrabold tracking-tight">
         {step === 0 && "Your Wing profile"}
         {step === 1 && "Friend or Pro?"}
-        {step === 2 && "Who are you wingmanning?"}
+        {step === 2 && "Who are you winging for?"}
         {step === 3 && "Build their vibe line"}
       </h1>
 

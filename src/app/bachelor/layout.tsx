@@ -3,6 +3,7 @@
 import { RoleGate } from "@/components/auth/role-gate";
 import { AppHeader } from "@/components/layout/app-header";
 import { BachelorNav } from "@/components/layout/bachelor-nav";
+import { ToastHost } from "@/components/ui/toast";
 
 export default function BachelorLayout({
   children,
@@ -15,6 +16,7 @@ export default function BachelorLayout({
         <AppHeader badge="Bachelor" href="/bachelor/discover" />
         <main className="flex flex-1 flex-col">{children}</main>
         <BachelorNav />
+        <ToastHost />
       </div>
     </RoleGate>
   );

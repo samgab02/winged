@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useSession } from "@/lib/store";
+import { getSessionAccountId } from "@/lib/auth";
+import { useApp } from "@/lib/store";
 import { LoadingState } from "@/components/ui/states";
+import { PoviMark } from "@/components/brand/povi-mark";
 
 export function RoleGate({
   expect,
@@ -14,33 +16,54 @@ export function RoleGate({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const role = useSession((s) => s.role);
-  const onboarding = useSession((s) => s.onboarding);
-  const [hydrated, setHydrated] = useState(false);
+  const hydrateSession = useApp((s) => s.hydrateSession);
+  const profile = useApp((s) => s.profile);
+  const accountId = useApp((s) => s.accountId);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setHydrated(true);
-  }, []);
+    const id = getSessionAccountId();
+    hydrateSession(id);
+    setReady(true);
+  }, [hydrateSession]);
 
   useEffect(() => {
-    if (!hydrated) return;
-    if (!role || onboarding === "welcome") {
-      router.replace("/");
+    if (!ready) return;
+    if (!accountId) {
+      router.replace("/welcome");
       return;
     }
-    if (onboarding !== "ready") {
+    if (!profile?.role) {
+      router.replace("/auth/role");
+      return;
+    }
+    if (!profile.onboardingComplete) {
       router.replace(
-        role === "bachelor" ? "/onboarding/bachelor" : "/onboarding/shark"
+        profile.role === "bachelor"
+          ? "/onboarding/bachelor"
+          : "/onboarding/shark"
       );
       return;
     }
-    if (role !== expect) {
-      router.replace(role === "bachelor" ? "/bachelor/discover" : "/shark/swipe");
+    if (profile.role !== expect) {
+      router.replace(
+        profile.role === "bachelor" ? "/bachelor/discover" : "/shark/swipe"
+      );
     }
-  }, [hydrated, role, onboarding, expect, router, pathname]);
+  }, [ready, accountId, profile, expect, router, pathname]);
 
-  if (!hydrated || role !== expect || onboarding !== "ready") {
-    return <LoadingState label="Opening POVI…" />;
+  if (
+    !ready ||
+    !accountId ||
+    !profile?.onboardingComplete ||
+    profile.role !== expect
+  ) {
+    return (
+      <div className="mx-auto flex min-h-dvh max-w-lg flex-col items-center justify-center gap-3">
+        <PoviMark className="size-12 animate-pulse" />
+        <LoadingState label="Opening POVI…" />
+      </div>
+    );
   }
 
   return <>{children}</>;

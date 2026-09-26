@@ -4,22 +4,25 @@ import { useRouter } from "next/navigation";
 import type { Person } from "@/lib/mock-data";
 import { PhotoGallery } from "@/components/photos/photo-gallery";
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/lib/store";
+import { useApp } from "@/lib/store";
 
 export function ProfileView({
   person,
   sharkName,
   isSelf,
+  prompts,
 }: {
   person: Person;
   sharkName?: string;
   isSelf?: boolean;
-  settingsHref?: string;
+  prompts?: { question: string; answer: string }[];
 }) {
   const router = useRouter();
-  const switchRole = useSession((s) => s.switchRole);
-  const resetDemo = useSession((s) => s.resetDemo);
-  const sharkMode = useSession((s) => s.sharkMode);
+  const switchShell = useApp((s) => s.switchShell);
+  const signOutLocal = useApp((s) => s.signOutLocal);
+  const wipeLocalAccount = useApp((s) => s.wipeLocalAccount);
+  const resetLocalData = useApp((s) => s.resetLocalData);
+  const profile = useApp((s) => s.profile);
 
   return (
     <section className="mx-auto w-full max-w-md px-4 pt-3 pb-6">
@@ -43,38 +46,49 @@ export function ProfileView({
       </p>
       <p className="mt-2 text-sm leading-relaxed text-secondary">{person.bio}</p>
 
+      {prompts && prompts.length > 0 && (
+        <div className="mt-5 space-y-3">
+          {prompts.map((p) => (
+            <div key={p.question} className="rounded-2xl bg-elevated px-4 py-3">
+              <p className="text-xs font-semibold text-subtle">{p.question}</p>
+              <p className="mt-1 text-sm font-medium">{p.answer}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
       {isSelf && (
         <div className="mt-8 space-y-3">
           <h2 className="font-display text-lg font-extrabold">Account</h2>
-          <div className="rounded-2xl card-surface divide-y divide-border">
+          <div className="divide-y divide-border rounded-2xl bg-surface shadow-soft">
             <div className="px-4 py-3.5">
               <p className="text-sm font-semibold">Notifications</p>
               <p className="text-xs text-secondary">
-                Matches, Deal Room whispers, date reminders — on
+                Matches, Deal Room whispers, date reminders
               </p>
             </div>
             <div className="px-4 py-3.5">
               <p className="text-sm font-semibold">Privacy</p>
               <p className="text-xs text-secondary">
-                Profile visible to linked Shark network
+                Profile visible to your Shark network
               </p>
             </div>
             <button
               type="button"
               className="flex w-full items-center justify-between px-4 py-3.5 text-left"
               onClick={() => {
-                switchRole();
+                switchShell();
                 router.replace("/");
               }}
             >
               <span>
                 <span className="block text-sm font-semibold">
-                  {sharkMode === "pro" || !sharkName
+                  {profile?.role === "bachelor"
                     ? "Also matchmake"
-                    : "Switch to Shark"}
+                    : "Also date"}
                 </span>
                 <span className="block text-xs text-secondary">
-                  Open the other POVI shell for this device
+                  Open the other POVI shell
                 </span>
               </span>
               <span className="text-romance">→</span>
@@ -84,11 +98,31 @@ export function ProfileView({
             variant="ghost"
             className="w-full text-subtle"
             onClick={() => {
-              resetDemo();
-              router.replace("/");
+              signOutLocal();
+              router.replace("/welcome");
             }}
           >
             Sign out
+          </Button>
+          <Button
+            variant="ghost"
+            className="w-full text-xs text-subtle"
+            onClick={() => {
+              wipeLocalAccount();
+              router.replace("/welcome");
+            }}
+          >
+            Delete account
+          </Button>
+          <Button
+            variant="ghost"
+            className="w-full text-[11px] text-subtle"
+            onClick={() => {
+              resetLocalData();
+              router.replace("/welcome");
+            }}
+          >
+            Reset local data
           </Button>
         </div>
       )}

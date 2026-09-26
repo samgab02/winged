@@ -1,18 +1,19 @@
 "use client";
 
 import { SwipeDeck } from "@/components/cards/swipe-card";
-import { sharkSwipeCards } from "@/lib/mock-data";
-import { useSession } from "@/lib/store";
+import { catalogAsDuoCards } from "@/lib/mock-data";
+import { useApp } from "@/lib/store";
 
 export default function SharkSwipePage() {
-  const bachelor = useSession((s) => s.linkedBachelorName);
+  const bachelor = useApp((s) => s.profile?.linkedBachelorName ?? "them");
+  const cards = catalogAsDuoCards();
 
   return (
     <SwipeDeck
-      cards={sharkSwipeCards}
+      cards={cards}
       title="Swipe for them"
-      subtitle={`Vouch who feels right for ${bachelor}. Skip the rest.`}
-      leftLabel="Skip"
+      subtitle={`Vouch who feels right for ${bachelor}.`}
+      leftLabel="Pass"
       rightLabel="Vouch"
     />
   );

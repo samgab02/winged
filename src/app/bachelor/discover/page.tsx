@@ -1,19 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SwipeDeck } from "@/components/cards/swipe-card";
 import { EmptyState, ErrorState, LoadingState } from "@/components/ui/states";
-import { discoverCards } from "@/lib/mock-data";
+import { catalogAsDuoCards } from "@/lib/mock-data";
+import { useApp } from "@/lib/store";
 
 export default function BachelorDiscoverPage() {
+  const lookingFor = useApp((s) => s.profile?.lookingFor);
   const [status, setStatus] = useState<"loading" | "ready" | "empty" | "error">(
     "loading"
   );
 
+  const cards = useMemo(
+    () => catalogAsDuoCards(lookingFor),
+    [lookingFor]
+  );
+
   useEffect(() => {
-    const t = setTimeout(() => setStatus("ready"), 550);
+    const t = setTimeout(() => setStatus(cards.length ? "ready" : "empty"), 500);
     return () => clearTimeout(t);
-  }, []);
+  }, [cards.length]);
 
   if (status === "loading") {
     return <LoadingState label="Finding people near you…" />;
@@ -34,7 +41,7 @@ export default function BachelorDiscoverPage() {
 
   return (
     <SwipeDeck
-      cards={discoverCards}
+      cards={cards}
       title="Discover"
       subtitle="Like someone and your Shark takes the next step."
       leftLabel="Pass"

@@ -3,6 +3,7 @@
 import { RoleGate } from "@/components/auth/role-gate";
 import { AppHeader } from "@/components/layout/app-header";
 import { SharkNav } from "@/components/layout/shark-nav";
+import { ToastHost } from "@/components/ui/toast";
 
 export default function SharkLayout({
   children,
@@ -15,6 +16,7 @@ export default function SharkLayout({
         <AppHeader badge="Shark" href="/shark/swipe" />
         <main className="flex flex-1 flex-col">{children}</main>
         <SharkNav />
+        <ToastHost />
       </div>
     </RoleGate>
   );

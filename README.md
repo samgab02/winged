@@ -4,8 +4,6 @@ Mobile dating app where **Sharks** (friends / matchmakers) vouch for **Bachelors
 
 ## Run locally
 
-From the repo root:
-
 ```bash
 npm install
 npm run dev
@@ -19,18 +17,31 @@ Open **[http://localhost:4317](http://localhost:4317)**.
 | `npm run build` | Production build |
 | `npm run start` | Serve production build on **4317** |
 
-Requires **Node.js 18+**. No `.env` required for the local mock session.
+Requires **Node.js 18+**. No `.env` required — accounts and sessions persist in the browser (`localStorage`).
+
+## Accounts & onboarding
+
+1. Splash → Welcome → **Create account** or **Sign in** (email + password)
+2. Choose **Bachelor** or **Shark**
+3. Complete required onboarding (gender, profile, photos — Bachelors need **at least 3**)
+4. Land in the matching shell
+
+Sign out, delete account, and **Reset local data** live in Profile / Me (developer wipe — not a product “demo mode”).
+
+## Seed catalog (data only)
+
+`src/lib/seed-catalog.ts` ships rich seed people and photos so Discover / Swipe are populated after onboarding. They are catalog data for development — never labeled as demo mode in the UI.
+
+Auth is structured in `src/lib/auth.ts` for a later Supabase Auth swap.
 
 ## Product shells
-
-On launch, choose **Bachelor** or **Shark** (persisted in the browser).
 
 - **Bachelor:** Discover · Matches · Dates · Profile  
 - **Shark:** Swipe · Deal Room · My singles · Me → Earnings  
 
 ## Deploy
 
-This is a standard Next.js 15 App Router app. Connect the repo to [Vercel](https://vercel.com) (Framework Preset: Next.js). `vercel.json` is included.
+Standard Next.js 15 App Router. Connect the repo to [Vercel](https://vercel.com) (Framework Preset: Next.js). `vercel.json` is included.
 
 ```bash
 npx vercel --prod

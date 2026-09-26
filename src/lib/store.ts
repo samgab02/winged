@@ -2,109 +2,201 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { Gender, LookingFor, ProfilePrompt } from "@/lib/seed-catalog";
+import { deleteAccount, signOut as authSignOut } from "@/lib/auth";
 
-export type AppRole = "bachelor" | "shark" | null;
+export type AppRole = "bachelor" | "shark";
 
-export type OnboardingStep =
-  | "welcome"
-  | "bachelor-onboarding"
-  | "shark-onboarding"
-  | "ready";
-
-export type ListStatus = "idle" | "loading" | "ready" | "empty" | "error";
-
-interface SessionState {
+export type UserProfile = {
+  accountId: string;
   role: AppRole;
-  onboarding: OnboardingStep;
-  bachelorName: string;
-  sharkName: string;
+  gender: Gender;
+  displayName: string;
+  birthday: string;
+  city: string;
+  photos: string[];
+  prompts: ProfilePrompt[];
   interests: string[];
-  photoIds: string[];
+  lookingFor: LookingFor;
+  sharkMode: "friend" | "pro";
   linkedSharkName: string;
   linkedBachelorName: string;
-  sharkMode: "friend" | "pro";
-  mutedMatches: string[];
-  lockedDateIds: string[];
-  flashVerdicts: Record<string, "keep" | "skip">;
-  listStatus: ListStatus;
-  setRole: (role: Exclude<AppRole, null>) => void;
-  completeBachelorOnboarding: (payload: {
-    name: string;
-    interests: string[];
-    photoIds: string[];
-    sharkName: string;
-  }) => void;
-  completeSharkOnboarding: (payload: {
-    name: string;
-    mode: "friend" | "pro";
-    bachelorName: string;
-  }) => void;
-  resetDemo: () => void;
-  lockDate: (id: string) => void;
-  setFlashVerdict: (id: string, verdict: "keep" | "skip") => void;
-  setListStatus: (status: ListStatus) => void;
-  switchRole: () => void;
-}
-
-const initial = {
-  role: null as AppRole,
-  onboarding: "welcome" as OnboardingStep,
-  bachelorName: "Maya",
-  sharkName: "Noa",
-  interests: ["Rooftop jazz", "Late walks", "Aux wars"],
-  photoIds: ["maya1", "maya2", "maya3", "maya4"],
-  linkedSharkName: "Noa",
-  linkedBachelorName: "Maya",
-  sharkMode: "friend" as const,
-  mutedMatches: [] as string[],
-  lockedDateIds: [] as string[],
-  flashVerdicts: {} as Record<string, "keep" | "skip">,
-  listStatus: "ready" as ListStatus,
+  vibeLine: string;
+  bio: string;
+  onboardingComplete: boolean;
 };
 
-export const useSession = create<SessionState>()(
+type AppState = {
+  accountId: string | null;
+  profile: UserProfile | null;
+  /** profiles keyed by accountId */
+  profilesByAccount: Record<string, UserProfile>;
+  lockedDateIds: string[];
+  flashVerdicts: Record<string, "keep" | "skip">;
+  toast: string | null;
+
+  hydrateSession: (accountId: string | null) => void;
+  setAccount: (accountId: string) => void;
+  upsertProfile: ( partial: Partial<UserProfile> & { accountId: string }) => void;
+  completeOnboarding: () => void;
+  lockDate: (id: string) => void;
+  setFlashVerdict: (id: string, verdict: "keep" | "skip") => void;
+  showToast: (message: string) => void;
+  clearToast: () => void;
+  signOutLocal: () => void;
+  wipeLocalAccount: () => void;
+  resetLocalData: () => void;
+  switchShell: () => void;
+};
+
+const emptyProfile = (accountId: string): UserProfile => ({
+  accountId,
+  role: "bachelor",
+  gender: "woman",
+  displayName: "",
+  birthday: "",
+  city: "",
+  photos: [],
+  prompts: [],
+  interests: [],
+  lookingFor: "everyone",
+  sharkMode: "friend",
+  linkedSharkName: "Noa",
+  linkedBachelorName: "Maya",
+  vibeLine: "",
+  bio: "",
+  onboardingComplete: false,
+});
+
+export const useApp = create<AppState>()(
   persist(
     (set, get) => ({
-      ...initial,
-      setRole: (role) =>
+      accountId: null,
+      profile: null,
+      profilesByAccount: {},
+      lockedDateIds: [],
+      flashVerdicts: {},
+      toast: null,
+
+      hydrateSession: (accountId) => {
+        if (!accountId) {
+          set({ accountId: null, profile: null });
+          return;
+        }
+        const existing = get().profilesByAccount[accountId];
         set({
-          role,
-          onboarding:
-            role === "bachelor" ? "bachelor-onboarding" : "shark-onboarding",
-        }),
-      completeBachelorOnboarding: ({ name, interests, photoIds, sharkName }) =>
+          accountId,
+          profile: existing ?? emptyProfile(accountId),
+        });
+      },
+
+      setAccount: (accountId) => {
+        const existing = get().profilesByAccount[accountId];
+        const profile = existing ?? emptyProfile(accountId);
         set({
-          bachelorName: name,
-          interests,
-          photoIds,
-          linkedSharkName: sharkName,
-          onboarding: "ready",
-        }),
-      completeSharkOnboarding: ({ name, mode, bachelorName }) =>
+          accountId,
+          profile,
+          profilesByAccount: {
+            ...get().profilesByAccount,
+            [accountId]: profile,
+          },
+        });
+      },
+
+      upsertProfile: (partial) => {
+        const id = partial.accountId;
+        const current =
+          get().profilesByAccount[id] ??
+          get().profile ??
+          emptyProfile(id);
+        const next = { ...current, ...partial, accountId: id };
         set({
-          sharkName: name,
-          sharkMode: mode,
-          linkedBachelorName: bachelorName,
-          onboarding: "ready",
-        }),
-      resetDemo: () => set({ ...initial }),
+          profile: get().accountId === id ? next : get().profile,
+          profilesByAccount: {
+            ...get().profilesByAccount,
+            [id]: next,
+          },
+        });
+      },
+
+      completeOnboarding: () => {
+        const profile = get().profile;
+        if (!profile) return;
+        const next = { ...profile, onboardingComplete: true };
+        set({
+          profile: next,
+          profilesByAccount: {
+            ...get().profilesByAccount,
+            [profile.accountId]: next,
+          },
+        });
+      },
+
       lockDate: (id) =>
         set({
           lockedDateIds: Array.from(new Set([...get().lockedDateIds, id])),
         }),
+
       setFlashVerdict: (id, verdict) =>
         set({
           flashVerdicts: { ...get().flashVerdicts, [id]: verdict },
         }),
-      setListStatus: (listStatus) => set({ listStatus }),
-      switchRole: () => {
-        const next = get().role === "bachelor" ? "shark" : "bachelor";
+
+      showToast: (message) => {
+        set({ toast: message });
+        setTimeout(() => {
+          if (get().toast === message) set({ toast: null });
+        }, 2600);
+      },
+
+      clearToast: () => set({ toast: null }),
+
+      signOutLocal: () => {
+        authSignOut();
+        set({ accountId: null, profile: null });
+      },
+
+      wipeLocalAccount: () => {
+        const id = get().accountId;
+        if (!id) return;
+        deleteAccount(id);
+        const map = { ...get().profilesByAccount };
+        delete map[id];
+        set({ accountId: null, profile: null, profilesByAccount: map });
+      },
+
+      resetLocalData: () => {
+        const id = get().accountId;
+        authSignOut();
+        if (id) deleteAccount(id);
         set({
-          role: next,
-          onboarding: "ready",
+          accountId: null,
+          profile: null,
+          profilesByAccount: {},
+          lockedDateIds: [],
+          flashVerdicts: {},
+          toast: null,
+        });
+      },
+
+      switchShell: () => {
+        const profile = get().profile;
+        if (!profile) return;
+        const nextRole: AppRole =
+          profile.role === "bachelor" ? "shark" : "bachelor";
+        const next = { ...profile, role: nextRole };
+        set({
+          profile: next,
+          profilesByAccount: {
+            ...get().profilesByAccount,
+            [profile.accountId]: next,
+          },
         });
       },
     }),
-    { name: "povi-session-v1" }
+    { name: "povi-app-v2" }
   )
 );
+
+/** @deprecated alias during migration */
+export const useSession = useApp;

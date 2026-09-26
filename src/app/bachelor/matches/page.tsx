@@ -33,7 +33,7 @@ export default function BachelorMatchesPage() {
           <li key={m.id}>
             <Link
               href={
-                m.status === "deal_room" || m.status === "locked"
+                m.status === "deal_room"
                   ? `/bachelor/deal-room/${m.id}`
                   : `/bachelor/profile/${m.other.id}`
               }

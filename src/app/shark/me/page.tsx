@@ -4,32 +4,34 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { sharkAvatars } from "@/lib/mock-data";
-import { useSession } from "@/lib/store";
+import { useApp } from "@/lib/store";
 
 export default function SharkMePage() {
   const router = useRouter();
-  const name = useSession((s) => s.sharkName);
-  const mode = useSession((s) => s.sharkMode);
-  const bachelor = useSession((s) => s.linkedBachelorName);
-  const switchRole = useSession((s) => s.switchRole);
-  const resetDemo = useSession((s) => s.resetDemo);
+  const profile = useApp((s) => s.profile);
+  const switchShell = useApp((s) => s.switchShell);
+  const signOutLocal = useApp((s) => s.signOutLocal);
+  const wipeLocalAccount = useApp((s) => s.wipeLocalAccount);
+  const resetLocalData = useApp((s) => s.resetLocalData);
+
+  if (!profile) return null;
 
   return (
     <section className="mx-auto w-full max-w-md px-4 pt-3 pb-6">
       <div className="flex items-center gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={sharkAvatars.noa}
+          src={profile.photos[0]}
           alt=""
           className="size-16 rounded-full object-cover ring-2 ring-shark/35"
         />
         <div>
           <h1 className="font-display text-2xl font-extrabold tracking-tight">
-            {name}
+            {profile.displayName}
           </h1>
           <p className="text-sm text-secondary">
-            {mode === "pro" ? "Pro Matchmaker" : "Friend Shark"} · {bachelor}
+            {profile.sharkMode === "pro" ? "Pro Matchmaker" : "Friend Shark"} ·{" "}
+            {profile.linkedBachelorName}
           </p>
         </div>
       </div>
@@ -47,27 +49,23 @@ export default function SharkMePage() {
         <ChevronRight className="size-5 text-subtle" />
       </Link>
 
-      <div className="mt-4 rounded-2xl bg-surface shadow-soft divide-y divide-border">
+      <div className="mt-4 divide-y divide-border rounded-2xl bg-surface shadow-soft">
         <div className="px-4 py-3.5">
           <p className="text-sm font-semibold">Availability</p>
           <p className="text-xs text-secondary">Open for Deal Rooms tonight</p>
-        </div>
-        <div className="px-4 py-3.5">
-          <p className="text-sm font-semibold">Notoriety</p>
-          <p className="text-xs text-secondary">Built from real-world dates</p>
         </div>
         <button
           type="button"
           className="flex w-full items-center justify-between px-4 py-3.5 text-left"
           onClick={() => {
-            switchRole();
+            switchShell();
             router.replace("/");
           }}
         >
           <span>
             <span className="block text-sm font-semibold">Also date</span>
             <span className="block text-xs text-secondary">
-              Open Bachelor shell on this device
+              Open Bachelor shell
             </span>
           </span>
           <span className="text-romance">→</span>
@@ -78,11 +76,31 @@ export default function SharkMePage() {
         variant="ghost"
         className="mt-4 w-full text-subtle"
         onClick={() => {
-          resetDemo();
-          router.replace("/");
+          signOutLocal();
+          router.replace("/welcome");
         }}
       >
         Sign out
+      </Button>
+      <Button
+        variant="ghost"
+        className="w-full text-xs text-subtle"
+        onClick={() => {
+          wipeLocalAccount();
+          router.replace("/welcome");
+        }}
+      >
+        Delete account
+      </Button>
+      <Button
+        variant="ghost"
+        className="w-full text-[11px] text-subtle"
+        onClick={() => {
+          resetLocalData();
+          router.replace("/welcome");
+        }}
+      >
+        Reset local data
       </Button>
     </section>
   );

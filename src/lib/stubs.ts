@@ -45,7 +45,7 @@ export const stripeStub = {
     async createAccountLink() {
       return {
         url: "#",
-        message: "Stripe Connect stub — no live keys required for this demo.",
+        message: "Stripe Connect stub — no live keys required locally.",
       };
     },
   },

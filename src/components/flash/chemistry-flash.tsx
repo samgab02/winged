@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { PageEnter } from "@/components/motion/page-enter";
 import { people } from "@/lib/mock-data";
 import { useSession } from "@/lib/store";
 import { formatCountdown, cn } from "@/lib/utils";
+import { downloadIcs, googleCalendarUrl } from "@/lib/calendar";
 
 const PROMPTS = [
   "What’s a tiny red flag you secretly love?",
@@ -30,6 +31,9 @@ export function ChemistryFlash({
   const [promptIndex, setPromptIndex] = useState(0);
   const [verdict, setLocal] = useState<"keep" | "skip" | null>(existing ?? null);
   const [bloom, setBloom] = useState(false);
+  const [camError, setCamError] = useState("");
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
     if (verdict) return;
@@ -46,36 +50,89 @@ export function ChemistryFlash({
     return () => clearInterval(id);
   }, [verdict]);
 
+  useEffect(() => {
+    let active = true;
+    async function startCam() {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setCamError("Camera API unavailable — prompts still run.");
+        return;
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user" },
+          audio: false,
+        });
+        if (!active) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+        streamRef.current = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          void videoRef.current.play();
+        }
+      } catch {
+        setCamError("Camera permission denied — you can still Keep/Skip.");
+      }
+    }
+    void startCam();
+    return () => {
+      active = false;
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+    };
+  }, []);
+
   function choose(v: "keep" | "skip") {
     setLocal(v);
     setVerdict(matchId, v);
+    streamRef.current?.getTracks().forEach((t) => t.stop());
     if (v === "keep") {
       setBloom(true);
       setTimeout(() => setBloom(false), 900);
+      const event = {
+        title: "Winged date · Maya × Eli",
+        details: "Kept after Chemistry Flash",
+        location: "Cafe Xo, Florentin",
+        startIso: new Date(Date.now() + 3 * 86400000).toISOString(),
+      };
+      downloadIcs(event);
     }
   }
 
   return (
     <PageEnter className="relative mx-auto flex w-full max-w-md flex-1 flex-col px-4 pt-3 pb-6">
       <WingBloom show={bloom} />
-      <p className="text-xs font-bold uppercase tracking-wider text-romance">
+      <p className="text-center text-xs font-bold uppercase tracking-wider text-romance">
         180s Flash
       </p>
-      <h1 className="mt-1 font-display text-2xl font-extrabold tracking-tight">
+      <h1 className="mt-1 text-center font-display text-2xl font-extrabold tracking-tight">
         Chemistry check
       </h1>
-      <p className="mt-1 text-sm text-secondary">
-        Icebreaker prompts · Keep if you want the date to stand.
+      <p className="mt-1 text-center text-sm text-secondary">
+        Live camera preview + icebreakers. Keep locks the calendar.
       </p>
 
       <div className="relative mt-5 overflow-hidden rounded-3xl card-surface">
         <div className="grid grid-cols-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={people.maya.photos[1]}
-            alt=""
-            className="aspect-[3/4] object-cover"
-          />
+          <div className="relative aspect-[3/4] bg-black">
+            <video
+              ref={videoRef}
+              muted
+              playsInline
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            {camError && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={people.maya.photos[1]}
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover opacity-80"
+              />
+            )}
+            <span className="absolute left-2 top-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-bold text-white">
+              You · live
+            </span>
+          </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={people.eli.photos[1]}
@@ -108,6 +165,9 @@ export function ChemistryFlash({
           </AnimatePresence>
         </div>
       </div>
+      {camError && (
+        <p className="mt-2 text-center text-[11px] text-subtle">{camError}</p>
+      )}
 
       {verdict ? (
         <motion.div
@@ -120,9 +180,24 @@ export function ChemistryFlash({
           </p>
           <p className="mt-2 text-sm text-secondary">
             {verdict === "keep"
-              ? "If both Keep, the calendar stays locked."
+              ? "Calendar .ics downloaded. Add Google Calendar below if both Kept."
               : "All good — no hard feelings. We’ll unwind the hold."}
           </p>
+          {verdict === "keep" && (
+            <a
+              href={googleCalendarUrl({
+                title: "Winged date · Maya × Eli",
+                details: "Kept after Chemistry Flash",
+                location: "Cafe Xo, Florentin",
+                startIso: new Date(Date.now() + 3 * 86400000).toISOString(),
+              })}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex text-sm font-bold text-wing-deep"
+            >
+              Open Google Calendar
+            </a>
+          )}
           <Link href={backHref}>
             <Button className="mt-4 w-full">Done</Button>
           </Link>

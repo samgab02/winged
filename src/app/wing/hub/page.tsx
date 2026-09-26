@@ -171,9 +171,18 @@ export default function WingHubPage() {
             <span>
               <span className="block font-semibold">Wings network</span>
               <span className="block text-sm text-secondary">
-                Browse Wings · follow · hire Pros
+                Feed · Pros · Fair-Play leaderboard
               </span>
             </span>
+          </span>
+          <ChevronRight className="size-5 text-subtle" />
+        </Link>
+        <Link
+          href="/wing/pro/nw_noa"
+          className="flex items-center justify-between rounded-2xl panel-soft px-4 py-3"
+        >
+          <span className="text-left text-sm font-semibold">
+            Sample Pro profile (Noa)
           </span>
           <ChevronRight className="size-5 text-subtle" />
         </Link>
@@ -200,7 +209,7 @@ export default function WingHubPage() {
           <button
             type="button"
             onClick={() => setMode("both")}
-            className="flex w-full items-center justify-between rounded-2xl border border-dashed border-wing/50 bg-wing-soft/40 px-4 py-4 text-left"
+            className="flex w-full items-center justify-between rounded-2xl border border-dashed border-border panel-wash-wing px-4 py-4 text-left"
           >
             <span>
               <span className="block font-semibold text-wing-deep">

@@ -23,7 +23,7 @@ export function WingNav() {
   const reduced = useReducedMotion();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-surface/95 backdrop-blur-md safe-bottom">
+    <nav className="chrome-bar fixed bottom-0 left-0 right-0 z-50 border-t safe-bottom">
       <LayoutGroup id="wing-tabs">
         <ul className="mx-auto flex max-w-md justify-around px-1 pt-1.5">
           {tabs.map(({ href, label, icon: Icon }) => {

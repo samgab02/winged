@@ -1,7 +1,9 @@
 /**
- * Local account auth — swap for Supabase Auth when credentials exist.
- * Email + password persisted in localStorage; no external secrets required.
+ * Auth — local email/password always works; when Supabase env is set,
+ * email/password also syncs to Supabase Auth.
  */
+
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 const ACCOUNTS_KEY = "winged-accounts-v1";
 const SESSION_KEY = "winged-auth-session-v1";
@@ -9,7 +11,7 @@ const SESSION_KEY = "winged-auth-session-v1";
 export type AccountRecord = {
   id: string;
   email: string;
-  /** Local-only digest; replace with Supabase Auth */
+  /** Local-only digest; OAuth accounts use oauth:provider */
   passwordDigest: string;
   createdAt: string;
 };
@@ -45,14 +47,63 @@ export function setSessionAccountId(id: string | null) {
   else localStorage.removeItem(SESSION_KEY);
 }
 
+async function supabaseEmailSignUp(email: string, password: string) {
+  if (!isSupabaseConfigured()) return null;
+  const { tryCreateBrowserSupabase } = await import("@/lib/supabase/client");
+  const supabase = tryCreateBrowserSupabase();
+  if (!supabase) return null;
+  return supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo:
+        typeof window !== "undefined"
+          ? `${window.location.origin}/auth/callback`
+          : undefined,
+    },
+  });
+}
+
+async function supabaseEmailSignIn(email: string, password: string) {
+  if (!isSupabaseConfigured()) return null;
+  const { tryCreateBrowserSupabase } = await import("@/lib/supabase/client");
+  const supabase = tryCreateBrowserSupabase();
+  if (!supabase) return null;
+  return supabase.auth.signInWithPassword({ email, password });
+}
+
 export async function signUp(
   email: string,
   password: string
 ): Promise<{ ok: true; account: AccountRecord } | { ok: false; error: string }> {
   const normalized = email.trim().toLowerCase();
   if (!normalized.includes("@") || password.length < 6) {
-    return { ok: false, error: "Use a valid email and a password with 6+ characters." };
+    return {
+      ok: false,
+      error: "Use a valid email and a password with 6+ characters.",
+    };
   }
+
+  // Prefer Supabase when configured
+  const sb = await supabaseEmailSignUp(normalized, password);
+  if (sb) {
+    if (sb.error) {
+      // Fall through to local if user already exists remotely but we still want local demo
+      if (!sb.error.message.toLowerCase().includes("already")) {
+        return { ok: false, error: sb.error.message };
+      }
+    }
+    if (sb.data.user) {
+      const { bridgeSupabaseUser } = await import("@/lib/auth/bridge");
+      const account = bridgeSupabaseUser({
+        id: sb.data.user.id,
+        email: sb.data.user.email ?? normalized,
+        provider: "email",
+      });
+      return { ok: true, account };
+    }
+  }
+
   const accounts = readAccounts();
   if (accounts.some((a) => a.email === normalized)) {
     return { ok: false, error: "An account with this email already exists." };
@@ -75,9 +126,35 @@ export async function signIn(
   password: string
 ): Promise<{ ok: true; account: AccountRecord } | { ok: false; error: string }> {
   const normalized = email.trim().toLowerCase();
+
+  const sb = await supabaseEmailSignIn(normalized, password);
+  if (sb) {
+    if (!sb.error && sb.data.user) {
+      const { bridgeSupabaseUser } = await import("@/lib/auth/bridge");
+      const account = bridgeSupabaseUser({
+        id: sb.data.user.id,
+        email: sb.data.user.email ?? normalized,
+        provider: "email",
+      });
+      return { ok: true, account };
+    }
+    // If Supabase rejects but local account exists (dev logins), continue local
+  }
+
   const accounts = readAccounts();
   const account = accounts.find((a) => a.email === normalized);
-  if (!account) return { ok: false, error: "No account found for that email." };
+  if (!account) {
+    return {
+      ok: false,
+      error: sb?.error?.message || "No account found for that email.",
+    };
+  }
+  if (account.passwordDigest.startsWith("oauth:")) {
+    return {
+      ok: false,
+      error: "This account uses social login. Continue with Google/Apple/Phone.",
+    };
+  }
   const digest = await digestPassword(password, account.id);
   if (digest !== account.passwordDigest) {
     return { ok: false, error: "Incorrect password." };
@@ -88,6 +165,11 @@ export async function signIn(
 
 export function signOut() {
   setSessionAccountId(null);
+  if (isSupabaseConfigured()) {
+    void import("@/lib/supabase/client").then(({ tryCreateBrowserSupabase }) => {
+      tryCreateBrowserSupabase()?.auth.signOut();
+    });
+  }
 }
 
 export function deleteAccount(accountId: string) {

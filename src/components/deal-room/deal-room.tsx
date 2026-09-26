@@ -10,6 +10,8 @@ import { PageEnter } from "@/components/motion/page-enter";
 import { mockDealMessages, people } from "@/lib/mock-data";
 import { useSession } from "@/lib/store";
 import { cn, formatCountdown } from "@/lib/utils";
+import { VenueSearch, type PlaceResult } from "@/components/places/venue-search";
+import { downloadIcs, googleCalendarUrl } from "@/lib/calendar";
 
 type Mode = "wing" | "bachelor";
 
@@ -35,9 +37,13 @@ export function DealRoomPanel({
   const [locked, setLocked] = useState(false);
   const [bloom, setBloom] = useState(false);
   const [venueId, setVenueId] = useState("xo");
+  const [customPlace, setCustomPlace] = useState<PlaceResult | null>(null);
   const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const venue = VENUES.find((v) => v.id === venueId) ?? VENUES[0];
+  const preset = VENUES.find((v) => v.id === venueId) ?? VENUES[0];
+  const venue = customPlace
+    ? { id: customPlace.id, name: customPlace.name, when: preset.when }
+    : preset;
 
   const progress = useMemo(
     () => Math.max(0, Math.min(1, secondsLeft / 180)),
@@ -107,6 +113,19 @@ export function DealRoomPanel({
         body: `Locked · ${venue.name} · ${venue.when}`,
       },
     ]);
+
+    // Real calendar artifacts
+    const start = new Date();
+    start.setDate(start.getDate() + ((4 - start.getDay() + 7) % 7 || 7));
+    start.setHours(20, 0, 0, 0);
+    const event = {
+      title: `Winged date · Maya × Eli`,
+      details: `Locked in Winged Deal Room. ${venue.when}`,
+      location: venue.name,
+      startIso: start.toISOString(),
+      durationMinutes: 90,
+    };
+    downloadIcs(event);
   }
 
   const flashHref =
@@ -185,23 +204,70 @@ export function DealRoomPanel({
       </div>
 
       {mode === "wing" && !locked && (
-        <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
-          {VENUES.map((v) => (
-            <button
-              key={v.id}
-              type="button"
-              onClick={() => setVenueId(v.id)}
-              className={cn(
-                "shrink-0 rounded-xl border px-3 py-2 text-left text-xs",
-                venueId === v.id
-                  ? "border-wing bg-wing-soft"
-                  : "border-border bg-surface"
-              )}
-            >
-              <span className="block font-semibold">{v.name}</span>
-              <span className="text-subtle">{v.when}</span>
-            </button>
-          ))}
+        <div className="mb-3 space-y-2">
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {VENUES.map((v) => (
+              <button
+                key={v.id}
+                type="button"
+                onClick={() => {
+                  setVenueId(v.id);
+                  setCustomPlace(null);
+                }}
+                className={cn(
+                  "shrink-0 rounded-xl border px-3 py-2 text-left text-xs",
+                  !customPlace && venueId === v.id
+                    ? "border-wing bg-wing-soft"
+                    : "border-border bg-surface"
+                )}
+              >
+                <span className="block font-semibold">{v.name}</span>
+                <span className="text-subtle">{v.when}</span>
+              </button>
+            ))}
+          </div>
+          <VenueSearch
+            onSelect={(place) => {
+              setCustomPlace(place);
+            }}
+            value={customPlace}
+          />
+        </div>
+      )}
+
+      {locked && (
+        <div className="mb-3 flex gap-2">
+          <a
+            href={googleCalendarUrl({
+              title: "Winged date · Maya × Eli",
+              details: `Locked in Winged. ${venue.when}`,
+              location: venue.name,
+              startIso: new Date(
+                Date.now() + 3 * 24 * 60 * 60 * 1000
+              ).toISOString(),
+            })}
+            target="_blank"
+            rel="noreferrer"
+            className="flex h-10 flex-1 items-center justify-center rounded-xl border border-border bg-surface text-xs font-bold"
+          >
+            Google Calendar
+          </a>
+          <button
+            type="button"
+            onClick={() =>
+              downloadIcs({
+                title: "Winged date · Maya × Eli",
+                details: `Locked in Winged. ${venue.when}`,
+                location: venue.name,
+                startIso: new Date(
+                  Date.now() + 3 * 24 * 60 * 60 * 1000
+                ).toISOString(),
+              })
+            }
+            className="flex h-10 flex-1 items-center justify-center rounded-xl border border-border bg-surface text-xs font-bold"
+          >
+            Download .ics
+          </button>
         </div>
       )}
 

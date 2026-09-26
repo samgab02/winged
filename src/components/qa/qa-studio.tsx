@@ -33,6 +33,8 @@ const ROUTES = [
   { label: "Wing Swipe", href: "/wing/swipe" },
   { label: "Wings hub", href: "/wing/hub" },
   { label: "Wings network", href: "/wing/network" },
+  { label: "Pro profile", href: "/wing/pro/nw_noa" },
+  { label: "Earn & escrow", href: "/wing/me/earnings" },
   { label: "Wing Deal Room", href: "/wing/deal-room" },
   { label: "My Wing", href: "/bachelor/my-wing" },
   { label: "Find Pro Wing", href: "/bachelor/find-wing" },

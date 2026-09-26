@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { EscrowPanel } from "@/components/fraud/escrow-panel";
 import { mockEarnings } from "@/lib/mock-data";
 import { formatILS, cn } from "@/lib/utils";
 
@@ -12,11 +12,11 @@ export default function WingEarningsPage() {
         ← Wings hub
       </Link>
       <h1 className="mt-2 text-center font-display text-2xl font-extrabold tracking-tight">
-        Date Pass earnings
+        Earn & escrow
       </h1>
       <p className="mx-auto mt-1 max-w-xs text-center text-sm text-secondary">
-        Pro Wings earn when strangers book a Date Pass. Payout releases after
-        both check in at the date.
+        Date Pass money stays held until Proof-of-Stay. Friend Wings earn
+        Notoriety — never recycled cash.
       </p>
 
       <div className="mt-5 rounded-2xl bg-surface p-5 shadow-soft">
@@ -24,17 +24,18 @@ export default function WingEarningsPage() {
         <p className="mt-1 font-display text-3xl font-extrabold">
           {formatILS(mockEarnings.available)}
         </p>
-        <Button variant="outline" className="mt-4 w-full" disabled>
-          Transfer out
-        </Button>
+        <p className="mt-1 text-xs text-secondary">
+          Pending Proof / cooling: {formatILS(mockEarnings.pending)}
+        </p>
       </div>
 
-      <div className="mt-3 flex items-baseline justify-between rounded-2xl bg-surface px-5 py-4 shadow-soft">
-        <p className="text-xs font-semibold text-subtle">Pending</p>
-        <p className="text-lg font-bold">{formatILS(mockEarnings.pending)}</p>
+      <div className="mt-6">
+        <EscrowPanel />
       </div>
 
-      <h2 className="mt-6 mb-2 text-sm font-semibold text-secondary">Recent</h2>
+      <h2 className="mt-6 mb-2 text-sm font-semibold text-secondary">
+        Recent ledger
+      </h2>
       <ul className="divide-y divide-border rounded-2xl bg-surface shadow-soft">
         {mockEarnings.txs.map((tx) => (
           <li
@@ -55,7 +56,7 @@ export default function WingEarningsPage() {
                   {tx.status === "ready"
                     ? "Ready"
                     : tx.status === "pending"
-                      ? "Pending"
+                      ? "Pending proof"
                       : "Sent"}
                 </span>
               </p>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { WingedMark } from "@/components/brand/winged-mark";
 import { Button } from "@/components/ui/button";
 import { DevLoginBootstrap } from "@/components/auth/dev-login-bootstrap";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import { signIn } from "@/lib/auth";
 import { DEV_LOGINS, DEV_PASSWORD } from "@/lib/dev-logins";
 import { useApp } from "@/lib/store";
@@ -22,6 +23,11 @@ export default function SignInPage() {
   useEffect(() => {
     void bootstrapDevLogins();
   }, [bootstrapDevLogins]);
+
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get("error");
+    if (q) setError(q);
+  }, []);
 
   async function finishSignIn(accountId: string) {
     setAccount(accountId);
@@ -40,7 +46,7 @@ export default function SignInPage() {
       return;
     }
     router.replace(
-      profile.role === "bachelor" ? "/bachelor/discover" : "/wing/swipe"
+      profile.role === "bachelor" ? "/bachelor/discover" : "/wing/hub"
     );
   }
 
@@ -85,7 +91,10 @@ export default function SignInPage() {
       </h1>
       <p className="mt-2 max-w-xs text-sm text-secondary">Sign in to continue.</p>
 
-      <form onSubmit={onSubmit} className="mt-8 w-full max-w-sm space-y-3 text-left">
+      <form
+        onSubmit={onSubmit}
+        className="mt-8 w-full max-w-sm space-y-3 text-left"
+      >
         <input
           type="email"
           required
@@ -107,6 +116,8 @@ export default function SignInPage() {
           {busy ? "Signing in…" : "Sign in"}
         </Button>
       </form>
+
+      <OAuthButtons className="mt-6 w-full max-w-sm" />
 
       <div className="mt-6 w-full max-w-sm space-y-2 text-left">
         <p className="text-center text-xs font-semibold uppercase tracking-wider text-subtle">

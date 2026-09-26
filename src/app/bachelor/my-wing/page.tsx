@@ -6,6 +6,7 @@ import { PageEnter } from "@/components/motion/page-enter";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/lib/store";
 import { MODE_LABEL, TIER_LABEL, mockMyWing } from "@/lib/wing-network";
+import { inviteUrl, shareOrCopy } from "@/lib/share";
 import { cn } from "@/lib/utils";
 
 export default function BachelorMyWingPage() {
@@ -18,12 +19,19 @@ export default function BachelorMyWingPage() {
 
   const wingName = profile.linkedWingName || mockMyWing.name;
 
-  function copyInvite() {
-    const link = `https://winged.app/invite/${encodeURIComponent(
-      profile!.displayName || "you"
-    )}`;
-    void navigator.clipboard?.writeText(link);
-    showToast("Wing invite link copied");
+  async function copyInvite() {
+    const code = profile!.displayName || "you";
+    const url = inviteUrl(code);
+    try {
+      const how = await shareOrCopy({
+        title: "Be my Wing on Winged",
+        text: `${code} invited you to Wing on Winged — friends plan it, you show up.`,
+        url,
+      });
+      showToast(how === "shared" ? "Invite shared" : "Invite link copied");
+    } catch {
+      /* user cancelled share */
+    }
   }
 
   function replaceWing() {

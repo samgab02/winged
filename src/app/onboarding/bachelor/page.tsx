@@ -391,13 +391,21 @@ export default function BachelorOnboardingPage() {
               variant="secondary"
               className="w-full"
               type="button"
-              onClick={() => {
-                navigator.clipboard?.writeText(
-                  `https://winged.app/invite/${encodeURIComponent(wingName)}`
-                );
+              onClick={async () => {
+                const { inviteUrl, shareOrCopy } = await import("@/lib/share");
+                const url = inviteUrl(wingName || "wing");
+                try {
+                  await shareOrCopy({
+                    title: "Wing invite — Winged",
+                    text: "Be my Wing on Winged.",
+                    url,
+                  });
+                } catch {
+                  /* cancelled */
+                }
               }}
             >
-              Copy Wing invite link
+              Share Wing invite link
             </Button>
             <p className="text-xs text-subtle">
               Continue even if they haven’t joined yet — you’ll still see people

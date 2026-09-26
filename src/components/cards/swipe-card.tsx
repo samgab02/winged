@@ -49,7 +49,7 @@ function CardFace({
   return (
     <motion.article
       className={cn(
-        "absolute inset-0 overflow-hidden rounded-[1.5rem] bg-black shadow-card",
+        "absolute inset-0 overflow-hidden rounded-[1.15rem] bg-[color-mix(in_srgb,var(--canvas)_12%,#1a1514)] shadow-soft",
         active ? "z-20 cursor-grab active:cursor-grabbing" : "z-10"
       )}
       style={{ x: active ? x : 0, rotate: active && !reduced ? rotate : 0 }}
@@ -70,7 +70,7 @@ function CardFace({
       {active && !reduced && (
         <motion.div
           aria-hidden
-          className="pointer-events-none absolute inset-y-10 left-1/2 z-10 w-24 -translate-x-1/2 rounded-full bg-romance/25 blur-2xl"
+          className="pointer-events-none absolute inset-y-10 left-1/2 z-10 w-24 -translate-x-1/2 rounded-full bg-romance/20 blur-2xl"
           style={{ opacity: trailOpacity, x }}
         />
       )}
@@ -78,13 +78,13 @@ function CardFace({
       {active && (
         <>
           <motion.div
-            className="pointer-events-none absolute left-5 top-12 z-30 border border-white/70 px-3 py-1 font-display text-sm font-extrabold uppercase tracking-wide text-white"
+            className="pointer-events-none absolute left-4 top-10 z-30 border border-white/70 px-3 py-1 font-display text-sm font-extrabold uppercase tracking-wide text-white"
             style={{ opacity: nopeOpacity, rotate: -8 }}
           >
             {actionLabel.left}
           </motion.div>
           <motion.div
-            className="pointer-events-none absolute right-5 top-12 z-30 bg-romance px-3 py-1 font-display text-sm font-extrabold uppercase tracking-wide text-white"
+            className="pointer-events-none absolute right-4 top-10 z-30 bg-romance px-3 py-1 font-display text-sm font-extrabold uppercase tracking-wide text-white"
             style={{ opacity: likeOpacity, rotate: 8 }}
           >
             {actionLabel.right}
@@ -97,26 +97,27 @@ function CardFace({
         style={active && !reduced ? { x: photoParallax } : undefined}
       >
         <PhotoStory photos={person.photos} className="absolute inset-0 h-full w-full">
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent px-5 pb-5 pt-28">
-            <h2 className="font-display text-[2rem] font-extrabold leading-none text-white">
+          {/* Extra bottom padding so copy clears overlaid actions */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent px-4 pb-[5.25rem] pt-32">
+            <h2 className="font-display text-[2.15rem] font-extrabold leading-none text-white">
               {person.firstName}
               <span className="ml-2 text-xl font-semibold text-white/80">
                 {person.age}
               </span>
             </h2>
             <p className="mt-1 text-sm text-white/75">{person.city}</p>
-            <p className="mt-3 max-w-[34ch] text-[15px] leading-snug text-white/92">
+            <p className="mt-2.5 max-w-[36ch] text-[15px] leading-snug text-white/92">
               {person.vibe}
             </p>
-            <div className="mt-4 flex items-center gap-2.5">
+            <div className="mt-3 flex items-center gap-2.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={card.wingAvatar}
                 alt=""
-                className="size-8 rounded-full object-cover ring-2 ring-wing/60"
+                className="size-7 rounded-full object-cover ring-2 ring-white/25"
               />
               <p className="text-sm text-white/90">
-                <span className="font-semibold text-wing">{card.wingName}</span>
+                <span className="font-semibold text-white">{card.wingName}</span>
                 {" · "}
                 <span className="text-white/80">“{card.vouch}”</span>
               </p>
@@ -162,98 +163,100 @@ export function SwipeDeck({
   const next = stack[1];
 
   return (
-    <PageEnter className="mx-auto flex w-full max-w-md flex-1 flex-col items-center px-4 pt-2">
-      <header className="mb-3 w-full text-center">
-        <motion.h1
-          layout
-          className="font-display text-2xl font-extrabold tracking-tight"
-        >
-          {title}
-        </motion.h1>
-        <p className="mx-auto mt-0.5 max-w-xs text-sm text-secondary">
-          {subtitle}
-        </p>
-      </header>
+    <PageEnter className="relative mx-auto flex w-full max-w-lg flex-1 flex-col min-h-0">
+      {/* Near full-bleed card: fills viewport between slim header + bottom nav */}
+      <div className="relative mx-auto w-full flex-1 min-h-[min(82dvh,760px)] px-1 pb-0.5 pt-0.5">
+        <div className="relative h-full w-full">
+          {/* Compact chrome on the photo — not a banner slab above */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between px-3 pt-2.5">
+            <p className="rounded-full bg-black/30 px-2.5 py-0.5 text-[11px] font-bold tracking-wide text-white/95 backdrop-blur-sm">
+              {title}
+            </p>
+            <p className="max-w-[58%] truncate rounded-full bg-black/20 px-2 py-0.5 text-right text-[10px] font-medium text-white/85 backdrop-blur-sm">
+              {subtitle}
+            </p>
+          </div>
 
-      <div className="relative mx-auto aspect-[3/4.7] w-full max-w-[22rem] max-h-[min(70dvh,640px)]">
-        <WingBloom show={bloom} />
-        {next && (
-          <CardFace
-            key={next.id + "-n"}
-            card={next}
-            active={false}
-            onSwipe={() => {}}
-            actionLabel={{ left: leftLabel, right: rightLabel }}
-          />
-        )}
-        <AnimatePresence onExitComplete={() => setExitDirection(null)}>
-          {top ? (
+          <WingBloom show={bloom} />
+          {next && (
             <CardFace
-              key={top.id}
-              card={top}
-              active
-              exitDirection={exitDirection}
-              onSwipe={handleSwipe}
+              key={next.id + "-n"}
+              card={next}
+              active={false}
+              onSwipe={() => {}}
               actionLabel={{ left: leftLabel, right: rightLabel }}
             />
-          ) : (
-            <motion.div
-              key="empty"
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="absolute inset-0 flex flex-col items-center justify-center rounded-[1.5rem] bg-surface px-8 text-center shadow-card"
-            >
-              <motion.div
-                animate={
-                  reduced
-                    ? undefined
-                    : { y: [0, -6, 0], rotate: [-2, 2, -2] }
-                }
-                transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
-                className="mb-3 text-3xl"
-                aria-hidden
-              >
-                ✦
-              </motion.div>
-              <p className="font-display text-2xl font-extrabold">
-                You’re caught up
-              </p>
-              <p className="mt-2 text-sm text-secondary">
-                New people appear as Wings vouch. Check Matches for anything
-                mutual.
-              </p>
-              <motion.button
-                type="button"
-                whileTap={{ scale: 0.97 }}
-                className="mt-6 text-sm font-bold text-romance"
-                onClick={() => setStack(cards)}
-              >
-                See people again
-              </motion.button>
-            </motion.div>
           )}
-        </AnimatePresence>
-      </div>
+          <AnimatePresence onExitComplete={() => setExitDirection(null)}>
+            {top ? (
+              <CardFace
+                key={top.id}
+                card={top}
+                active
+                exitDirection={exitDirection}
+                onSwipe={handleSwipe}
+                actionLabel={{ left: leftLabel, right: rightLabel }}
+              />
+            ) : (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="absolute inset-0 flex flex-col items-center justify-center rounded-[1.15rem] panel-soft px-8 text-center"
+              >
+                <motion.div
+                  animate={
+                    reduced
+                      ? undefined
+                      : { y: [0, -6, 0], rotate: [-2, 2, -2] }
+                  }
+                  transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+                  className="mb-3 text-3xl text-romance/70"
+                  aria-hidden
+                >
+                  ✦
+                </motion.div>
+                <p className="font-display text-2xl font-extrabold">
+                  You’re caught up
+                </p>
+                <p className="mt-2 text-sm text-secondary">
+                  New people appear as Wings vouch. Check Matches for anything
+                  mutual.
+                </p>
+                <motion.button
+                  type="button"
+                  whileTap={{ scale: 0.97 }}
+                  className="mt-6 text-sm font-bold text-romance"
+                  onClick={() => setStack(cards)}
+                >
+                  See people again
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-      <div className="mt-5 flex items-stretch justify-center gap-3 safe-bottom">
-        <motion.button
-          type="button"
-          disabled={!top}
-          whileTap={reduced ? undefined : { scale: 0.94 }}
-          onClick={() => top && handleSwipe("left")}
-          className="h-12 min-w-[7.5rem] rounded-full border border-border bg-surface px-5 text-sm font-bold text-secondary shadow-soft disabled:opacity-40"
-        >
-          {leftLabel}
-        </motion.button>
-        <motion.button
-          type="button"
-          disabled={!top}
-          whileTap={reduced ? undefined : { scale: 0.94 }}
-          onClick={() => top && handleSwipe("right")}
-          className="h-12 min-w-[9rem] rounded-full bg-romance px-6 text-sm font-bold text-white shadow-card disabled:opacity-40"
-        >
-          {rightLabel}
-        </motion.button>
+          {/* Actions overlaid on the card — tight, no chrome slab below */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-3 z-40 flex items-center justify-center gap-3 px-4">
+            <motion.button
+              type="button"
+              disabled={!top}
+              whileTap={reduced ? undefined : { scale: 0.94 }}
+              onClick={() => top && handleSwipe("left")}
+              className="pointer-events-auto h-12 min-w-[6.75rem] rounded-full border border-white/35 bg-black/35 px-5 text-sm font-bold text-white backdrop-blur-md disabled:opacity-40"
+            >
+              {leftLabel}
+            </motion.button>
+            <motion.button
+              type="button"
+              disabled={!top}
+              whileTap={reduced ? undefined : { scale: 0.94 }}
+              onClick={() => top && handleSwipe("right")}
+              className="pointer-events-auto h-12 min-w-[7.5rem] rounded-full bg-romance px-6 text-sm font-bold text-white shadow-soft disabled:opacity-40"
+            >
+              {rightLabel}
+            </motion.button>
+          </div>
+        </div>
       </div>
     </PageEnter>
   );

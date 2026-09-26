@@ -1,38 +1,38 @@
 @import "tailwindcss";
 
-/* Neutral dating — ivory + rose + sage (not black/orange) */
+/* Neutral dating — one calm ivory field (no harsh banner slabs) */
 :root,
 [data-appearance="neutral"] {
   --canvas: #fbf7f4;
-  --canvas-deep: #f0e8e2;
-  --surface: #ffffff;
-  --elevated: #f5efe9;
-  --border: #e8ddd4;
+  --canvas-deep: #f7f1ec;
+  --surface: #fdfaf8;
+  --elevated: #f9f4f0;
+  --border: #ebe3dc;
 
   --text-primary: #2a2421;
   --text-secondary: #6b615c;
   --text-muted: #9a8f89;
 
-  /* Rose / berry — romance CTAs */
+  /* Rose — CTAs only; washes stay ≤ ~5% */
   --romance: #d4516c;
-  --romance-soft: rgba(212, 81, 108, 0.12);
+  --romance-soft: rgba(212, 81, 108, 0.05);
   --romance-deep: #b83d58;
 
-  /* Wing trust — muted sage */
+  /* Wing trust — sage washes ≤ ~5% */
   --wing: #6b8f9c;
-  --wing-soft: rgba(107, 143, 156, 0.14);
+  --wing-soft: rgba(107, 143, 156, 0.055);
   --wing-deep: #557a87;
 
   --success: #5a9a78;
   --spark: #c4a35a;
-  --spark-soft: rgba(196, 163, 90, 0.18);
+  --spark-soft: rgba(196, 163, 90, 0.12);
 
-  --glow-a: rgba(212, 81, 108, 0.1);
-  --glow-b: rgba(107, 143, 156, 0.1);
-  --glow-c: rgba(240, 200, 180, 0.2);
+  --glow-a: rgba(212, 81, 108, 0.07);
+  --glow-b: rgba(107, 143, 156, 0.07);
+  --glow-c: rgba(240, 210, 190, 0.14);
 
-  --shadow-card: 0 8px 28px rgba(42, 36, 33, 0.07);
-  --shadow-soft: 0 2px 12px rgba(42, 36, 33, 0.05);
+  --shadow-card: 0 6px 22px rgba(42, 36, 33, 0.05);
+  --shadow-soft: 0 2px 10px rgba(42, 36, 33, 0.04);
 
   --background: var(--canvas);
   --foreground: var(--text-primary);
@@ -43,60 +43,60 @@
   --radius: 1.25rem;
 }
 
-/* Warm — peach atmosphere + rose */
+/* Warm — gentle peach nudge, same surface system */
 [data-appearance="warm"] {
-  --canvas: #fff5f0;
-  --canvas-deep: #ffe8df;
-  --surface: #ffffff;
-  --elevated: #fff0ea;
-  --border: #f0d9d0;
+  --canvas: #fcf6f2;
+  --canvas-deep: #f8efe9;
+  --surface: #fefaf7;
+  --elevated: #faf3ee;
+  --border: #eee4dc;
 
   --text-primary: #2c221f;
   --text-secondary: #7a6560;
   --text-muted: #a8948e;
 
   --romance: #d9637a;
-  --romance-soft: rgba(217, 99, 122, 0.14);
+  --romance-soft: rgba(217, 99, 122, 0.06);
   --romance-deep: #c24a63;
 
   --wing: #7a9ea8;
-  --wing-soft: rgba(122, 158, 168, 0.14);
+  --wing-soft: rgba(122, 158, 168, 0.055);
   --wing-deep: #5f8691;
 
-  --glow-a: rgba(217, 99, 122, 0.14);
-  --glow-b: rgba(122, 158, 168, 0.1);
-  --glow-c: rgba(255, 200, 170, 0.22);
+  --glow-a: rgba(217, 99, 122, 0.08);
+  --glow-b: rgba(122, 158, 168, 0.07);
+  --glow-c: rgba(255, 210, 185, 0.14);
 
-  --shadow-card: 0 8px 28px rgba(90, 50, 45, 0.07);
-  --shadow-soft: 0 2px 12px rgba(90, 50, 45, 0.05);
+  --shadow-card: 0 6px 22px rgba(90, 50, 45, 0.05);
+  --shadow-soft: 0 2px 10px rgba(90, 50, 45, 0.04);
 }
 
-/* Cool — soft blue-gray + periwinkle (not navy sports) */
+/* Cool — soft blue-gray nudge, same surface system */
 [data-appearance="cool"] {
-  --canvas: #f4f5f9;
-  --canvas-deep: #e6e8f0;
-  --surface: #ffffff;
-  --elevated: #eef0f6;
-  --border: #d8dce8;
+  --canvas: #f6f7fa;
+  --canvas-deep: #f0f2f6;
+  --surface: #fafbfd;
+  --elevated: #f4f6f9;
+  --border: #e4e7ef;
 
   --text-primary: #2a2d38;
   --text-secondary: #5c6275;
   --text-muted: #8b91a3;
 
   --romance: #7b8fd4;
-  --romance-soft: rgba(123, 143, 212, 0.14);
+  --romance-soft: rgba(123, 143, 212, 0.06);
   --romance-deep: #6376bc;
 
   --wing: #6b8f9c;
-  --wing-soft: rgba(107, 143, 156, 0.14);
+  --wing-soft: rgba(107, 143, 156, 0.055);
   --wing-deep: #557a87;
 
-  --glow-a: rgba(123, 143, 212, 0.12);
-  --glow-b: rgba(107, 143, 156, 0.1);
-  --glow-c: rgba(200, 210, 230, 0.25);
+  --glow-a: rgba(123, 143, 212, 0.07);
+  --glow-b: rgba(107, 143, 156, 0.07);
+  --glow-c: rgba(200, 210, 230, 0.14);
 
-  --shadow-card: 0 8px 28px rgba(42, 45, 56, 0.08);
-  --shadow-soft: 0 2px 12px rgba(42, 45, 56, 0.06);
+  --shadow-card: 0 6px 22px rgba(42, 45, 56, 0.05);
+  --shadow-soft: 0 2px 10px rgba(42, 45, 56, 0.04);
 }
 
 @theme inline {
@@ -138,14 +138,14 @@ html {
 body {
   min-height: 100dvh;
   background:
-    radial-gradient(ellipse 90% 55% at 10% -5%, var(--glow-a), transparent 55%),
-    radial-gradient(ellipse 70% 45% at 95% 8%, var(--glow-b), transparent 50%),
-    radial-gradient(ellipse 60% 40% at 50% 100%, var(--glow-c), transparent 55%),
+    radial-gradient(ellipse 100% 60% at 15% -10%, var(--glow-a), transparent 58%),
+    radial-gradient(ellipse 80% 50% at 90% 5%, var(--glow-b), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 50% 105%, var(--glow-c), transparent 58%),
     var(--canvas);
   color: var(--foreground);
   font-family: var(--font-jakarta), ui-sans-serif, sans-serif;
   -webkit-font-smoothing: antialiased;
-  transition: background 0.35s ease, color 0.25s ease;
+  transition: background 0.45s ease, color 0.3s ease;
 }
 
 ::selection {
@@ -161,10 +161,35 @@ body {
   padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
 }
 
+/* Soft continuous panels — same family as canvas, not grey/pink slabs */
 .card-surface {
   background: var(--surface);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-card);
+  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  box-shadow: var(--shadow-soft);
+}
+
+.panel-soft {
+  background: color-mix(in srgb, var(--surface) 88%, var(--canvas));
+  border: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+  box-shadow: var(--shadow-soft);
+}
+
+.panel-wash {
+  background: color-mix(in srgb, var(--romance) 4%, var(--canvas));
+}
+
+.panel-wash-wing {
+  background: color-mix(in srgb, var(--wing) 4%, var(--canvas));
+}
+
+.section-rule {
+  border-top: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+}
+
+.chrome-bar {
+  background: color-mix(in srgb, var(--canvas) 88%, transparent);
+  border-color: color-mix(in srgb, var(--border) 65%, transparent);
+  backdrop-filter: blur(12px);
 }
 
 @keyframes heart-pulse {

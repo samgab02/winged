@@ -6,13 +6,13 @@ import { useRouter } from "next/navigation";
 import { WingedMark } from "@/components/brand/winged-mark";
 import { Button } from "@/components/ui/button";
 import { ToastHost } from "@/components/ui/toast";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import { signUp } from "@/lib/auth";
 import { useApp } from "@/lib/store";
 
 export default function SignUpPage() {
   const router = useRouter();
   const setAccount = useApp((s) => s.setAccount);
-  const showToast = useApp((s) => s.showToast);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -42,10 +42,13 @@ export default function SignUpPage() {
         Create your account
       </h1>
       <p className="mt-2 max-w-xs text-sm text-secondary">
-        Email and password to save your profile.
+        Email, Google, Apple, or phone — real auth paths, not placeholders.
       </p>
 
-      <form onSubmit={onSubmit} className="mt-8 w-full max-w-sm space-y-3 text-left">
+      <form
+        onSubmit={onSubmit}
+        className="mt-8 w-full max-w-sm space-y-3 text-left"
+      >
         <input
           type="email"
           required
@@ -69,21 +72,7 @@ export default function SignUpPage() {
         </Button>
       </form>
 
-      <div className="mt-6 w-full max-w-sm space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-wider text-subtle">
-          Or continue with
-        </p>
-        {(["Apple", "Google", "WhatsApp"] as const).map((provider) => (
-          <button
-            key={provider}
-            type="button"
-            onClick={() => showToast(`${provider} sign-in coming soon`)}
-            className="flex h-12 w-full items-center justify-center rounded-2xl border border-border bg-surface text-sm font-semibold"
-          >
-            Continue with {provider}
-          </button>
-        ))}
-      </div>
+      <OAuthButtons className="mt-6 w-full max-w-sm" />
 
       <p className="mt-8 text-sm text-secondary">
         Already have an account?{" "}

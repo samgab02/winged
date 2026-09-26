@@ -1,35 +1,35 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, Space_Grotesk } from "next/font/google";
+import { Plus_Jakarta_Sans, Syne } from "next/font/google";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { TopBar } from "@/components/layout/top-bar";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const syne = Syne({
+  variable: "--font-syne",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["600", "700", "800"],
 });
 
 export const metadata: Metadata = {
   title: "POVI — Proof of Vibe",
   description:
-    "Co-op matchmaking with Sharks. Dual card feed, 3-minute Deal Rooms, escrowed Date Passes.",
+    "Co-op dating with Sharks. Swipe duos, plan real dates in 3 minutes, show up IRL.",
   applicationName: "POVI",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: "POVI",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0E1014",
+  themeColor: "#FFF8F4",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -42,11 +42,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
-        className={`${dmSans.variable} ${spaceGrotesk.variable} min-h-dvh bg-canvas font-sans text-foreground antialiased`}
+        className={`${jakarta.variable} ${syne.variable} min-h-dvh bg-canvas font-sans text-foreground antialiased`}
       >
-        <div className="mx-auto flex min-h-dvh max-w-lg flex-col pb-20">
+        <div className="mx-auto flex min-h-dvh max-w-lg flex-col pb-24">
           <TopBar />
           <main className="flex flex-1 flex-col">{children}</main>
           <BottomNav />

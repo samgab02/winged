@@ -1,8 +1,6 @@
-import { WalletView } from "@/components/wallet/wallet-view";
-import { currentShark, mockEscrowTransactions } from "@/lib/mock-data";
+import { redirect } from "next/navigation";
 
-export default function WalletPage() {
-  return (
-    <WalletView shark={currentShark} transactions={mockEscrowTransactions} />
-  );
+/** Wallet moved to discreet Shark Earnings */
+export default function WalletRedirectPage() {
+  redirect("/earnings");
 }

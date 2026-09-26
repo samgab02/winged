@@ -3,30 +3,25 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-trust/50 disabled:pointer-events-none disabled:opacity-45 active:scale-[0.99]",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-romance/40 disabled:pointer-events-none disabled:opacity-45 active:scale-[0.99]",
   {
     variants: {
       variant: {
-        primary:
-          "bg-accent text-white hover:bg-[#d64f45]",
+        primary: "bg-romance text-white hover:bg-romance-deep shadow-soft",
         secondary:
-          "bg-trust text-white hover:bg-[#34897e]",
+          "bg-shark text-white hover:bg-shark-deep shadow-soft",
         ghost:
           "bg-transparent text-secondary hover:bg-elevated hover:text-foreground",
-        destructive:
-          "bg-danger/15 text-danger hover:bg-danger/25",
-        // aliases kept for any leftover call sites
-        default:
-          "bg-accent text-white hover:bg-[#d64f45]",
+        destructive: "bg-romance-soft text-romance-deep hover:bg-romance/20",
         outline:
-          "border border-border bg-transparent text-foreground hover:bg-elevated",
-        danger:
-          "bg-danger/15 text-danger hover:bg-danger/25",
+          "border border-border bg-surface text-foreground hover:bg-elevated",
+        default: "bg-romance text-white hover:bg-romance-deep shadow-soft",
+        danger: "bg-romance-soft text-romance-deep hover:bg-romance/20",
       },
       size: {
-        default: "h-11 px-5",
-        sm: "h-9 rounded-md px-3 text-xs",
-        lg: "h-12 px-6 text-base",
+        default: "h-12 px-5",
+        sm: "h-9 rounded-xl px-3 text-xs",
+        lg: "h-13 px-6 text-base",
         icon: "h-11 w-11",
       },
     },

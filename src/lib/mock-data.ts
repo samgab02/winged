@@ -209,6 +209,8 @@ export const mockFeedCards: DualFeedCard[] = [
     },
     bachelor: mockProfiles.bach_maya,
     shark: mockProfiles.shark_noa,
+    interests: ["Rooftop jazz", "Late walks", "Aux wars"],
+    perfect_for: "Someone who laughs first and plans second",
   },
   {
     id: "card_eli",
@@ -222,6 +224,8 @@ export const mockFeedCards: DualFeedCard[] = [
     },
     bachelor: mockProfiles.bach_eli,
     shark: mockProfiles.shark_dani,
+    interests: ["Design", "Falafel runs", "Quiet bars"],
+    perfect_for: "A curious talker who likes soft eyes, sharp takes",
   },
   {
     id: "card_lina",
@@ -235,6 +239,8 @@ export const mockFeedCards: DualFeedCard[] = [
     },
     bachelor: mockProfiles.bach_lina,
     shark: mockProfiles.shark_omi,
+    interests: ["Sunrise surf", "Salt air", "Slow mornings"],
+    perfect_for: "Someone who can match sunrise energy at 1am",
   },
   {
     id: "card_yon",
@@ -248,6 +254,8 @@ export const mockFeedCards: DualFeedCard[] = [
     },
     bachelor: mockProfiles.bach_yon,
     shark: mockProfiles.shark_tamar,
+    interests: ["Home cooking", "Spice talk", "Dessert first"],
+    perfect_for: "A date who treats dinner like a love language",
   },
 ];
 
@@ -271,7 +279,7 @@ export const mockDealMessages: DealRoomMessage[] = [
     deal_room_id: "deal_001",
     sender_id: "system",
     sender_role: "system",
-    body: "Deal Room live. Sharks have 3:00 to lock a real-world date.",
+    body: "You’re live — pick a place and time before the clock runs out.",
     created_at: new Date(now - 44_000).toISOString(),
   },
   {
@@ -279,7 +287,7 @@ export const mockDealMessages: DealRoomMessage[] = [
     deal_room_id: "deal_001",
     sender_id: "shark_noa",
     sender_role: "shark",
-    body: "Maya's free Thu 20:00 — Cafe Xo, Florentin. Soft lighting, loud enough to hide awkward pauses.",
+    body: "Maya’s free Thu 20:00 — Cafe Xo, Florentin. Soft lighting, loud enough to hide awkward pauses.",
     created_at: new Date(now - 38_000).toISOString(),
   },
   {
@@ -287,7 +295,7 @@ export const mockDealMessages: DealRoomMessage[] = [
     deal_room_id: "deal_001",
     sender_id: "shark_dani",
     sender_role: "shark",
-    body: "Eli's in. He wants outdoor seating. Can we hold a table for 2?",
+    body: "Eli’s in. He wants outdoor seating. Can we hold a table for two?",
     created_at: new Date(now - 30_000).toISOString(),
   },
   {
@@ -303,8 +311,39 @@ export const mockDealMessages: DealRoomMessage[] = [
     deal_room_id: "deal_001",
     sender_id: "shark_noa",
     sender_role: "shark",
-    body: "Confirmed oat milk + patio. Date Pass escrow ready — lock it?",
+    body: "Patio + oat milk confirmed. Ready to lock the date?",
     created_at: new Date(now - 12_000).toISOString(),
+  },
+];
+
+export type UpcomingDate = {
+  id: string;
+  pair: string;
+  venue: string;
+  when: string;
+  note: string;
+  photo_a: string;
+  photo_b: string;
+};
+
+export const mockUpcomingDates: UpcomingDate[] = [
+  {
+    id: "date_1",
+    pair: "Maya × Eli",
+    venue: "Cafe Xo, Florentin",
+    when: "Thu · 20:00",
+    note: "Patio table · first coffee energy",
+    photo_a: mockProfiles.bach_maya.avatar_url,
+    photo_b: mockProfiles.bach_eli.avatar_url,
+  },
+  {
+    id: "date_2",
+    pair: "Lina × Yonatan",
+    venue: "Gordon Beach café",
+    when: "Sat · 09:30",
+    note: "Sunrise walk, then iced coffee",
+    photo_a: mockProfiles.bach_lina.avatar_url,
+    photo_b: mockProfiles.bach_yon.avatar_url,
   },
 ];
 
@@ -318,7 +357,7 @@ export const mockEscrowTransactions: EscrowTransaction[] = [
     platform_fee: 20,
     shark_payout: 50,
     status: "available",
-    description: "Date Pass · Maya × Jordan — Proof of Stay verified",
+    description: "Maya × Jordan — checked in at the date",
     created_at: new Date(now - 86400000 * 6).toISOString(),
     released_at: new Date(now - 86400000 * 5).toISOString(),
   },
@@ -331,7 +370,7 @@ export const mockEscrowTransactions: EscrowTransaction[] = [
     platform_fee: 20,
     shark_payout: 50,
     status: "available",
-    description: "Date Pass · Maya × Amir — mutual review clear",
+    description: "Maya × Amir — both said it went well",
     created_at: new Date(now - 86400000 * 14).toISOString(),
     released_at: new Date(now - 86400000 * 13).toISOString(),
   },
@@ -344,7 +383,7 @@ export const mockEscrowTransactions: EscrowTransaction[] = [
     platform_fee: 20,
     shark_payout: 50,
     status: "pending",
-    description: "Date Pass · Maya × Eli — awaiting Proof of Stay",
+    description: "Maya × Eli — waiting for check-in",
     created_at: new Date(now - 3600000).toISOString(),
     released_at: null,
   },
@@ -357,7 +396,7 @@ export const mockEscrowTransactions: EscrowTransaction[] = [
     platform_fee: 20,
     shark_payout: 50,
     status: "pending",
-    description: "Date Pass · Maya × Tom — GPS window open",
+    description: "Maya × Tom — date happening soon",
     created_at: new Date(now - 86400000 * 1).toISOString(),
     released_at: null,
   },
@@ -370,11 +409,11 @@ export const mockEscrowTransactions: EscrowTransaction[] = [
     platform_fee: 20,
     shark_payout: 50,
     status: "withdrawn",
-    description: "Withdrawal to Stripe Connect · ₪250",
+    description: "Transferred out · ₪250",
     created_at: new Date(now - 86400000 * 20).toISOString(),
     released_at: new Date(now - 86400000 * 19).toISOString(),
   },
 ];
 
-/** Current session viewer (Shark Noa) for wallet UI */
+/** Current session viewer (Shark Noa) for earnings demo */
 export const currentShark = mockProfiles.shark_noa;

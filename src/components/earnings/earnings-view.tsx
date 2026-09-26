@@ -9,11 +9,11 @@ function statusLabel(status: EscrowTransaction["status"]) {
     case "pending":
       return "Pending";
     case "available":
-      return "Available";
+      return "Ready";
     case "withdrawn":
-      return "Withdrawn";
+      return "Sent";
     case "frozen":
-      return "Frozen";
+      return "On hold";
     case "refunded":
       return "Refunded";
     default:
@@ -22,11 +22,11 @@ function statusLabel(status: EscrowTransaction["status"]) {
 }
 
 function pairFromDescription(description: string) {
-  const match = description.match(/·\s*(.+?)(?:\s*—|$)/);
+  const match = description.match(/^(.+?)\s*—/);
   return match?.[1]?.trim() ?? description;
 }
 
-export function WalletView({
+export function EarningsView({
   shark,
   transactions,
 }: {
@@ -42,53 +42,52 @@ export function WalletView({
     shark.available_balance ||
     available.reduce((s, t) => s + t.shark_payout, 0);
 
-  const list = transactions.slice(0, 6);
-
   return (
-    <section className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 pt-4 pb-4">
+    <section className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 pt-3 pb-4">
       <header className="mb-5">
-        <h1 className="font-display text-xl font-semibold tracking-tight">
-          Wallet
+        <p className="text-xs font-semibold uppercase tracking-wide text-shark">
+          Shark only
+        </p>
+        <h1 className="font-display text-2xl font-extrabold tracking-tight">
+          Earnings
         </h1>
-        <p className="mt-0.5 text-sm text-secondary">
-          {shark.display_name.split("·")[0].trim()} · Shark earnings
+        <p className="mt-1 text-sm text-secondary">
+          Quiet payouts for dates you helped lock — not shown on the main app
+          chrome.
         </p>
       </header>
 
-      <div className="mb-3 rounded-2xl border border-border bg-surface p-5">
-        <p className="text-xs text-subtle">Available</p>
-        <p className="mt-1 font-display text-3xl font-semibold tracking-tight">
+      <div className="mb-3 rounded-3xl card-surface p-5">
+        <p className="text-xs font-semibold text-subtle">Available</p>
+        <p className="mt-1 font-display text-3xl font-extrabold tracking-tight">
           {formatILS(availableTotal)}
         </p>
-        <Button variant="secondary" className="mt-4 w-full" disabled>
-          Withdraw
+        <Button variant="outline" className="mt-4 w-full" disabled>
+          Transfer out
         </Button>
-        <p className="mt-2 text-center text-[11px] text-subtle">
-          Stripe Connect stub — no live payouts in demo
-        </p>
       </div>
 
-      <div className="mb-6 rounded-2xl border border-border bg-surface px-5 py-4">
+      <div className="mb-6 rounded-3xl card-surface px-5 py-4">
         <div className="flex items-baseline justify-between gap-3">
-          <p className="text-xs text-subtle">Pending escrow</p>
-          <p className="text-lg font-semibold tabular-nums">
+          <p className="text-xs font-semibold text-subtle">Pending</p>
+          <p className="text-lg font-bold tabular-nums">
             {formatILS(pendingTotal)}
           </p>
         </div>
         <p className="mt-1 text-sm text-secondary">
-          Releases after verified date
+          Released after you both check in at the date
         </p>
       </div>
 
-      <h2 className="mb-2 text-sm font-medium text-secondary">Recent</h2>
-      <ul className="divide-y divide-border rounded-2xl border border-border bg-surface">
-        {list.map((tx) => (
+      <h2 className="mb-2 text-sm font-semibold text-secondary">Recent</h2>
+      <ul className="divide-y divide-border rounded-3xl card-surface">
+        {transactions.slice(0, 6).map((tx) => (
           <li
             key={tx.id}
             className="flex items-center justify-between gap-3 px-4 py-3.5"
           >
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium">
+              <p className="truncate text-sm font-semibold">
                 {pairFromDescription(tx.description)}
               </p>
               <p className="mt-0.5 text-xs text-subtle">
@@ -100,8 +99,7 @@ export function WalletView({
                 <span
                   className={cn(
                     tx.status === "available" && "text-success",
-                    tx.status === "pending" && "text-warning",
-                    tx.status === "frozen" && "text-danger",
+                    tx.status === "pending" && "text-romance",
                     tx.status === "withdrawn" && "text-subtle"
                   )}
                 >
@@ -109,7 +107,7 @@ export function WalletView({
                 </span>
               </p>
             </div>
-            <p className="shrink-0 text-sm font-medium tabular-nums">
+            <p className="shrink-0 text-sm font-bold tabular-nums">
               {tx.status === "withdrawn" ? "−" : "+"}
               {formatILS(tx.shark_payout)}
             </p>

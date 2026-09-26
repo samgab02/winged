@@ -113,12 +113,14 @@ export interface PostDateReview {
   created_at: string;
 }
 
-/** Feed card: 60% bachelor media + 40% shark vouch */
+/** Feed card: dominant bachelor media + shark vouch */
 export interface DualFeedCard {
   id: string;
   duo: Duo;
   bachelor: Profile;
   shark: Profile;
+  interests: string[];
+  perfect_for: string;
 }
 
 export interface DealRoomMessage {

@@ -1,49 +1,39 @@
 # POVI — Proof of Vibe
 
-Mobile-first Next.js app for co-op dating: Sharks vouch for friends, plan real dates in a 3-minute Deal Room, and show up IRL.
+Complete role-split dating demo: **Bachelor** and **Shark** get separate shells, multi-photo profiles, and full mock flows (onboarding → discover/swipe → Deal Room → date lock → flash → dates).
 
-Visual direction: **light warm romantic** (Stories energy + a friend hyping you up). Dating-first IA — money stays off the main tabs.
+Visual direction: light warm romantic (Art Direction v3). Money only inside **Shark → Me → Earnings**.
 
-## Stack
-
-- Next.js 15 (App Router) + React 19
-- Tailwind CSS 4 + Framer Motion
-- shadcn-style UI primitives (Radix)
-- Mock data only (Supabase / Stripe / auth stubbed)
-
-## Run locally
+## Run
 
 ```bash
 npm install
 npm run dev:demo
 ```
 
-Then open [http://localhost:4317](http://localhost:4317).
+Open [http://localhost:4317](http://localhost:4317).
 
-If the port is busy:
+Requires Node 18+. No env vars.
 
-```bash
-npx next dev --turbopack -p 4321 -H 0.0.0.0
-```
+## Roles
 
-Requires Node 18+. No env vars or credentials needed for the mock demo.
+On launch, pick **Bachelor** or **Shark** (saved in `localStorage`).
 
-## Demo surfaces
+| Bachelor nav | Shark nav |
+|---|---|
+| Discover · Matches · Dates · Profile | Swipe · Deal Room · My singles · Me |
 
-| Route | What you get |
-|-------|----------------|
-| `/` | Dual Card Feed — photo, vibe, Shark vouch, Skip / Vouch |
-| `/deal-room` | Plan the date — countdown, chat, Lock the date |
-| `/dates` | Upcoming locked dates |
-| `/earnings` | Shark earnings via profile avatar menu only (not in header/tabs) |
+Switch roles anytime from Profile / Me → **Switch role (demo)** or **Reset demo**.
 
-## Project layout
+## Key routes
 
-- `src/types/database.ts` — profiles, duos, matches, deal_rooms, escrow_transactions, post_date_reviews
-- `src/lib/mock-data.ts` — demo feed / deal room / dates / earnings
-- `src/lib/stubs.ts` — Supabase + Stripe stubs
-- `src/app/globals.css` — light warm romantic design tokens
+- `/` — welcome / role pick  
+- `/onboarding/bachelor` · `/onboarding/shark`  
+- `/bachelor/discover` · `/bachelor/matches` · `/bachelor/dates` · `/bachelor/profile`  
+- `/bachelor/deal-room/[id]` — observe + earpiece whisper  
+- `/shark/swipe` · `/shark/deal-room` · `/shark/singles` · `/shark/me` · `/shark/me/earnings`  
+- `/bachelor/flash/[id]` · `/shark/flash/[id]` — 180s Keep/Skip stub  
 
-## Notes
+## Stack
 
-No real credentials required. Wire Supabase and Stripe Connect when you leave the mock slice.
+Next.js 15 · React 19 · Tailwind 4 · Framer Motion · Zustand · mock data only

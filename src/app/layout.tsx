@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Syne } from "next/font/google";
-import { BottomNav } from "@/components/layout/bottom-nav";
-import { TopBar } from "@/components/layout/top-bar";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -19,7 +17,7 @@ const syne = Syne({
 export const metadata: Metadata = {
   title: "POVI — Proof of Vibe",
   description:
-    "Co-op dating with Sharks. Swipe duos, plan real dates in 3 minutes, show up IRL.",
+    "Co-op dating with Sharks. Discover people, plan real dates in 3 minutes, show up IRL.",
   applicationName: "POVI",
   appleWebApp: {
     capable: true,
@@ -46,11 +44,7 @@ export default function RootLayout({
       <body
         className={`${jakarta.variable} ${syne.variable} min-h-dvh bg-canvas font-sans text-foreground antialiased`}
       >
-        <div className="mx-auto flex min-h-dvh max-w-lg flex-col pb-24">
-          <TopBar />
-          <main className="flex flex-1 flex-col">{children}</main>
-          <BottomNav />
-        </div>
+        {children}
       </body>
     </html>
   );

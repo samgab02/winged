@@ -61,12 +61,13 @@ Sign out, delete account, and **Reset local data** live in Profile / Me. Reset r
 
 ## Deploy
 
-Standard Next.js 15 App Router. Production project name: **`winged-app`** → [https://winged-app.vercel.app](https://winged-app.vercel.app).
+- **GitHub:** [github.com/samgab02/winged](https://github.com/samgab02/winged)
+- **Production:** [https://winged-app.vercel.app](https://winged-app.vercel.app) (Vercel project `winged-app`)
 
-> `winged.vercel.app` is already taken by an unrelated project. Owning that exact subdomain means claiming that Vercel project or pointing a custom domain later.
+> `winged.vercel.app` is already taken by an unrelated project — do not overwrite. Use a custom domain later if you want that hostname.
 
 ```bash
-npx vercel --prod --name winged-app
+npx vercel --prod
 ```
 
 ## Stack

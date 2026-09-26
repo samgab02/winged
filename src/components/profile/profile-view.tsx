@@ -3,17 +3,18 @@
 import { useRouter } from "next/navigation";
 import type { Person } from "@/lib/mock-data";
 import { PhotoGallery } from "@/components/photos/photo-gallery";
+import { AppearancePrefs } from "@/components/theme/appearance-prefs";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/lib/store";
 
 export function ProfileView({
   person,
-  sharkName,
+  wingName,
   isSelf,
   prompts,
 }: {
   person: Person;
-  sharkName?: string;
+  wingName?: string;
   isSelf?: boolean;
   prompts?: { question: string; answer: string }[];
 }) {
@@ -32,9 +33,9 @@ export function ProfileView({
           <span className="text-secondary">{person.age}</span>
         </h1>
         <p className="text-sm text-secondary">{person.city}</p>
-        {sharkName && (
-          <p className="mt-2 text-sm font-medium text-shark-deep">
-            Winged by {sharkName}
+        {wingName && (
+          <p className="mt-2 text-sm font-medium text-wing-deep">
+            Winged by {wingName}
           </p>
         )}
       </div>
@@ -59,7 +60,9 @@ export function ProfileView({
 
       {isSelf && (
         <div className="mt-8 space-y-3">
-          <h2 className="font-display text-lg font-extrabold">Account</h2>
+          <h2 className="font-display text-lg font-extrabold">Preferences</h2>
+          <AppearancePrefs />
+          <h2 className="pt-2 font-display text-lg font-extrabold">Account</h2>
           <div className="divide-y divide-border rounded-2xl bg-surface shadow-soft">
             <div className="px-4 py-3.5">
               <p className="text-sm font-semibold">Notifications</p>
@@ -70,7 +73,7 @@ export function ProfileView({
             <div className="px-4 py-3.5">
               <p className="text-sm font-semibold">Privacy</p>
               <p className="text-xs text-secondary">
-                Profile visible to your Shark network
+                Profile visible to your Wing network
               </p>
             </div>
             <button
@@ -88,7 +91,7 @@ export function ProfileView({
                     : "Also date"}
                 </span>
                 <span className="block text-xs text-secondary">
-                  Open the other POVI shell
+                  Open the other shell
                 </span>
               </span>
               <span className="text-romance">→</span>

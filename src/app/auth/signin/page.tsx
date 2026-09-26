@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { PoviMark } from "@/components/brand/povi-mark";
+import { WingedMark } from "@/components/brand/winged-mark";
 import { Button } from "@/components/ui/button";
 import { DevLoginBootstrap } from "@/components/auth/dev-login-bootstrap";
 import { signIn } from "@/lib/auth";
@@ -35,12 +35,12 @@ export default function SignInPage() {
       router.replace(
         profile.role === "bachelor"
           ? "/onboarding/bachelor"
-          : "/onboarding/shark"
+          : "/onboarding/wing"
       );
       return;
     }
     router.replace(
-      profile.role === "bachelor" ? "/bachelor/discover" : "/shark/swipe"
+      profile.role === "bachelor" ? "/bachelor/discover" : "/wing/swipe"
     );
   }
 
@@ -78,8 +78,8 @@ export default function SignInPage() {
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-6 pb-10 pt-10">
       <DevLoginBootstrap />
       <Link href="/welcome" className="inline-flex items-center gap-2">
-        <PoviMark className="size-9" />
-        <span className="font-display text-lg font-extrabold">POVI</span>
+        <WingedMark className="size-9" />
+        <span className="font-display text-lg font-extrabold">Winged</span>
       </Link>
       <h1 className="mt-8 font-display text-3xl font-extrabold tracking-tight">
         Welcome back
@@ -114,7 +114,7 @@ export default function SignInPage() {
           Local defaults
         </p>
         <p className="text-xs text-secondary">
-          Password for both: <span className="font-semibold">{DEV_PASSWORD}</span>
+          Password: <span className="font-semibold">{DEV_PASSWORD}</span>
         </p>
         {DEV_LOGINS.map((login) => (
           <button

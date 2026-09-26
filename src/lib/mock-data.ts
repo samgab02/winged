@@ -26,8 +26,8 @@ export type Person = {
 export type DuoCard = {
   id: string;
   person: Person;
-  sharkName: string;
-  sharkAvatar: string;
+  wingName: string;
+  wingAvatar: string;
   vouch: string;
   perfectFor: string;
 };
@@ -50,7 +50,7 @@ export const people: Record<string, Person> = Object.fromEntries(
   Object.values(seedPeople).map((p) => [p.id, toPerson(p)])
 );
 
-export const sharkAvatars = {
+export const wingAvatars = {
   noa: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop",
   dani: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
   omi: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
@@ -58,7 +58,7 @@ export const sharkAvatars = {
 };
 
 export const discoverCards: DuoCard[] = catalogAsDuoCards();
-export const sharkSwipeCards: DuoCard[] = catalogAsDuoCards();
+export const wingSwipeCards: DuoCard[] = catalogAsDuoCards();
 
 export const mockMatches = [
   {
@@ -66,8 +66,8 @@ export const mockMatches = [
     duoId: "card_eli",
     person: people.maya,
     other: people.eli,
-    sharkA: "Noa",
-    sharkB: "Dani",
+    wingA: "Noa",
+    wingB: "Dani",
     status: "deal_room" as const,
     venue: "Cafe Xo, Florentin",
     when: "Thu · 20:00",
@@ -77,8 +77,8 @@ export const mockMatches = [
     duoId: "card_tom",
     person: people.maya,
     other: people.tom,
-    sharkA: "Noa",
-    sharkB: "Noa",
+    wingA: "Noa",
+    wingB: "Noa",
     status: "new" as const,
   },
 ];
@@ -110,19 +110,19 @@ export const mockDealMessages = [
   {
     id: "m1",
     role: "system" as const,
-    name: "POVI",
+    name: "Winged",
     body: "You’re live — pick a place and time before the clock runs out.",
   },
   {
     id: "m2",
-    role: "shark" as const,
+    role: "wing" as const,
     name: "Noa",
     body: "Maya’s free Thu 20:00 — Cafe Xo, Florentin. Soft lighting.",
     self: true,
   },
   {
     id: "m3",
-    role: "shark" as const,
+    role: "wing" as const,
     name: "Dani",
     body: "Eli’s in. Outdoor seating if you’ve got it.",
     self: false,
@@ -135,7 +135,7 @@ export const mockDealMessages = [
   },
   {
     id: "m5",
-    role: "shark" as const,
+    role: "wing" as const,
     name: "Noa",
     body: "Patio + oat milk confirmed. Ready to lock?",
     self: true,
@@ -190,6 +190,6 @@ export {
   PHOTO_STARTER_PACK,
   PROFILE_PROMPT_OPTIONS,
   INTEREST_OPTIONS,
-  SHARK_VIBE_QUESTIONS,
+  WING_VIBE_QUESTIONS,
   catalogAsDuoCards,
 } from "@/lib/seed-catalog";

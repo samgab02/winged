@@ -1,12 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { mockMatches } from "@/lib/mock-data";
 import { EmptyState } from "@/components/ui/states";
+import { PageEnter } from "@/components/motion/page-enter";
+import { listItem } from "@/lib/motion";
 
 const previews: Record<string, string> = {
   match_maya_eli: "Noa: Patio + oat milk confirmed…",
-  match_maya_tom: "You matched · waiting on Sharks",
+  match_maya_tom: "You matched · waiting on Wings",
 };
 
 export default function BachelorMatchesPage() {
@@ -14,13 +17,13 @@ export default function BachelorMatchesPage() {
     return (
       <EmptyState
         title="No matches yet"
-        body="Keep discovering. When it’s mutual, your Shark opens a Deal Room."
+        body="Keep discovering. When it’s mutual, your Wing opens a Deal Room."
       />
     );
   }
 
   return (
-    <section className="mx-auto w-full max-w-md px-4 pt-3 pb-4">
+    <PageEnter className="mx-auto w-full max-w-md px-4 pt-3 pb-4">
       <h1 className="font-display text-2xl font-extrabold tracking-tight">
         Matches
       </h1>
@@ -28,9 +31,13 @@ export default function BachelorMatchesPage() {
         Mutual vibes and live planning threads.
       </p>
 
-      <ul className="mt-5 divide-y divide-border rounded-2xl bg-surface shadow-soft">
+      <motion.ul
+        initial="initial"
+        animate="animate"
+        className="mt-5 divide-y divide-border rounded-2xl bg-surface shadow-soft"
+      >
         {mockMatches.map((m) => (
-          <li key={m.id}>
+          <motion.li key={m.id} variants={listItem}>
             <Link
               href={
                 m.status === "deal_room"
@@ -55,13 +62,13 @@ export default function BachelorMatchesPage() {
                   </span>
                 </div>
                 <p className="truncate text-sm text-secondary">
-                  {previews[m.id] ?? "Say hi through your Shark"}
+                  {previews[m.id] ?? "Say hi through your Wing"}
                 </p>
               </div>
             </Link>
-          </li>
+          </motion.li>
         ))}
-      </ul>
-    </section>
+      </motion.ul>
+    </PageEnter>
   );
 }

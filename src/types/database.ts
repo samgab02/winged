@@ -1,13 +1,13 @@
 /**
- * POVI database types — schema-ready for Supabase.
+ * Winged database types — schema-ready for Supabase.
  * Mock data uses these shapes; real clients can swap in without UI changes.
  */
 
-export type UserRole = "bachelor" | "shark";
+export type UserRole = "bachelor" | "wing";
 
-export type SharkTier =
-  | "friend_shark"
-  | "baby_shark"
+export type WingTier =
+  | "friend_wing"
+  | "baby_wing"
   | "pro_matchmaker"
   | "rizz_master";
 
@@ -46,7 +46,7 @@ export interface Profile {
   city: string;
   age: number;
   notoriety_points: number;
-  shark_tier: SharkTier | null;
+  wing_tier: WingTier | null;
   vouch_quote: string | null;
   media_urls: string[];
   available_balance: number;
@@ -59,7 +59,7 @@ export interface Profile {
 export interface Duo {
   id: string;
   bachelor_id: string;
-  shark_id: string;
+  wing_id: string;
   invite_status: DuoInviteStatus;
   linked_at: string | null;
   created_at: string;
@@ -70,7 +70,7 @@ export interface Match {
   duo_a_id: string;
   duo_b_id: string;
   status: MatchStatus;
-  swiped_by_shark_id: string | null;
+  swiped_by_wing_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -78,8 +78,8 @@ export interface Match {
 export interface DealRoom {
   id: string;
   match_id: string;
-  shark_a_id: string;
-  shark_b_id: string;
+  wing_a_id: string;
+  wing_b_id: string;
   bachelor_a_id: string;
   bachelor_b_id: string;
   started_at: string;
@@ -90,12 +90,12 @@ export interface DealRoom {
 
 export interface EscrowTransaction {
   id: string;
-  shark_id: string;
+  wing_id: string;
   match_id: string;
   duo_id: string;
   amount_ils: number;
   platform_fee: number;
-  shark_payout: number;
+  wing_payout: number;
   status: EscrowStatus;
   description: string;
   created_at: string;
@@ -113,12 +113,12 @@ export interface PostDateReview {
   created_at: string;
 }
 
-/** Feed card: dominant bachelor media + shark vouch */
+/** Feed card: dominant bachelor media + wing vouch */
 export interface DualFeedCard {
   id: string;
   duo: Duo;
   bachelor: Profile;
-  shark: Profile;
+  wing: Profile;
   interests: string[];
   perfect_for: string;
 }
@@ -127,7 +127,7 @@ export interface DealRoomMessage {
   id: string;
   deal_room_id: string;
   sender_id: string;
-  sender_role: "shark" | "system" | "earpiece";
+  sender_role: "wing" | "system" | "earpiece";
   body: string;
   created_at: string;
 }

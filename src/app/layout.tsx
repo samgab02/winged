@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Syne } from "next/font/google";
+import { AppearanceProvider } from "@/components/theme/appearance-provider";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -15,30 +16,30 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "POVI — Proof of Vibe",
+  title: "Winged — Dates with a wingman",
   description:
-    "The dating app where friends lock real dates. Discover, vouch, Deal Room in 3 minutes.",
-  applicationName: "POVI",
+    "The dating app where friends vouch and lock real dates. Discover, wing, Deal Room in 3 minutes.",
+  applicationName: "Winged",
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/povi-mark.svg" }],
+    apple: [{ url: "/winged-mark.svg" }],
   },
   openGraph: {
-    title: "POVI — Proof of Vibe",
+    title: "Winged — Dates with a wingman",
     description:
-      "Dates planned by friends. Not dry chat. Bachelor + Shark co-op matchmaking.",
-    siteName: "POVI",
-    images: [{ url: "/povi-mark.svg" }],
+      "Dates planned by friends. Not dry chat. Bachelor + Wing co-op matchmaking.",
+    siteName: "Winged",
+    images: [{ url: "/winged-mark.svg" }],
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "POVI",
+    title: "Winged",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FFF8F4",
+  themeColor: "#F3F1EE",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -51,11 +52,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-appearance="neutral">
       <body
         className={`${jakarta.variable} ${syne.variable} min-h-dvh bg-canvas font-sans text-foreground antialiased`}
       >
-        {children}
+        <AppearanceProvider>{children}</AppearanceProvider>
       </body>
     </html>
   );

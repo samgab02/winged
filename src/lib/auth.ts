@@ -3,8 +3,8 @@
  * Email + password persisted in localStorage; no external secrets required.
  */
 
-const ACCOUNTS_KEY = "povi-accounts-v1";
-const SESSION_KEY = "povi-auth-session-v1";
+const ACCOUNTS_KEY = "winged-accounts-v1";
+const SESSION_KEY = "winged-auth-session-v1";
 
 export type AccountRecord = {
   id: string;
@@ -28,7 +28,7 @@ function writeAccounts(accounts: AccountRecord[]) {
 }
 
 export async function digestPassword(password: string, salt: string) {
-  const data = new TextEncoder().encode(`${salt}:${password}:povi`);
+  const data = new TextEncoder().encode(`${salt}:${password}:winged`);
   const hash = await crypto.subtle.digest("SHA-256", data);
   return Array.from(new Uint8Array(hash))
     .map((b) => b.toString(16).padStart(2, "0"))

@@ -5,8 +5,9 @@ import { persist } from "zustand/middleware";
 import type { Gender, LookingFor, ProfilePrompt } from "@/lib/seed-catalog";
 import { deleteAccount, signOut as authSignOut } from "@/lib/auth";
 import { clearDevLoginSeedFlag, ensureDevLogins } from "@/lib/dev-logins";
+import type { AppearancePref } from "@/lib/theme";
 
-export type AppRole = "bachelor" | "shark";
+export type AppRole = "bachelor" | "wing";
 
 export type UserProfile = {
   accountId: string;
@@ -19,12 +20,14 @@ export type UserProfile = {
   prompts: ProfilePrompt[];
   interests: string[];
   lookingFor: LookingFor;
-  sharkMode: "friend" | "pro";
-  linkedSharkName: string;
+  wingMode: "friend" | "pro";
+  linkedWingName: string;
   linkedBachelorName: string;
   vibeLine: string;
   bio: string;
   onboardingComplete: boolean;
+  /** Appearance override; auto follows gender */
+  appearance: AppearancePref;
 };
 
 type AppState = {
@@ -63,12 +66,13 @@ const emptyProfile = (accountId: string): UserProfile => ({
   prompts: [],
   interests: [],
   lookingFor: "everyone",
-  sharkMode: "friend",
-  linkedSharkName: "Noa",
+  wingMode: "friend",
+  linkedWingName: "Noa",
   linkedBachelorName: "Maya",
   vibeLine: "",
   bio: "",
   onboardingComplete: false,
+  appearance: "auto",
 });
 
 export const useApp = create<AppState>()(
@@ -171,6 +175,7 @@ export const useApp = create<AppState>()(
       resetLocalData: () => {
         authSignOut();
         if (typeof window !== "undefined") {
+          localStorage.removeItem("winged-accounts-v1");
           localStorage.removeItem("povi-accounts-v1");
         }
         clearDevLoginSeedFlag();
@@ -188,8 +193,14 @@ export const useApp = create<AppState>()(
         const seeded = await ensureDevLogins();
         const map = { ...get().profilesByAccount };
         for (const [id, profile] of Object.entries(seeded)) {
-          if (!map[id]?.onboardingComplete) {
+          const existing = map[id];
+          if (!existing?.onboardingComplete) {
             map[id] = profile as UserProfile;
+          } else if (!existing.appearance) {
+            map[id] = {
+              ...existing,
+              appearance: profile.appearance ?? "auto",
+            };
           }
         }
         const accountId = get().accountId;
@@ -203,7 +214,7 @@ export const useApp = create<AppState>()(
         const profile = get().profile;
         if (!profile) return;
         const nextRole: AppRole =
-          profile.role === "bachelor" ? "shark" : "bachelor";
+          profile.role === "bachelor" ? "wing" : "bachelor";
         const next = { ...profile, role: nextRole };
         set({
           profile: next,
@@ -214,7 +225,7 @@ export const useApp = create<AppState>()(
         });
       },
     }),
-    { name: "povi-app-v2" }
+    { name: "winged-app-v1" }
   )
 );
 

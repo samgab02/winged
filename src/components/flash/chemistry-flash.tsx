@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { WingBloom } from "@/components/motion/wing-bloom";
+import { PageEnter } from "@/components/motion/page-enter";
 import { people } from "@/lib/mock-data";
 import { useSession } from "@/lib/store";
 import { formatCountdown, cn } from "@/lib/utils";
@@ -22,9 +25,11 @@ export function ChemistryFlash({
 }) {
   const setVerdict = useSession((s) => s.setFlashVerdict);
   const existing = useSession((s) => s.flashVerdicts[matchId]);
+  const reduced = useReducedMotion();
   const [seconds, setSeconds] = useState(180);
   const [promptIndex, setPromptIndex] = useState(0);
   const [verdict, setLocal] = useState<"keep" | "skip" | null>(existing ?? null);
+  const [bloom, setBloom] = useState(false);
 
   useEffect(() => {
     if (verdict) return;
@@ -44,10 +49,15 @@ export function ChemistryFlash({
   function choose(v: "keep" | "skip") {
     setLocal(v);
     setVerdict(matchId, v);
+    if (v === "keep") {
+      setBloom(true);
+      setTimeout(() => setBloom(false), 900);
+    }
   }
 
   return (
-    <section className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 pt-3 pb-6">
+    <PageEnter className="relative mx-auto flex w-full max-w-md flex-1 flex-col px-4 pt-3 pb-6">
+      <WingBloom show={bloom} />
       <p className="text-xs font-bold uppercase tracking-wider text-romance">
         180s Flash
       </p>
@@ -74,17 +84,37 @@ export function ChemistryFlash({
           />
         </div>
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-          <p className="font-mono text-sm font-bold text-white">
+          <motion.p
+            animate={
+              !reduced && !verdict
+                ? { opacity: [1, 0.75, 1] }
+                : { opacity: 1 }
+            }
+            transition={{ duration: 1.4, repeat: Infinity }}
+            className="font-mono text-sm font-bold text-white"
+          >
             {formatCountdown(seconds)}
-          </p>
-          <p className="mt-1 text-sm font-medium text-white/95">
-            {PROMPTS[promptIndex]}
-          </p>
+          </motion.p>
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={promptIndex}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              className="mt-1 text-sm font-medium text-white/95"
+            >
+              {PROMPTS[promptIndex]}
+            </motion.p>
+          </AnimatePresence>
         </div>
       </div>
 
       {verdict ? (
-        <div className="mt-6 rounded-3xl card-surface p-5 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-6 rounded-3xl card-surface p-5 text-center"
+        >
           <p className="font-display text-xl font-extrabold">
             You chose {verdict === "keep" ? "Keep" : "Skip"}
           </p>
@@ -96,7 +126,7 @@ export function ChemistryFlash({
           <Link href={backHref}>
             <Button className="mt-4 w-full">Done</Button>
           </Link>
-        </div>
+        </motion.div>
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-3">
           <Button
@@ -116,6 +146,6 @@ export function ChemistryFlash({
           </Button>
         </div>
       )}
-    </section>
+    </PageEnter>
   );
 }

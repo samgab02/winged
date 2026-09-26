@@ -34,12 +34,12 @@ export default function RootEntryPage() {
       router.replace(
         profile.role === "bachelor"
           ? "/onboarding/bachelor"
-          : "/onboarding/shark"
+          : "/onboarding/wing"
       );
       return;
     }
     router.replace(
-      profile.role === "bachelor" ? "/bachelor/discover" : "/shark/swipe"
+      profile.role === "bachelor" ? "/bachelor/discover" : "/wing/swipe"
     );
   }, [showSplash, profile, router]);
 

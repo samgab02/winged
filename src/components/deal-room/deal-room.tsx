@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Headphones, MapPin, Send, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { WingBloom } from "@/components/motion/wing-bloom";
+import { PageEnter } from "@/components/motion/page-enter";
 import { mockDealMessages, people } from "@/lib/mock-data";
 import { useSession } from "@/lib/store";
 import { cn, formatCountdown } from "@/lib/utils";
 
-type Mode = "shark" | "bachelor";
+type Mode = "wing" | "bachelor";
 
 const VENUES = [
   { id: "xo", name: "Cafe Xo, Florentin", when: "Thu · 20:00" },
@@ -25,11 +27,13 @@ export function DealRoomPanel({
   matchId?: string;
 }) {
   const lockDate = useSession((s) => s.lockDate);
+  const reduced = useReducedMotion();
   const [messages, setMessages] = useState(mockDealMessages);
   const [draft, setDraft] = useState("");
   const [endsAt] = useState(() => Date.now() + 135_000);
   const [secondsLeft, setSecondsLeft] = useState(135);
   const [locked, setLocked] = useState(false);
+  const [bloom, setBloom] = useState(false);
   const [venueId, setVenueId] = useState("xo");
   const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -79,7 +83,7 @@ export function DealRoomPanel({
         ...prev,
         {
           id: `sh_${Date.now()}`,
-          role: "shark",
+          role: "wing",
           name: "Noa",
           body,
           self: true,
@@ -91,13 +95,15 @@ export function DealRoomPanel({
 
   function onLock() {
     setLocked(true);
+    setBloom(true);
+    setTimeout(() => setBloom(false), 900);
     lockDate(matchId);
     setMessages((prev) => [
       ...prev,
       {
         id: `lock_${Date.now()}`,
         role: "system",
-        name: "POVI",
+        name: "Winged",
         body: `Locked · ${venue.name} · ${venue.when}`,
       },
     ]);
@@ -106,24 +112,35 @@ export function DealRoomPanel({
   const flashHref =
     mode === "bachelor"
       ? `/bachelor/flash/${matchId}`
-      : `/shark/flash/${matchId}`;
+      : `/wing/flash/${matchId}`;
 
   return (
-    <section className="relative mx-auto flex w-full max-w-md flex-1 flex-col px-4 pt-3">
+    <PageEnter className="relative mx-auto flex w-full max-w-md flex-1 flex-col px-4 pt-3">
+      <WingBloom show={bloom} />
       <header className="mb-3 flex items-start justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-extrabold tracking-tight">
-            {mode === "shark" ? "Plan the date" : "They’re planning"}
+            {mode === "wing" ? "Plan the date" : "They’re planning"}
           </h1>
           <p className="mt-0.5 text-sm text-secondary">Maya × Eli</p>
         </div>
         <div className="shrink-0 text-right">
-          <div
+          <motion.div
             className="relative mx-auto mb-1 size-14 rounded-full p-[2.5px]"
+            animate={
+              !reduced && !locked && !expired
+                ? { scale: lowTime ? [1, 1.06, 1] : [1, 1.03, 1] }
+                : { scale: 1 }
+            }
+            transition={{
+              duration: lowTime ? 0.7 : 1.6,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
             style={
               {
                 background: `conic-gradient(${
-                  lowTime || expired ? "var(--romance)" : "var(--shark)"
+                  lowTime || expired ? "var(--romance)" : "var(--wing)"
                 } calc(${progress} * 1turn), var(--border) 0)`,
               } as CSSProperties
             }
@@ -138,7 +155,7 @@ export function DealRoomPanel({
                 {formatCountdown(secondsLeft)}
               </span>
             </div>
-          </div>
+          </motion.div>
           <p className="text-[11px] font-medium text-subtle">
             {locked ? "Locked" : expired ? "Ended" : "left"}
           </p>
@@ -162,14 +179,14 @@ export function DealRoomPanel({
         </div>
         <div className="min-w-0 flex-1">
           <p className="flex items-center gap-1 text-sm font-semibold">
-            <MapPin className="size-3.5 text-shark" />
+            <MapPin className="size-3.5 text-wing" />
             {venue.name}
           </p>
           <p className="text-sm text-secondary">{venue.when}</p>
         </div>
       </div>
 
-      {mode === "shark" && !locked && (
+      {mode === "wing" && !locked && (
         <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
           {VENUES.map((v) => (
             <button
@@ -179,7 +196,7 @@ export function DealRoomPanel({
               className={cn(
                 "shrink-0 rounded-xl border px-3 py-2 text-left text-xs",
                 venueId === v.id
-                  ? "border-shark bg-shark-soft"
+                  ? "border-wing bg-wing-soft"
                   : "border-border bg-surface"
               )}
             >
@@ -198,18 +215,19 @@ export function DealRoomPanel({
           {messages.map((m) => (
             <motion.div
               key={m.id}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 12, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ type: "spring", stiffness: 320, damping: 28 }}
               className={cn(
                 "max-w-[88%] rounded-2xl px-3 py-2 text-sm leading-snug",
                 m.role === "system" &&
                   "mx-auto max-w-full bg-elevated text-center text-xs font-medium text-secondary",
                 m.role === "earpiece" &&
                   "border border-border bg-elevated text-secondary",
-                m.role === "shark" &&
+                m.role === "wing" &&
                   ("self" in m && m.self
                     ? "ml-auto bg-romance-soft"
-                    : "bg-shark-soft")
+                    : "bg-wing-soft")
               )}
             >
               {m.role === "earpiece" && (
@@ -217,7 +235,7 @@ export function DealRoomPanel({
                   <Headphones className="size-3.5" /> Whisper · {m.name}
                 </span>
               )}
-              {m.role === "shark" && (
+              {m.role === "wing" && (
                 <span className="mb-0.5 block text-[11px] font-semibold text-subtle">
                   {m.name}
                 </span>
@@ -240,8 +258,8 @@ export function DealRoomPanel({
             disabled={locked || expired}
             placeholder={
               mode === "bachelor"
-                ? "Whisper to your Shark…"
-                : "Message the other Shark…"
+                ? "Whisper to your Wing…"
+                : "Message the other Wing…"
             }
             className="h-12 flex-1 rounded-2xl border border-border bg-surface px-3.5 text-sm outline-none focus:border-romance/40"
           />
@@ -256,7 +274,7 @@ export function DealRoomPanel({
           </Button>
         </div>
 
-        {mode === "shark" ? (
+        {mode === "wing" ? (
           locked ? (
             <Link href={flashHref}>
               <Button className="w-full">
@@ -274,10 +292,10 @@ export function DealRoomPanel({
           </Link>
         ) : (
           <p className="rounded-2xl bg-elevated px-3 py-2.5 text-center text-xs text-secondary">
-            You’re on earpiece — whisper anytime. Only Sharks can lock.
+            You’re on earpiece — whisper anytime. Only Wings can lock.
           </p>
         )}
       </div>
-    </section>
+    </PageEnter>
   );
 }

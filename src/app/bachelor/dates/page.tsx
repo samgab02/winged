@@ -12,7 +12,7 @@ export default function BachelorDatesPage() {
     return (
       <EmptyState
         title="No dates yet"
-        body="When a Shark locks a plan, it shows up here with a check-in."
+        body="When a Wing locks a plan, it shows up here with a check-in."
       />
     );
   }
@@ -49,7 +49,7 @@ export default function BachelorDatesPage() {
               </div>
               <div className="flex items-center justify-between px-4 py-3">
                 <p className="flex items-center gap-1.5 text-sm font-medium">
-                  <MapPin className="size-4 text-shark" />
+                  <MapPin className="size-4 text-wing" />
                   {date.venue}
                 </p>
                 <span className="text-xs font-bold text-romance">

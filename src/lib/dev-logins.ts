@@ -14,14 +14,15 @@ import {
   type LookingFor,
   type ProfilePrompt,
 } from "@/lib/seed-catalog";
+import type { AppearancePref } from "@/lib/theme";
 
-const ACCOUNTS_KEY = "povi-accounts-v1";
-const SEEDED_FLAG = "povi-dev-logins-seeded-v1";
+const ACCOUNTS_KEY = "winged-accounts-v1";
+const SEEDED_FLAG = "winged-dev-logins-seeded-v1";
 
-export const DEV_PASSWORD = "povi123";
+export const DEV_PASSWORD = "winged123";
 
 export type DevProfileSeed = {
-  role: "bachelor" | "shark";
+  role: "bachelor" | "wing";
   gender: Gender;
   displayName: string;
   birthday: string;
@@ -30,12 +31,13 @@ export type DevProfileSeed = {
   prompts: ProfilePrompt[];
   interests: string[];
   lookingFor: LookingFor;
-  sharkMode: "friend" | "pro";
-  linkedSharkName: string;
+  wingMode: "friend" | "pro";
+  linkedWingName: string;
   linkedBachelorName: string;
   vibeLine: string;
   bio: string;
   onboardingComplete: boolean;
+  appearance: AppearancePref;
 };
 
 export type DevLogin = {
@@ -49,14 +51,15 @@ export type DevLogin = {
 export type SeededProfile = DevProfileSeed & { accountId: string };
 
 const maya = seedPeople.maya;
+const eli = seedPeople.eli;
 const noaPhoto = PHOTO_STARTER_PACK[4];
 
 export const DEV_LOGINS: DevLogin[] = [
   {
     id: "acc_dev_bachelor",
-    email: "bachelor@povi.app",
+    email: "bachelor@winged.app",
     password: DEV_PASSWORD,
-    label: "Bachelor",
+    label: "Bachelor · woman",
     profile: {
       role: "bachelor",
       gender: "woman",
@@ -67,21 +70,46 @@ export const DEV_LOGINS: DevLogin[] = [
       prompts: maya.prompts,
       interests: maya.interests,
       lookingFor: maya.lookingFor,
-      sharkMode: "friend",
-      linkedSharkName: "Noa",
+      wingMode: "friend",
+      linkedWingName: "Noa",
       linkedBachelorName: maya.firstName,
       vibeLine: maya.vibe,
       bio: maya.bio,
       onboardingComplete: true,
+      appearance: "auto",
     },
   },
   {
-    id: "acc_dev_shark",
-    email: "shark@povi.app",
+    id: "acc_dev_bachelor_man",
+    email: "man@winged.app",
     password: DEV_PASSWORD,
-    label: "Shark",
+    label: "Bachelor · man",
     profile: {
-      role: "shark",
+      role: "bachelor",
+      gender: "man",
+      displayName: eli.firstName,
+      birthday: "1994-08-03",
+      city: eli.city,
+      photos: eli.photos,
+      prompts: eli.prompts,
+      interests: eli.interests,
+      lookingFor: eli.lookingFor,
+      wingMode: "friend",
+      linkedWingName: "Dani",
+      linkedBachelorName: eli.firstName,
+      vibeLine: eli.vibe,
+      bio: eli.bio,
+      onboardingComplete: true,
+      appearance: "auto",
+    },
+  },
+  {
+    id: "acc_dev_wing",
+    email: "wing@winged.app",
+    password: DEV_PASSWORD,
+    label: "Wing",
+    profile: {
+      role: "wing",
       gender: "woman",
       displayName: "Noa",
       birthday: "1995-03-20",
@@ -103,12 +131,13 @@ export const DEV_LOGINS: DevLogin[] = [
       ],
       interests: ["Matchmaking", "Rooftop jazz"],
       lookingFor: "everyone",
-      sharkMode: "friend",
-      linkedSharkName: "Noa",
+      wingMode: "friend",
+      linkedWingName: "Noa",
       linkedBachelorName: "Maya",
       vibeLine: "Maya is chaos with perfect eyeliner.",
-      bio: "Friend Shark · Tel Aviv",
+      bio: "Friend Wing · Tel Aviv",
       onboardingComplete: true,
+      appearance: "auto",
     },
   },
 ];

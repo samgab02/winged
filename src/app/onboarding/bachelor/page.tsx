@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PoviMark } from "@/components/brand/povi-mark";
+import { WingedMark } from "@/components/brand/winged-mark";
 import {
   INTEREST_OPTIONS,
   PHOTO_STARTER_PACK,
@@ -40,7 +40,7 @@ export default function BachelorOnboardingPage() {
   const [promptA3, setPromptA3] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
   const [lookingFor, setLookingFor] = useState<LookingFor>("men");
-  const [sharkName, setSharkName] = useState("Noa");
+  const [wingName, setWingName] = useState("Noa");
   const [ageError, setAgeError] = useState("");
 
   useEffect(() => {
@@ -89,13 +89,13 @@ export default function BachelorOnboardingPage() {
       return promptA.trim() && promptA2.trim() && promptA3.trim();
     if (step === 5) return interests.length >= 3;
     if (step === 6) return !!lookingFor;
-    if (step === 7) return sharkName.trim().length > 0;
+    if (step === 7) return wingName.trim().length > 0;
     return false;
   }
 
   function next() {
     if (step === 1 && !isAdult(birthday)) {
-      setAgeError("You must be 18 or older to use POVI.");
+      setAgeError("You must be 18 or older to use Winged.");
       return;
     }
     setAgeError("");
@@ -124,10 +124,11 @@ export default function BachelorOnboardingPage() {
       ],
       interests,
       lookingFor,
-      linkedSharkName: sharkName.trim(),
+      linkedWingName: wingName.trim(),
       vibeLine: promptA.trim(),
       bio: `${city.trim()} · looking for ${lookingFor}`,
       onboardingComplete: true,
+      appearance: "auto",
     });
     completeOnboarding();
     router.replace("/bachelor/discover");
@@ -136,7 +137,7 @@ export default function BachelorOnboardingPage() {
   return (
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-5 pb-8 pt-8">
       <div className="flex items-center justify-between">
-        <PoviMark className="size-9" />
+        <WingedMark className="size-9" />
         <span className="text-xs font-semibold text-subtle">
           {step + 1} / {STEPS}
         </span>
@@ -156,12 +157,12 @@ export default function BachelorOnboardingPage() {
         {step === 4 && "Answer 3 prompts"}
         {step === 5 && "What are you into?"}
         {step === 6 && "Who are you open to?"}
-        {step === 7 && "Invite your Shark"}
+        {step === 7 && "Invite your Wing"}
       </h1>
       <p className="mt-1 text-sm text-secondary">
         {step === 3 && "At least 3 photos. First photo is your primary."}
         {step === 5 && "Pick 3–5. Keep it light."}
-        {step === 7 && "Share a link, or continue with a starter Shark link."}
+        {step === 7 && "Share a link, or continue with a starter Wing link."}
       </p>
 
       <div className="mt-6 flex-1">
@@ -381,9 +382,9 @@ export default function BachelorOnboardingPage() {
         {step === 7 && (
           <div className="space-y-3">
             <input
-              value={sharkName}
-              onChange={(e) => setSharkName(e.target.value)}
-              placeholder="Shark’s name"
+              value={wingName}
+              onChange={(e) => setWingName(e.target.value)}
+              placeholder="Wing’s name"
               className="h-12 w-full rounded-2xl border border-border bg-surface px-4 outline-none"
             />
             <Button
@@ -392,11 +393,11 @@ export default function BachelorOnboardingPage() {
               type="button"
               onClick={() => {
                 navigator.clipboard?.writeText(
-                  `https://povi.app/invite/${encodeURIComponent(sharkName)}`
+                  `https://winged.app/invite/${encodeURIComponent(wingName)}`
                 );
               }}
             >
-              Copy Shark invite link
+              Copy Wing invite link
             </Button>
             <p className="text-xs text-subtle">
               Continue even if they haven’t joined yet — you’ll still see people
@@ -421,7 +422,7 @@ export default function BachelorOnboardingPage() {
           disabled={!canContinue()}
           onClick={next}
         >
-          {step === STEPS - 1 ? "Enter POVI" : "Continue"}
+          {step === STEPS - 1 ? "Enter Winged" : "Continue"}
         </Button>
       </div>
     </div>

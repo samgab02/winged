@@ -5,13 +5,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { getSessionAccountId } from "@/lib/auth";
 import { useApp } from "@/lib/store";
 import { LoadingState } from "@/components/ui/states";
-import { PoviMark } from "@/components/brand/povi-mark";
+import { WingedMark } from "@/components/brand/winged-mark";
 
 export function RoleGate({
   expect,
   children,
 }: {
-  expect: "bachelor" | "shark";
+  expect: "bachelor" | "wing";
   children: React.ReactNode;
 }) {
   const router = useRouter();
@@ -41,13 +41,13 @@ export function RoleGate({
       router.replace(
         profile.role === "bachelor"
           ? "/onboarding/bachelor"
-          : "/onboarding/shark"
+          : "/onboarding/wing"
       );
       return;
     }
     if (profile.role !== expect) {
       router.replace(
-        profile.role === "bachelor" ? "/bachelor/discover" : "/shark/swipe"
+        profile.role === "bachelor" ? "/bachelor/discover" : "/wing/swipe"
       );
     }
   }, [ready, accountId, profile, expect, router, pathname]);
@@ -60,8 +60,8 @@ export function RoleGate({
   ) {
     return (
       <div className="mx-auto flex min-h-dvh max-w-lg flex-col items-center justify-center gap-3">
-        <PoviMark className="size-12 animate-pulse" />
-        <LoadingState label="Opening POVI…" />
+        <WingedMark className="size-12 animate-pulse" />
+        <LoadingState label="Opening Winged…" />
       </div>
     );
   }

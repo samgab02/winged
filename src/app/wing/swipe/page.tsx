@@ -4,7 +4,7 @@ import { SwipeDeck } from "@/components/cards/swipe-card";
 import { catalogAsDuoCards } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 
-export default function SharkSwipePage() {
+export default function WingSwipePage() {
   const bachelor = useApp((s) => s.profile?.linkedBachelorName ?? "them");
   const cards = catalogAsDuoCards();
 

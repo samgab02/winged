@@ -1,30 +1,38 @@
 @import "tailwindcss";
 
-:root {
-  --canvas: #fff8f4;
-  --canvas-deep: #ffe8e0;
+/* Default = dating-neutral (non-binary / unset) */
+:root,
+[data-appearance="neutral"] {
+  --canvas: #f3f1ee;
+  --canvas-deep: #e4e0da;
   --surface: #ffffff;
-  --elevated: #fff1ec;
-  --border: #f0ddd6;
+  --elevated: #ebe8e3;
+  --border: #ddd6ce;
 
-  --text-primary: #1a1a1a;
-  --text-secondary: #5c5666;
-  --text-muted: #8a8494;
+  --text-primary: #1c2430;
+  --text-secondary: #5a6270;
+  --text-muted: #8a919c;
 
-  --romance: #ff4d6d;
-  --romance-soft: rgba(255, 77, 109, 0.12);
-  --romance-deep: #e83a5a;
+  /* Accent: confident coral — CTAs only */
+  --romance: #e85d4c;
+  --romance-soft: rgba(232, 93, 76, 0.12);
+  --romance-deep: #d04838;
 
-  --shark: #2ec4b6;
-  --shark-soft: rgba(46, 196, 182, 0.14);
-  --shark-deep: #22a99d;
+  /* Wing / trust: slate-teal */
+  --wing: #2a9d8f;
+  --wing-soft: rgba(42, 157, 143, 0.14);
+  --wing-deep: #21867a;
 
   --success: #3d9b6e;
-  --spark: #e8b923;
-  --spark-soft: rgba(232, 185, 35, 0.18);
+  --spark: #c9a227;
+  --spark-soft: rgba(201, 162, 39, 0.18);
 
-  --shadow-card: 0 8px 28px rgba(90, 40, 50, 0.08);
-  --shadow-soft: 0 2px 12px rgba(90, 40, 50, 0.06);
+  --glow-a: rgba(28, 36, 48, 0.06);
+  --glow-b: rgba(232, 93, 76, 0.1);
+  --glow-c: rgba(42, 157, 143, 0.08);
+
+  --shadow-card: 0 8px 28px rgba(28, 36, 48, 0.08);
+  --shadow-soft: 0 2px 12px rgba(28, 36, 48, 0.06);
 
   --background: var(--canvas);
   --foreground: var(--text-primary);
@@ -33,6 +41,62 @@
   --ring: var(--romance);
 
   --radius: 1.25rem;
+}
+
+/* Woman / warm override */
+[data-appearance="warm"] {
+  --canvas: #fff6f3;
+  --canvas-deep: #ffe6df;
+  --surface: #ffffff;
+  --elevated: #fff0eb;
+  --border: #f0dcd5;
+
+  --text-primary: #1f1a1c;
+  --text-secondary: #6b5c62;
+  --text-muted: #9a8a90;
+
+  --romance: #f05a78;
+  --romance-soft: rgba(240, 90, 120, 0.14);
+  --romance-deep: #d94462;
+
+  --wing: #2ec4b6;
+  --wing-soft: rgba(46, 196, 182, 0.14);
+  --wing-deep: #22a99d;
+
+  --glow-a: rgba(240, 90, 120, 0.14);
+  --glow-b: rgba(46, 196, 182, 0.1);
+  --glow-c: rgba(255, 180, 140, 0.16);
+
+  --shadow-card: 0 8px 28px rgba(90, 40, 50, 0.08);
+  --shadow-soft: 0 2px 12px rgba(90, 40, 50, 0.06);
+}
+
+/* Man / cool override */
+[data-appearance="cool"] {
+  --canvas: #eef1f6;
+  --canvas-deep: #dde3ed;
+  --surface: #ffffff;
+  --elevated: #e6ebf3;
+  --border: #cfd6e2;
+
+  --text-primary: #121826;
+  --text-secondary: #4a5568;
+  --text-muted: #7a8496;
+
+  --romance: #3b6ced;
+  --romance-soft: rgba(59, 108, 237, 0.14);
+  --romance-deep: #2a55c8;
+
+  --wing: #0d9488;
+  --wing-soft: rgba(13, 148, 136, 0.14);
+  --wing-deep: #0f766e;
+
+  --glow-a: rgba(59, 108, 237, 0.12);
+  --glow-b: rgba(13, 148, 136, 0.1);
+  --glow-c: rgba(18, 24, 38, 0.06);
+
+  --shadow-card: 0 8px 28px rgba(18, 24, 38, 0.1);
+  --shadow-soft: 0 2px 12px rgba(18, 24, 38, 0.07);
 }
 
 @theme inline {
@@ -50,9 +114,9 @@
   --color-romance: var(--romance);
   --color-romance-soft: var(--romance-soft);
   --color-romance-deep: var(--romance-deep);
-  --color-shark: var(--shark);
-  --color-shark-soft: var(--shark-soft);
-  --color-shark-deep: var(--shark-deep);
+  --color-wing: var(--wing);
+  --color-wing-soft: var(--wing-soft);
+  --color-wing-deep: var(--wing-deep);
   --color-success: var(--success);
   --color-spark: var(--spark);
   --color-spark-soft: var(--spark-soft);
@@ -74,17 +138,18 @@ html {
 body {
   min-height: 100dvh;
   background:
-    radial-gradient(ellipse 90% 55% at 10% -5%, rgba(255, 77, 109, 0.14), transparent 55%),
-    radial-gradient(ellipse 70% 45% at 95% 8%, rgba(46, 196, 182, 0.1), transparent 50%),
-    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(255, 180, 140, 0.18), transparent 55%),
+    radial-gradient(ellipse 90% 55% at 10% -5%, var(--glow-a), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 95% 8%, var(--glow-b), transparent 50%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, var(--glow-c), transparent 55%),
     var(--canvas);
   color: var(--foreground);
   font-family: var(--font-jakarta), ui-sans-serif, sans-serif;
   -webkit-font-smoothing: antialiased;
+  transition: background 0.35s ease, color 0.25s ease;
 }
 
 ::selection {
-  background: rgba(255, 77, 109, 0.22);
+  background: var(--romance-soft);
   color: var(--text-primary);
 }
 
@@ -132,4 +197,15 @@ body {
 
 .confetti-bit {
   animation: confetti-fall 0.9s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

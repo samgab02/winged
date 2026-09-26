@@ -4,43 +4,46 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import {
-  CalendarHeart,
-  Compass,
-  HeartHandshake,
-  UserRound,
+  Layers3,
+  MessageCircleHeart,
+  UsersRound,
+  CircleUserRound,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const tabs = [
-  { href: "/bachelor/discover", label: "Discover", icon: Compass },
-  { href: "/bachelor/matches", label: "Matches", icon: HeartHandshake },
-  { href: "/bachelor/dates", label: "Dates", icon: CalendarHeart },
-  { href: "/bachelor/profile", label: "Profile", icon: UserRound },
+  { href: "/wing/swipe", label: "Swipe", icon: Layers3 },
+  { href: "/wing/deal-room", label: "Deal Room", icon: MessageCircleHeart },
+  { href: "/wing/singles", label: "My singles", icon: UsersRound },
+  { href: "/wing/me", label: "Me", icon: CircleUserRound },
 ];
 
-export function BachelorNav() {
+export function WingNav() {
   const pathname = usePathname();
   const reduced = useReducedMotion();
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-surface/95 backdrop-blur-md safe-bottom">
-      <LayoutGroup id="bachelor-tabs">
+      <LayoutGroup id="wing-tabs">
         <ul className="mx-auto flex max-w-md justify-around px-1 pt-1.5">
           {tabs.map(({ href, label, icon: Icon }) => {
-            const active = pathname.startsWith(href);
+            const active =
+              href === "/wing/me"
+                ? pathname.startsWith("/wing/me")
+                : pathname.startsWith(href);
             return (
               <li key={href} className="relative flex-1">
                 <Link
                   href={href}
                   className={cn(
                     "relative flex flex-col items-center gap-0.5 py-2 text-[11px] font-semibold",
-                    active ? "text-romance" : "text-subtle"
+                    active ? "text-wing-deep" : "text-subtle"
                   )}
                 >
                   {active && !reduced && (
                     <motion.span
-                      layoutId="bachelor-tab-pill"
-                      className="absolute inset-x-3 -top-0.5 bottom-1 rounded-2xl bg-romance-soft"
+                      layoutId="wing-tab-pill"
+                      className="absolute inset-x-3 -top-0.5 bottom-1 rounded-2xl bg-wing-soft"
                       transition={{ type: "spring", stiffness: 380, damping: 32 }}
                     />
                   )}

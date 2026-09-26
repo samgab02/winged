@@ -28,7 +28,7 @@ export default function BachelorDateDetailPage() {
         {date.pair}
       </h1>
       <p className="mt-1 flex items-center gap-1.5 text-sm text-secondary">
-        <MapPin className="size-4 text-shark" />
+        <MapPin className="size-4 text-wing" />
         {date.venue} · {date.when}
       </p>
       <p className="mt-3 text-sm text-secondary">{date.note}</p>

@@ -32,7 +32,7 @@ export default function BachelorDiscoverPage() {
     return (
       <EmptyState
         title="Nobody new right now"
-        body="Check back soon — Sharks are vouching fresh profiles."
+        body="Check back soon — Wings are vouching fresh profiles."
         actionLabel="Refresh"
         onAction={() => setStatus("loading")}
       />
@@ -43,7 +43,7 @@ export default function BachelorDiscoverPage() {
     <SwipeDeck
       cards={cards}
       title="Discover"
-      subtitle="Like someone and your Shark takes the next step."
+      subtitle="Like someone and your Wing takes the next step."
       leftLabel="Pass"
       rightLabel="Like"
     />

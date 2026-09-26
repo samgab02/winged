@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { PoviMark } from "@/components/brand/povi-mark";
+import { WingedMark } from "@/components/brand/winged-mark";
 import { getSessionAccountId } from "@/lib/auth";
 import { useApp } from "@/lib/store";
 
@@ -21,7 +21,7 @@ export default function RolePickPage() {
     hydrateSession(id);
   }, [hydrateSession, router]);
 
-  function choose(role: "bachelor" | "shark") {
+  function choose(role: "bachelor" | "wing") {
     const id = accountId || getSessionAccountId();
     if (!id) {
       router.replace("/welcome");
@@ -29,15 +29,15 @@ export default function RolePickPage() {
     }
     upsertProfile({ accountId: id, role, onboardingComplete: false });
     router.push(
-      role === "bachelor" ? "/onboarding/bachelor" : "/onboarding/shark"
+      role === "bachelor" ? "/onboarding/bachelor" : "/onboarding/wing"
     );
   }
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-6 pb-10 pt-10">
-      <PoviMark className="size-12" />
+      <WingedMark className="size-12" />
       <h1 className="mt-6 font-display text-3xl font-extrabold tracking-tight">
-        How will you use POVI?
+        How will you use Winged?
       </h1>
       <p className="mt-2 text-sm text-secondary">
         You can add the other mode later from settings.
@@ -50,22 +50,22 @@ export default function RolePickPage() {
           className="w-full rounded-2xl bg-romance px-5 py-4 text-left text-white shadow-soft"
         >
           <span className="block font-display text-lg font-extrabold">
-            I’m dating
+            I&apos;m dating
           </span>
           <span className="mt-0.5 block text-sm text-white/85">
-            Bachelor · discover people with a Shark in your corner
+            Bachelor · discover people with a Wing in your corner
           </span>
         </button>
         <button
           type="button"
-          onClick={() => choose("shark")}
-          className="w-full rounded-2xl bg-shark px-5 py-4 text-left text-white shadow-soft"
+          onClick={() => choose("wing")}
+          className="w-full rounded-2xl bg-wing px-5 py-4 text-left text-white shadow-soft"
         >
           <span className="block font-display text-lg font-extrabold">
-            I’m matchmaking
+            I&apos;m a Wing
           </span>
           <span className="mt-0.5 block text-sm text-white/85">
-            Shark · vouch, negotiate, lock the date
+            Wing · vouch, negotiate, lock the date
           </span>
         </button>
       </div>

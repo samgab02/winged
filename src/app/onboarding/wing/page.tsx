@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PoviMark } from "@/components/brand/povi-mark";
+import { WingedMark } from "@/components/brand/winged-mark";
 import {
   PHOTO_STARTER_PACK,
-  SHARK_VIBE_QUESTIONS,
+  WING_VIBE_QUESTIONS,
   isAdult,
   seedPeople,
   type Gender,
@@ -16,7 +16,7 @@ import { getSessionAccountId } from "@/lib/auth";
 import { useApp } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
-export default function SharkOnboardingPage() {
+export default function WingOnboardingPage() {
   const router = useRouter();
   const accountId = useApp((s) => s.accountId);
   const hydrateSession = useApp((s) => s.hydrateSession);
@@ -56,26 +56,27 @@ export default function SharkOnboardingPage() {
       `${bachelor.firstName} is chaos with perfect timing.`;
     upsertProfile({
       accountId: id,
-      role: "shark",
+      role: "wing",
       gender,
       displayName: name.trim(),
       birthday,
       city: city.trim(),
       photos: [photo],
-      prompts: SHARK_VIBE_QUESTIONS.map((q, i) => ({
+      prompts: WING_VIBE_QUESTIONS.map((q, i) => ({
         question: q,
         answer: answers[i] || "",
       })),
       interests: [],
       lookingFor: "everyone",
-      sharkMode: mode,
+      wingMode: mode,
       linkedBachelorName: bachelor.firstName,
       vibeLine: vibe,
-      bio: `${mode === "pro" ? "Pro Matchmaker" : "Friend Shark"} · ${city}`,
+      bio: `${mode === "pro" ? "Pro Matchmaker" : "Friend Wing"} · ${city}`,
       onboardingComplete: true,
+      appearance: "auto",
     });
     completeOnboarding();
-    router.replace("/shark/swipe");
+    router.replace("/wing/swipe");
   }
 
   function next() {
@@ -91,14 +92,14 @@ export default function SharkOnboardingPage() {
   return (
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-5 pb-8 pt-8">
       <div className="flex items-center justify-between">
-        <PoviMark className="size-9" />
+        <WingedMark className="size-9" />
         <span className="text-xs font-semibold text-subtle">
-          Shark · {step + 1}/4
+          Wing · {step + 1}/4
         </span>
       </div>
 
       <h1 className="mt-6 font-display text-2xl font-extrabold tracking-tight">
-        {step === 0 && "Your Shark profile"}
+        {step === 0 && "Your Wing profile"}
         {step === 1 && "Friend or Pro?"}
         {step === 2 && "Who are you wingmanning?"}
         {step === 3 && "Build their vibe line"}
@@ -122,7 +123,7 @@ export default function SharkOnboardingPage() {
                   className={cn(
                     "h-11 rounded-xl border text-sm font-semibold",
                     gender === id
-                      ? "border-shark bg-shark-soft"
+                      ? "border-wing bg-wing-soft"
                       : "border-border bg-surface"
                   )}
                 >
@@ -157,7 +158,7 @@ export default function SharkOnboardingPage() {
                   onClick={() => setPhoto(src)}
                   className={cn(
                     "aspect-square overflow-hidden rounded-xl",
-                    photo === src && "ring-2 ring-shark"
+                    photo === src && "ring-2 ring-wing"
                   )}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -175,8 +176,8 @@ export default function SharkOnboardingPage() {
           <div className="grid grid-cols-1 gap-2">
             {(
               [
-                ["friend", "Friend Shark", "Linked to one bachelor"],
-                ["pro", "Pro Shark", "Community matchmaking"],
+                ["friend", "Friend Wing", "Linked to one bachelor"],
+                ["pro", "Pro Wing", "Community matchmaking"],
               ] as const
             ).map(([id, title, sub]) => (
               <button
@@ -186,7 +187,7 @@ export default function SharkOnboardingPage() {
                 className={cn(
                   "rounded-2xl border p-4 text-left",
                   mode === id
-                    ? "border-shark bg-shark-soft"
+                    ? "border-wing bg-wing-soft"
                     : "border-border bg-surface"
                 )}
               >
@@ -210,7 +211,7 @@ export default function SharkOnboardingPage() {
                   className={cn(
                     "flex w-full items-center gap-3 rounded-2xl border p-3 text-left",
                     bachelorId === p.id
-                      ? "border-shark bg-shark-soft"
+                      ? "border-wing bg-wing-soft"
                       : "border-border bg-surface"
                   )}
                 >
@@ -229,7 +230,7 @@ export default function SharkOnboardingPage() {
                     </span>
                   </span>
                   {bachelorId === p.id && (
-                    <Check className="size-4 text-shark-deep" />
+                    <Check className="size-4 text-wing-deep" />
                   )}
                 </button>
               ))}
@@ -242,7 +243,7 @@ export default function SharkOnboardingPage() {
               Answering for <strong>{bachelor.firstName}</strong> — this becomes
               their vouch line.
             </p>
-            {SHARK_VIBE_QUESTIONS.map((q, i) => (
+            {WING_VIBE_QUESTIONS.map((q, i) => (
               <div key={q}>
                 <p className="mb-1.5 text-xs font-semibold text-subtle">{q}</p>
                 <textarea
@@ -278,7 +279,7 @@ export default function SharkOnboardingPage() {
           disabled={step === 0 && !name.trim()}
           onClick={next}
         >
-          {step === 3 ? "Enter POVI" : "Continue"}
+          {step === 3 ? "Enter Winged" : "Continue"}
         </Button>
       </div>
     </div>

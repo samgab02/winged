@@ -14,7 +14,7 @@ export type ProfilePrompt = {
 
 export type CatalogPerson = {
   id: string;
-  role: "bachelor" | "shark";
+  role: "bachelor" | "wing";
   gender: Gender;
   firstName: string;
   age: number;
@@ -25,8 +25,8 @@ export type CatalogPerson = {
   interests: string[];
   prompts: ProfilePrompt[];
   lookingFor: LookingFor;
-  sharkName?: string;
-  sharkAvatar?: string;
+  wingName?: string;
+  wingAvatar?: string;
   vouch?: string;
   perfectFor?: string;
 };
@@ -73,7 +73,7 @@ export const INTEREST_OPTIONS = [
   "Road trips",
 ];
 
-export const SHARK_VIBE_QUESTIONS = [
+export const WING_VIBE_QUESTIONS = [
   "What’s their most magnetic trait in a room?",
   "What should someone never do on a first date with them?",
   "One sentence roast that still feels affectionate?",
@@ -103,8 +103,8 @@ export const seedPeople: Record<string, CatalogPerson> = {
       },
     ],
     lookingFor: "women",
-    sharkName: "Dani",
-    sharkAvatar: u("photo-1507003211169-0a1dd7228f2d", 200, 200),
+    wingName: "Dani",
+    wingAvatar: u("photo-1507003211169-0a1dd7228f2d", 200, 200),
     vouch: "Eli will redesign your life pitch mid-date. Bring curiosity.",
     perfectFor: "A curious talker who likes soft eyes, sharp takes",
   },
@@ -131,8 +131,8 @@ export const seedPeople: Record<string, CatalogPerson> = {
       },
     ],
     lookingFor: "men",
-    sharkName: "Omi",
-    sharkAvatar: u("photo-1438761681033-6461ffad8d80", 200, 200),
+    wingName: "Omi",
+    wingAvatar: u("photo-1438761681033-6461ffad8d80", 200, 200),
     vouch: "Lina is a sunrise person who somehow thrives at 1am.",
     perfectFor: "Someone who can match sunrise energy at 1am",
   },
@@ -159,8 +159,8 @@ export const seedPeople: Record<string, CatalogPerson> = {
       },
     ],
     lookingFor: "women",
-    sharkName: "Tamar",
-    sharkAvatar: u("photo-1544005313-94ddf0286df2", 200, 200),
+    wingName: "Tamar",
+    wingAvatar: u("photo-1544005313-94ddf0286df2", 200, 200),
     vouch: "Yonatan plates romance like a tasting menu. Don’t flake.",
     perfectFor: "A date who treats dinner like a love language",
   },
@@ -186,8 +186,8 @@ export const seedPeople: Record<string, CatalogPerson> = {
       },
     ],
     lookingFor: "everyone",
-    sharkName: "Noa",
-    sharkAvatar: u("photo-1534528741775-53994a69daeb", 200, 200),
+    wingName: "Noa",
+    wingAvatar: u("photo-1534528741775-53994a69daeb", 200, 200),
     vouch: "Tom’s playlists are a personality test. Pass it and you’re golden.",
     perfectFor: "Someone who dances before overthinking",
   },
@@ -214,8 +214,8 @@ export const seedPeople: Record<string, CatalogPerson> = {
       },
     ],
     lookingFor: "men",
-    sharkName: "Noa",
-    sharkAvatar: u("photo-1534528741775-53994a69daeb", 200, 200),
+    wingName: "Noa",
+    wingAvatar: u("photo-1534528741775-53994a69daeb", 200, 200),
     vouch: "Maya is chaos with perfect eyeliner.",
     perfectFor: "Someone who laughs first and plans second",
   },
@@ -243,8 +243,8 @@ export function catalogAsDuoCards(lookingFor?: LookingFor) {
         photos: p.photos,
         avatar: p.photos[0],
       },
-      sharkName: p.sharkName ?? "Shark",
-      sharkAvatar: p.sharkAvatar ?? p.photos[0],
+      wingName: p.wingName ?? "Wing",
+      wingAvatar: p.wingAvatar ?? p.photos[0],
       vouch: p.vouch ?? p.vibe,
       perfectFor: p.perfectFor ?? p.bio,
     }));

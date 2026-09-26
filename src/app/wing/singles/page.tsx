@@ -4,7 +4,7 @@ import Link from "next/link";
 import { mockSingles } from "@/lib/mock-data";
 import { Progress } from "@/components/ui/progress";
 
-export default function SharkSinglesPage() {
+export default function WingSinglesPage() {
   return (
     <section className="mx-auto w-full max-w-md px-4 pt-3 pb-4">
       <h1 className="font-display text-2xl font-extrabold tracking-tight">
@@ -31,8 +31,8 @@ export default function SharkSinglesPage() {
                 <p className="text-sm text-secondary">{s.status}</p>
               </div>
               <Link
-                href={`/shark/profile/${s.person.id}`}
-                className="text-xs font-bold text-shark-deep"
+                href={`/wing/profile/${s.person.id}`}
+                className="text-xs font-bold text-wing-deep"
               >
                 Gallery
               </Link>

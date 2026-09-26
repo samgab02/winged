@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import { mockEarnings } from "@/lib/mock-data";
 import { formatILS, cn } from "@/lib/utils";
 
-export default function SharkEarningsPage() {
+export default function WingEarningsPage() {
   return (
     <section className="mx-auto w-full max-w-md px-4 pt-3 pb-6">
-      <Link href="/shark/me" className="text-sm font-semibold text-shark-deep">
+      <Link href="/wing/me" className="text-sm font-semibold text-wing-deep">
         ← Me
       </Link>
       <h1 className="mt-2 font-display text-2xl font-extrabold tracking-tight">

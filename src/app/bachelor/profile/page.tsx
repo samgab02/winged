@@ -23,7 +23,7 @@ export default function BachelorProfilePage() {
   return (
     <ProfileView
       person={person}
-      sharkName={profile.linkedSharkName}
+      wingName={profile.linkedWingName}
       isSelf
       prompts={profile.prompts}
     />

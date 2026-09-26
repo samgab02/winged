@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { PoviMark } from "@/components/brand/povi-mark";
+import { WingedMark } from "@/components/brand/winged-mark";
 import { Button } from "@/components/ui/button";
 import { ToastHost } from "@/components/ui/toast";
 import { signUp } from "@/lib/auth";
@@ -36,8 +36,8 @@ export default function SignUpPage() {
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-6 pb-10 pt-10">
       <ToastHost />
       <Link href="/welcome" className="inline-flex items-center gap-2">
-        <PoviMark className="size-9" />
-        <span className="font-display text-lg font-extrabold">POVI</span>
+        <WingedMark className="size-9" />
+        <span className="font-display text-lg font-extrabold">Winged</span>
       </Link>
       <h1 className="mt-8 font-display text-3xl font-extrabold tracking-tight">
         Create your account

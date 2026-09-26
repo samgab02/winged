@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
+import { AppearancePrefs } from "@/components/theme/appearance-prefs";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/lib/store";
 
-export default function SharkMePage() {
+export default function WingMePage() {
   const router = useRouter();
   const profile = useApp((s) => s.profile);
   const switchShell = useApp((s) => s.switchShell);
@@ -23,21 +24,21 @@ export default function SharkMePage() {
         <img
           src={profile.photos[0]}
           alt=""
-          className="size-16 rounded-full object-cover ring-2 ring-shark/35"
+          className="size-16 rounded-full object-cover ring-2 ring-wing/35"
         />
         <div>
           <h1 className="font-display text-2xl font-extrabold tracking-tight">
             {profile.displayName}
           </h1>
           <p className="text-sm text-secondary">
-            {profile.sharkMode === "pro" ? "Pro Matchmaker" : "Friend Shark"} ·{" "}
+            {profile.wingMode === "pro" ? "Pro Matchmaker" : "Friend Wing"} ·{" "}
             {profile.linkedBachelorName}
           </p>
         </div>
       </div>
 
       <Link
-        href="/shark/me/earnings"
+        href="/wing/me/earnings"
         className="mt-6 flex items-center justify-between rounded-2xl bg-surface px-4 py-4 shadow-soft transition hover:bg-elevated"
       >
         <span>
@@ -71,6 +72,8 @@ export default function SharkMePage() {
           <span className="text-romance">→</span>
         </button>
       </div>
+
+      <AppearancePrefs />
 
       <Button
         variant="ghost"

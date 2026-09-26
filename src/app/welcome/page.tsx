@@ -18,12 +18,6 @@ export default function WelcomePage() {
 
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_50%_0%,var(--glow-a),transparent_55%),radial-gradient(ellipse_70%_50%_at_50%_100%,var(--glow-b),transparent_50%),radial-gradient(ellipse_60%_40%_at_50%_55%,var(--glow-c),transparent_55%),var(--canvas)]" />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=1200&h=1600&fit=crop"
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover opacity-[0.07]"
-        />
         <FlyingWings />
       </div>
 

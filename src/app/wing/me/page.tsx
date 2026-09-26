@@ -31,15 +31,32 @@ export default function WingMePage() {
             {profile.displayName}
           </h1>
           <p className="text-sm text-secondary">
-            {profile.wingMode === "pro" ? "Pro Matchmaker" : "Friend Wing"} ·{" "}
-            {profile.linkedBachelorName}
+            {profile.wingMode === "pro"
+              ? "Pro Matchmaker"
+              : profile.wingMode === "both"
+                ? "Friend + Pro"
+                : "Friend Wing"}{" "}
+            · {profile.linkedBachelorName}
           </p>
         </div>
       </div>
 
       <Link
+        href="/wing/hub"
+        className="mt-6 flex items-center justify-between rounded-2xl bg-wing-soft px-4 py-4 transition hover:bg-wing/20"
+      >
+        <span>
+          <span className="block font-semibold text-wing-deep">Wings hub</span>
+          <span className="block text-sm text-secondary">
+            Stats, modes, network, singles
+          </span>
+        </span>
+        <ChevronRight className="size-5 text-wing" />
+      </Link>
+
+      <Link
         href="/wing/me/earnings"
-        className="mt-6 flex items-center justify-between rounded-2xl bg-surface px-4 py-4 shadow-soft transition hover:bg-elevated"
+        className="mt-2 flex items-center justify-between rounded-2xl bg-surface px-4 py-4 shadow-soft transition hover:bg-elevated"
       >
         <span>
           <span className="block font-semibold">Earnings</span>

@@ -69,6 +69,14 @@ export default function WingOnboardingPage() {
       interests: [],
       lookingFor: "everyone",
       wingMode: mode,
+      wingTier: mode === "pro" ? "baby_wing" : "friend_wing",
+      wingStats: {
+        datesLocked: 0,
+        conversionPct: 0,
+        activeSingles: 1,
+        notoriety: 20,
+      },
+      openToHire: mode === "pro",
       linkedBachelorName: bachelor.firstName,
       vibeLine: vibe,
       bio: `${mode === "pro" ? "Pro Matchmaker" : "Friend Wing"} · ${city}`,
@@ -76,7 +84,7 @@ export default function WingOnboardingPage() {
       appearance: "auto",
     });
     completeOnboarding();
-    router.replace("/wing/swipe");
+    router.replace("/wing/hub");
   }
 
   function next() {

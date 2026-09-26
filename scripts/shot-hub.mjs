@@ -1,0 +1,41 @@
+import puppeteer from "puppeteer-core";
+import { mkdir, copyFile } from "fs/promises";
+const MEDIA="/cursor/stores/bc-72b16167-8846-4c27-859b-efcb7464f2d6/media";
+const ART="/opt/cursor/artifacts/screenshots";
+await mkdir(MEDIA,{recursive:true}); await mkdir(ART,{recursive:true});
+const browser=await puppeteer.launch({executablePath:"/usr/bin/google-chrome-stable",headless:"new",args:["--no-sandbox","--window-size=390,844"],defaultViewport:{width:390,height:844,deviceScaleFactor:2}});
+const page=await browser.newPage();
+await page.goto("http://127.0.0.1:4317/welcome",{waitUntil:"networkidle0"});
+await new Promise(r=>setTimeout(r,1400));
+await page.screenshot({path:`${MEDIA}/winged-welcome-clean.png`});
+await copyFile(`${MEDIA}/winged-welcome-clean.png`,`${ART}/winged-welcome-clean.png`);
+console.log("welcome-clean");
+
+await page.goto("http://127.0.0.1:4317/auth/signin",{waitUntil:"networkidle0"});
+await page.evaluate(()=>localStorage.clear());
+await page.reload({waitUntil:"networkidle0"});
+await page.evaluate(()=>{const b=[...document.querySelectorAll("button")].find(x=>x.textContent.includes("wing@winged.app")); b?.click()});
+await page.waitForFunction(()=>location.pathname.includes("/wing/"),{timeout:15000});
+await page.goto("http://127.0.0.1:4317/wing/hub",{waitUntil:"networkidle0"});
+await new Promise(r=>setTimeout(r,600));
+await page.screenshot({path:`${MEDIA}/winged-wings-hub.png`});
+await copyFile(`${MEDIA}/winged-wings-hub.png`,`${ART}/winged-wings-hub.png`);
+console.log("hub");
+
+await page.goto("http://127.0.0.1:4317/wing/network",{waitUntil:"networkidle0"});
+await new Promise(r=>setTimeout(r,500));
+await page.screenshot({path:`${MEDIA}/winged-wings-network.png`});
+await copyFile(`${MEDIA}/winged-wings-network.png`,`${ART}/winged-wings-network.png`);
+console.log("network");
+
+await page.goto("http://127.0.0.1:4317/auth/signin",{waitUntil:"networkidle0"});
+await page.evaluate(()=>localStorage.clear());
+await page.reload({waitUntil:"networkidle0"});
+await page.evaluate(()=>{const b=[...document.querySelectorAll("button")].find(x=>x.textContent.includes("bachelor@winged.app")); b?.click()});
+await page.waitForFunction(()=>location.pathname.includes("/bachelor/"),{timeout:15000});
+await page.goto("http://127.0.0.1:4317/bachelor/my-wing",{waitUntil:"networkidle0"});
+await new Promise(r=>setTimeout(r,500));
+await page.screenshot({path:`${MEDIA}/winged-my-wing.png`});
+await copyFile(`${MEDIA}/winged-my-wing.png`,`${ART}/winged-my-wing.png`);
+console.log("my-wing");
+await browser.close();

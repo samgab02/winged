@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import {
+  Feather,
   Layers3,
   MessageCircleHeart,
-  UsersRound,
   CircleUserRound,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 const tabs = [
   { href: "/wing/swipe", label: "Swipe", icon: Layers3 },
   { href: "/wing/deal-room", label: "Deal Room", icon: MessageCircleHeart },
-  { href: "/wing/singles", label: "My singles", icon: UsersRound },
+  { href: "/wing/hub", label: "Wings", icon: Feather },
   { href: "/wing/me", label: "Me", icon: CircleUserRound },
 ];
 
@@ -30,7 +30,11 @@ export function WingNav() {
             const active =
               href === "/wing/me"
                 ? pathname.startsWith("/wing/me")
-                : pathname.startsWith(href);
+                : href === "/wing/hub"
+                  ? pathname.startsWith("/wing/hub") ||
+                    pathname.startsWith("/wing/network") ||
+                    pathname.startsWith("/wing/singles")
+                  : pathname.startsWith(href);
             return (
               <li key={href} className="relative flex-1">
                 <Link

@@ -15,6 +15,7 @@ import {
   type ProfilePrompt,
 } from "@/lib/seed-catalog";
 import type { AppearancePref } from "@/lib/theme";
+import type { WingMode, WingStats, WingTierId } from "@/lib/wing-network";
 
 const ACCOUNTS_KEY = "winged-accounts-v1";
 const SEEDED_FLAG = "winged-dev-logins-seeded-v1";
@@ -31,7 +32,10 @@ export type DevProfileSeed = {
   prompts: ProfilePrompt[];
   interests: string[];
   lookingFor: LookingFor;
-  wingMode: "friend" | "pro";
+  wingMode: WingMode;
+  wingTier: WingTierId;
+  wingStats: WingStats;
+  openToHire: boolean;
   linkedWingName: string;
   linkedBachelorName: string;
   vibeLine: string;
@@ -71,6 +75,14 @@ export const DEV_LOGINS: DevLogin[] = [
       interests: maya.interests,
       lookingFor: maya.lookingFor,
       wingMode: "friend",
+      wingTier: "friend_wing",
+      wingStats: {
+        datesLocked: 4,
+        conversionPct: 55,
+        activeSingles: 0,
+        notoriety: 80,
+      },
+      openToHire: false,
       linkedWingName: "Noa",
       linkedBachelorName: maya.firstName,
       vibeLine: maya.vibe,
@@ -95,6 +107,14 @@ export const DEV_LOGINS: DevLogin[] = [
       interests: eli.interests,
       lookingFor: eli.lookingFor,
       wingMode: "friend",
+      wingTier: "friend_wing",
+      wingStats: {
+        datesLocked: 2,
+        conversionPct: 40,
+        activeSingles: 0,
+        notoriety: 40,
+      },
+      openToHire: false,
       linkedWingName: "Dani",
       linkedBachelorName: eli.firstName,
       vibeLine: eli.vibe,
@@ -131,11 +151,19 @@ export const DEV_LOGINS: DevLogin[] = [
       ],
       interests: ["Matchmaking", "Rooftop jazz"],
       lookingFor: "everyone",
-      wingMode: "friend",
+      wingMode: "both",
+      wingTier: "rizz_master",
+      wingStats: {
+        datesLocked: 28,
+        conversionPct: 64,
+        activeSingles: 2,
+        notoriety: 920,
+      },
+      openToHire: true,
       linkedWingName: "Noa",
       linkedBachelorName: "Maya",
       vibeLine: "Maya is chaos with perfect eyeliner.",
-      bio: "Friend Wing · Tel Aviv",
+      bio: "Friend + Pro Wing · Tel Aviv",
       onboardingComplete: true,
       appearance: "auto",
     },

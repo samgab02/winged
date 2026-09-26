@@ -8,14 +8,15 @@ import { formatILS, cn } from "@/lib/utils";
 export default function WingEarningsPage() {
   return (
     <section className="mx-auto w-full max-w-md px-4 pt-3 pb-6">
-      <Link href="/wing/me" className="text-sm font-semibold text-wing-deep">
-        ← Me
+      <Link href="/wing/hub" className="text-sm font-semibold text-wing-deep">
+        ← Wings hub
       </Link>
-      <h1 className="mt-2 font-display text-2xl font-extrabold tracking-tight">
-        Earnings
+      <h1 className="mt-2 text-center font-display text-2xl font-extrabold tracking-tight">
+        Date Pass earnings
       </h1>
-      <p className="mt-1 text-sm text-secondary">
-        Released after you both check in at the date.
+      <p className="mx-auto mt-1 max-w-xs text-center text-sm text-secondary">
+        Pro Wings earn when strangers book a Date Pass. Payout releases after
+        both check in at the date.
       </p>
 
       <div className="mt-5 rounded-2xl bg-surface p-5 shadow-soft">

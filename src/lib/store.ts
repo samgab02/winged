@@ -6,6 +6,8 @@ import type { Gender, LookingFor, ProfilePrompt } from "@/lib/seed-catalog";
 import { deleteAccount, signOut as authSignOut } from "@/lib/auth";
 import { clearDevLoginSeedFlag, ensureDevLogins } from "@/lib/dev-logins";
 import type { AppearancePref } from "@/lib/theme";
+import type { WingMode, WingStats, WingTierId } from "@/lib/wing-network";
+import { DEFAULT_WING_STATS } from "@/lib/wing-network";
 
 export type AppRole = "bachelor" | "wing";
 
@@ -20,7 +22,10 @@ export type UserProfile = {
   prompts: ProfilePrompt[];
   interests: string[];
   lookingFor: LookingFor;
-  wingMode: "friend" | "pro";
+  wingMode: WingMode;
+  wingTier: WingTierId;
+  wingStats: WingStats;
+  openToHire: boolean;
   linkedWingName: string;
   linkedBachelorName: string;
   vibeLine: string;
@@ -67,6 +72,9 @@ const emptyProfile = (accountId: string): UserProfile => ({
   interests: [],
   lookingFor: "everyone",
   wingMode: "friend",
+  wingTier: "friend_wing",
+  wingStats: { ...DEFAULT_WING_STATS },
+  openToHire: false,
   linkedWingName: "Noa",
   linkedBachelorName: "Maya",
   vibeLine: "",
@@ -91,15 +99,28 @@ export const useApp = create<AppState>()(
           return;
         }
         const existing = get().profilesByAccount[accountId];
+        const profile = {
+          ...emptyProfile(accountId),
+          ...(existing ?? {}),
+          accountId,
+        };
         set({
           accountId,
-          profile: existing ?? emptyProfile(accountId),
+          profile,
+          profilesByAccount: {
+            ...get().profilesByAccount,
+            [accountId]: profile,
+          },
         });
       },
 
       setAccount: (accountId) => {
         const existing = get().profilesByAccount[accountId];
-        const profile = existing ?? emptyProfile(accountId);
+        const profile = {
+          ...emptyProfile(accountId),
+          ...(existing ?? {}),
+          accountId,
+        };
         set({
           accountId,
           profile,
@@ -112,10 +133,11 @@ export const useApp = create<AppState>()(
 
       upsertProfile: (partial) => {
         const id = partial.accountId;
-        const current =
-          get().profilesByAccount[id] ??
-          get().profile ??
-          emptyProfile(id);
+        const current = {
+          ...emptyProfile(id),
+          ...(get().profilesByAccount[id] ?? get().profile ?? {}),
+          accountId: id,
+        };
         const next = { ...current, ...partial, accountId: id };
         set({
           profile: get().accountId === id ? next : get().profile,
@@ -195,11 +217,21 @@ export const useApp = create<AppState>()(
         for (const [id, profile] of Object.entries(seeded)) {
           const existing = map[id];
           if (!existing?.onboardingComplete) {
-            map[id] = profile as UserProfile;
-          } else if (!existing.appearance) {
             map[id] = {
+              ...emptyProfile(id),
+              ...(profile as UserProfile),
+              accountId: id,
+            };
+          } else {
+            map[id] = {
+              ...emptyProfile(id),
               ...existing,
-              appearance: profile.appearance ?? "auto",
+              wingTier: existing.wingTier ?? (profile as UserProfile).wingTier,
+              wingStats: existing.wingStats ?? (profile as UserProfile).wingStats,
+              openToHire:
+                existing.openToHire ?? (profile as UserProfile).openToHire,
+              appearance: existing.appearance ?? profile.appearance ?? "auto",
+              accountId: id,
             };
           }
         }

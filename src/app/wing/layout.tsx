@@ -13,7 +13,7 @@ export default function WingLayout({
   return (
     <RoleGate expect="wing">
       <div className="mx-auto flex min-h-dvh max-w-lg flex-col pb-24">
-        <AppHeader badge="Wing" href="/wing/swipe" />
+        <AppHeader badge="Wing" href="/wing/hub" />
         <main className="flex flex-1 flex-col">{children}</main>
         <WingNav />
         <ToastHost />

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Headphones, Send, Sparkles } from "lucide-react";
+import { Headphones, MapPin, Send, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { mockDealMessages, people } from "@/lib/mock-data";
@@ -10,6 +10,12 @@ import { useSession } from "@/lib/store";
 import { cn, formatCountdown } from "@/lib/utils";
 
 type Mode = "shark" | "bachelor";
+
+const VENUES = [
+  { id: "xo", name: "Cafe Xo, Florentin", when: "Thu · 20:00" },
+  { id: "port", name: "The Port, Jaffa", when: "Fri · 19:30" },
+  { id: "roof", name: "Norman Rooftop", when: "Sat · 21:00" },
+];
 
 export function DealRoomPanel({
   mode,
@@ -24,7 +30,10 @@ export function DealRoomPanel({
   const [endsAt] = useState(() => Date.now() + 135_000);
   const [secondsLeft, setSecondsLeft] = useState(135);
   const [locked, setLocked] = useState(false);
+  const [venueId, setVenueId] = useState("xo");
+  const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const venue = VENUES.find((v) => v.id === venueId) ?? VENUES[0];
 
   const progress = useMemo(
     () => Math.max(0, Math.min(1, secondsLeft / 180)),
@@ -39,11 +48,20 @@ export function DealRoomPanel({
   }, [endsAt]);
 
   useEffect(() => {
+    if (mode !== "bachelor" || locked) return;
+    const id = setInterval(() => {
+      setTyping(true);
+      setTimeout(() => setTyping(false), 1600);
+    }, 9000);
+    return () => clearInterval(id);
+  }, [mode, locked]);
+
+  useEffect(() => {
     scrollRef.current?.scrollTo({
       top: scrollRef.current.scrollHeight,
       behavior: "smooth",
     });
-  }, [messages]);
+  }, [messages, typing]);
 
   const expired = secondsLeft <= 0 && !locked;
   const lowTime = !locked && secondsLeft > 0 && secondsLeft <= 30;
@@ -54,12 +72,7 @@ export function DealRoomPanel({
     if (mode === "bachelor") {
       setMessages((prev) => [
         ...prev,
-        {
-          id: `ear_${Date.now()}`,
-          role: "earpiece",
-          name: "Maya",
-          body,
-        },
+        { id: `ear_${Date.now()}`, role: "earpiece", name: "Maya", body },
       ]);
     } else {
       setMessages((prev) => [
@@ -85,7 +98,7 @@ export function DealRoomPanel({
         id: `lock_${Date.now()}`,
         role: "system",
         name: "POVI",
-        body: "Date locked ✨ Next up: a quick chemistry flash.",
+        body: `Locked · ${venue.name} · ${venue.when}`,
       },
     ]);
   }
@@ -97,30 +110,12 @@ export function DealRoomPanel({
 
   return (
     <section className="relative mx-auto flex w-full max-w-md flex-1 flex-col px-4 pt-3">
-      {locked && (
-        <div className="pointer-events-none absolute inset-x-0 top-14 z-20 flex justify-center gap-1">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <span
-              key={i}
-              className="confetti-bit size-2 rounded-full"
-              style={{
-                background: ["#FF4D6D", "#2EC4B6", "#E8B923"][i % 3],
-                animationDelay: `${i * 40}ms`,
-              }}
-            />
-          ))}
-        </div>
-      )}
-
       <header className="mb-3 flex items-start justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-extrabold tracking-tight">
-            {mode === "shark" ? "Plan the date" : "Your date’s cooking"}
+            {mode === "shark" ? "Plan the date" : "They’re planning"}
           </h1>
-          <p className="mt-0.5 text-sm text-secondary">
-            Maya × Eli ·{" "}
-            {mode === "shark" ? "you’re negotiating" : "observe + whisper"}
-          </p>
+          <p className="mt-0.5 text-sm text-secondary">Maya × Eli</p>
         </div>
         <div className="shrink-0 text-right">
           <div
@@ -145,48 +140,59 @@ export function DealRoomPanel({
             </div>
           </div>
           <p className="text-[11px] font-medium text-subtle">
-            {locked ? "Locked" : expired ? "Time’s up" : "to plan"}
+            {locked ? "Locked" : expired ? "Ended" : "left"}
           </p>
         </div>
       </header>
 
-      <div className="mb-3 flex items-center gap-3 rounded-2xl card-surface p-3">
+      <div className="mb-3 flex items-center gap-3">
         <div className="flex -space-x-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={people.maya.photos[0]}
             alt=""
-            className="size-12 rounded-full object-cover ring-2 ring-surface"
+            className="size-12 rounded-full object-cover ring-2 ring-canvas"
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={people.eli.photos[0]}
             alt=""
-            className="size-12 rounded-full object-cover ring-2 ring-surface"
+            className="size-12 rounded-full object-cover ring-2 ring-canvas"
           />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-semibold uppercase tracking-wide text-subtle">
-            Tonight’s plan
+          <p className="flex items-center gap-1 text-sm font-semibold">
+            <MapPin className="size-3.5 text-shark" />
+            {venue.name}
           </p>
-          <p className="font-display text-base font-bold">Cafe Xo, Florentin</p>
-          <p className="text-sm text-secondary">Thu · 20:00</p>
+          <p className="text-sm text-secondary">{venue.when}</p>
         </div>
-        <Link
-          href={
-            mode === "bachelor"
-              ? "/bachelor/profile/eli"
-              : "/shark/profile/eli"
-          }
-          className="text-xs font-bold text-romance"
-        >
-          Photos
-        </Link>
       </div>
+
+      {mode === "shark" && !locked && (
+        <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
+          {VENUES.map((v) => (
+            <button
+              key={v.id}
+              type="button"
+              onClick={() => setVenueId(v.id)}
+              className={cn(
+                "shrink-0 rounded-xl border px-3 py-2 text-left text-xs",
+                venueId === v.id
+                  ? "border-shark bg-shark-soft"
+                  : "border-border bg-surface"
+              )}
+            >
+              <span className="block font-semibold">{v.name}</span>
+              <span className="text-subtle">{v.when}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       <div
         ref={scrollRef}
-        className="min-h-0 flex-1 space-y-2 overflow-y-auto rounded-2xl card-surface p-3"
+        className="min-h-0 flex-1 space-y-2 overflow-y-auto rounded-2xl bg-surface p-3 shadow-soft"
       >
         <AnimatePresence initial={false}>
           {messages.map((m) => (
@@ -220,6 +226,9 @@ export function DealRoomPanel({
             </motion.div>
           ))}
         </AnimatePresence>
+        {typing && (
+          <p className="text-xs font-medium text-subtle">Dani is typing…</p>
+        )}
       </div>
 
       <div className="mt-3 space-y-2 safe-bottom">
@@ -232,7 +241,7 @@ export function DealRoomPanel({
             placeholder={
               mode === "bachelor"
                 ? "Whisper to your Shark…"
-                : "Suggest a tweak…"
+                : "Message the other Shark…"
             }
             className="h-12 flex-1 rounded-2xl border border-border bg-surface px-3.5 text-sm outline-none focus:border-romance/40"
           />
@@ -250,8 +259,8 @@ export function DealRoomPanel({
         {mode === "shark" ? (
           locked ? (
             <Link href={flashHref}>
-              <Button className="w-full border-spark bg-spark-soft text-foreground hover:bg-spark-soft">
-                <Sparkles className="size-4 text-spark" /> Continue to Flash
+              <Button className="w-full">
+                <Sparkles className="size-4" /> Open chemistry flash
               </Button>
             </Link>
           ) : (
@@ -265,7 +274,7 @@ export function DealRoomPanel({
           </Link>
         ) : (
           <p className="rounded-2xl bg-elevated px-3 py-2.5 text-center text-xs text-secondary">
-            Your Shark is negotiating. Whisper anytime — you can’t lock for them.
+            You’re on earpiece — whisper anytime. Only Sharks can lock.
           </p>
         )}
       </div>

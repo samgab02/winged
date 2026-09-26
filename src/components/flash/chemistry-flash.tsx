@@ -49,13 +49,13 @@ export function ChemistryFlash({
   return (
     <section className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 pt-3 pb-6">
       <p className="text-xs font-bold uppercase tracking-wider text-romance">
-        180s Flash · demo stub
+        180s Flash
       </p>
       <h1 className="mt-1 font-display text-2xl font-extrabold tracking-tight">
         Chemistry check
       </h1>
       <p className="mt-1 text-sm text-secondary">
-        Voice/video would live here. For now: prompt + Keep / Skip.
+        Icebreaker prompts · Keep if you want the date to stand.
       </p>
 
       <div className="relative mt-5 overflow-hidden rounded-3xl card-surface">
@@ -90,8 +90,8 @@ export function ChemistryFlash({
           </p>
           <p className="mt-2 text-sm text-secondary">
             {verdict === "keep"
-              ? "If both Keep, the calendar stays locked. Demo saved your pick."
-              : "All good — no hard feelings. Demo saved your pick."}
+              ? "If both Keep, the calendar stays locked."
+              : "All good — no hard feelings. We’ll unwind the hold."}
           </p>
           <Link href={backHref}>
             <Button className="mt-4 w-full">Done</Button>

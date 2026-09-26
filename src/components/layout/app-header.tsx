@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { PoviMark } from "@/components/brand/povi-mark";
 
 export function AppHeader({
   badge,
@@ -10,18 +11,16 @@ export function AppHeader({
   href?: string;
 }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-border/80 bg-canvas/85 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-border/70 bg-canvas/90 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-md items-center justify-between px-4">
-        <Link
-          href={href}
-          className="font-display text-xl font-extrabold tracking-tight"
-        >
-          POVI
+        <Link href={href} className="inline-flex items-center gap-2">
+          <PoviMark className="size-8" />
+          <span className="font-display text-lg font-extrabold tracking-tight">
+            POVI
+          </span>
         </Link>
         {badge ? (
-          <span className="rounded-full bg-elevated px-2.5 py-1 text-[11px] font-semibold text-secondary">
-            {badge}
-          </span>
+          <span className="text-xs font-semibold text-subtle">{badge}</span>
         ) : (
           <span />
         )}

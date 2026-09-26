@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, Wallet } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { sharkAvatars } from "@/lib/mock-data";
 import { useSession } from "@/lib/store";
 
 export default function SharkMePage() {
+  const router = useRouter();
   const name = useSession((s) => s.sharkName);
   const mode = useSession((s) => s.sharkMode);
   const bachelor = useSession((s) => s.linkedBachelorName);
@@ -15,68 +17,73 @@ export default function SharkMePage() {
 
   return (
     <section className="mx-auto w-full max-w-md px-4 pt-3 pb-6">
-      <div className="flex items-center gap-3 rounded-3xl card-surface p-4">
+      <div className="flex items-center gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={sharkAvatars.noa}
           alt=""
-          className="size-16 rounded-full object-cover ring-2 ring-shark/30"
+          className="size-16 rounded-full object-cover ring-2 ring-shark/35"
         />
         <div>
           <h1 className="font-display text-2xl font-extrabold tracking-tight">
             {name}
           </h1>
           <p className="text-sm text-secondary">
-            {mode === "pro" ? "Pro Shark" : "Friend Shark"} · linked to{" "}
-            {bachelor}
-          </p>
-          <p className="mt-1 text-xs font-semibold text-shark-deep">
-            Notoriety · rising (demo)
+            {mode === "pro" ? "Pro Matchmaker" : "Friend Shark"} · {bachelor}
           </p>
         </div>
       </div>
 
       <Link
         href="/shark/me/earnings"
-        className="mt-4 flex items-center gap-3 rounded-3xl card-surface p-4 transition hover:border-shark/30"
+        className="mt-6 flex items-center justify-between rounded-2xl bg-surface px-4 py-4 shadow-soft transition hover:bg-elevated"
       >
-        <span className="flex size-11 items-center justify-center rounded-2xl bg-shark-soft text-shark-deep">
-          <Wallet className="size-5" />
-        </span>
-        <span className="flex-1">
+        <span>
           <span className="block font-semibold">Earnings</span>
           <span className="block text-sm text-secondary">
-            Quiet payouts after check-in — Shark only
+            Released after date check-in
           </span>
         </span>
         <ChevronRight className="size-5 text-subtle" />
       </Link>
 
-      <div className="mt-6 space-y-2 rounded-3xl card-surface p-4">
-        <p className="text-xs font-bold uppercase tracking-wider text-subtle">
-          Demo settings
-        </p>
-        <Button
-          variant="outline"
-          className="w-full"
+      <div className="mt-4 rounded-2xl bg-surface shadow-soft divide-y divide-border">
+        <div className="px-4 py-3.5">
+          <p className="text-sm font-semibold">Availability</p>
+          <p className="text-xs text-secondary">Open for Deal Rooms tonight</p>
+        </div>
+        <div className="px-4 py-3.5">
+          <p className="text-sm font-semibold">Notoriety</p>
+          <p className="text-xs text-secondary">Built from real-world dates</p>
+        </div>
+        <button
+          type="button"
+          className="flex w-full items-center justify-between px-4 py-3.5 text-left"
           onClick={() => {
             switchRole();
-            window.location.href = "/";
+            router.replace("/");
           }}
         >
-          Switch to Bachelor
-        </Button>
-        <Button
-          variant="destructive"
-          className="w-full"
-          onClick={() => {
-            resetDemo();
-            window.location.href = "/";
-          }}
-        >
-          Reset demo
-        </Button>
+          <span>
+            <span className="block text-sm font-semibold">Also date</span>
+            <span className="block text-xs text-secondary">
+              Open Bachelor shell on this device
+            </span>
+          </span>
+          <span className="text-romance">→</span>
+        </button>
       </div>
+
+      <Button
+        variant="ghost"
+        className="mt-4 w-full text-subtle"
+        onClick={() => {
+          resetDemo();
+          router.replace("/");
+        }}
+      >
+        Sign out
+      </Button>
     </section>
   );
 }

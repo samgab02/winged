@@ -1,37 +1,33 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SwipeDeck } from "@/components/cards/swipe-card";
 import { EmptyState, ErrorState, LoadingState } from "@/components/ui/states";
 import { discoverCards } from "@/lib/mock-data";
-import { useSession } from "@/lib/store";
 
 export default function BachelorDiscoverPage() {
-  const listStatus = useSession((s) => s.listStatus);
-  const setListStatus = useSession((s) => s.setListStatus);
+  const [status, setStatus] = useState<"loading" | "ready" | "empty" | "error">(
+    "loading"
+  );
 
   useEffect(() => {
-    if (listStatus === "loading") {
-      const t = setTimeout(() => setListStatus("ready"), 700);
-      return () => clearTimeout(t);
-    }
-  }, [listStatus, setListStatus]);
+    const t = setTimeout(() => setStatus("ready"), 550);
+    return () => clearTimeout(t);
+  }, []);
 
-  if (listStatus === "loading") {
+  if (status === "loading") {
     return <LoadingState label="Finding people near you…" />;
   }
-  if (listStatus === "error") {
-    return (
-      <ErrorState onRetry={() => setListStatus("loading")} />
-    );
+  if (status === "error") {
+    return <ErrorState onRetry={() => setStatus("loading")} />;
   }
-  if (listStatus === "empty") {
+  if (status === "empty") {
     return (
       <EmptyState
         title="Nobody new right now"
-        body="Check back when Sharks vouch fresh profiles — or replay the demo deck."
-        actionLabel="Reload demo"
-        onAction={() => setListStatus("ready")}
+        body="Check back soon — Sharks are vouching fresh profiles."
+        actionLabel="Refresh"
+        onAction={() => setStatus("loading")}
       />
     );
   }
@@ -40,7 +36,7 @@ export default function BachelorDiscoverPage() {
     <SwipeDeck
       cards={discoverCards}
       title="Discover"
-      subtitle="Like someone? Your Shark will take it from there."
+      subtitle="Like someone and your Shark takes the next step."
       leftLabel="Pass"
       rightLabel="Like"
     />

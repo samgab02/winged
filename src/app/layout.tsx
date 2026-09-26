@@ -17,8 +17,19 @@ const syne = Syne({
 export const metadata: Metadata = {
   title: "POVI — Proof of Vibe",
   description:
-    "Co-op dating with Sharks. Discover people, plan real dates in 3 minutes, show up IRL.",
+    "The dating app where friends lock real dates. Discover, vouch, Deal Room in 3 minutes.",
   applicationName: "POVI",
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/povi-mark.svg" }],
+  },
+  openGraph: {
+    title: "POVI — Proof of Vibe",
+    description:
+      "Dates planned by friends. Not dry chat. Bachelor + Shark co-op matchmaking.",
+    siteName: "POVI",
+    images: [{ url: "/povi-mark.svg" }],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

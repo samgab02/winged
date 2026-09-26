@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
+    "dev": "next dev --turbopack -p 4317 -H 0.0.0.0",
+    "build": "next build",
+    "start": "next start -p 4317",
     "lint": "eslint",
-    "dev:demo": "next dev --turbopack -p 4317 -H 0.0.0.0"
+    "dev:demo": "npm run dev"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.2.6",

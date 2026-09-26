@@ -4,12 +4,17 @@ import Link from "next/link";
 import { mockMatches } from "@/lib/mock-data";
 import { EmptyState } from "@/components/ui/states";
 
+const previews: Record<string, string> = {
+  match_maya_eli: "Noa: Patio + oat milk confirmed…",
+  match_maya_tom: "You matched · waiting on Sharks",
+};
+
 export default function BachelorMatchesPage() {
   if (mockMatches.length === 0) {
     return (
       <EmptyState
         title="No matches yet"
-        body="Keep discovering — when it’s mutual, your Shark opens a Deal Room."
+        body="Keep discovering. When it’s mutual, your Shark opens a Deal Room."
       />
     );
   }
@@ -20,10 +25,10 @@ export default function BachelorMatchesPage() {
         Matches
       </h1>
       <p className="mt-0.5 text-sm text-secondary">
-        Mutual vibes. Peek in while Sharks plan.
+        Mutual vibes and live planning threads.
       </p>
 
-      <ul className="mt-5 space-y-3">
+      <ul className="mt-5 divide-y divide-border rounded-2xl bg-surface shadow-soft">
         {mockMatches.map((m) => (
           <li key={m.id}>
             <Link
@@ -32,35 +37,27 @@ export default function BachelorMatchesPage() {
                   ? `/bachelor/deal-room/${m.id}`
                   : `/bachelor/profile/${m.other.id}`
               }
-              className="flex items-center gap-3 rounded-3xl card-surface p-3 transition hover:border-romance/30"
+              className="flex items-center gap-3 px-3 py-3.5 transition hover:bg-elevated/60"
             >
-              <div className="relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={m.other.photos[0]}
-                  alt=""
-                  className="size-16 rounded-2xl object-cover"
-                />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={m.person.photos[0]}
-                  alt=""
-                  className="absolute -bottom-1 -right-1 size-7 rounded-full object-cover ring-2 ring-surface"
-                />
-              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={m.other.photos[0]}
+                alt=""
+                className="size-14 rounded-2xl object-cover"
+              />
               <div className="min-w-0 flex-1">
-                <p className="font-display text-lg font-bold">
-                  {m.other.firstName}
-                </p>
-                <p className="text-sm text-secondary">
-                  {m.status === "deal_room"
-                    ? "Deal Room live — whisper in"
-                    : m.status === "locked"
-                      ? "Date locked"
-                      : "New match"}
+                <div className="flex items-baseline justify-between gap-2">
+                  <p className="font-display text-base font-bold">
+                    {m.other.firstName}
+                  </p>
+                  <span className="text-[11px] font-semibold text-subtle">
+                    {m.status === "deal_room" ? "Live" : "New"}
+                  </span>
+                </div>
+                <p className="truncate text-sm text-secondary">
+                  {previews[m.id] ?? "Say hi through your Shark"}
                 </p>
               </div>
-              <span className="text-xs font-bold text-romance">Open</span>
             </Link>
           </li>
         ))}

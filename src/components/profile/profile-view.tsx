@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { Person } from "@/lib/mock-data";
 import { PhotoGallery } from "@/components/photos/photo-gallery";
 import { Button } from "@/components/ui/button";
@@ -10,101 +10,86 @@ export function ProfileView({
   person,
   sharkName,
   isSelf,
-  settingsHref,
 }: {
   person: Person;
   sharkName?: string;
   isSelf?: boolean;
   settingsHref?: string;
 }) {
+  const router = useRouter();
   const switchRole = useSession((s) => s.switchRole);
   const resetDemo = useSession((s) => s.resetDemo);
-  const setListStatus = useSession((s) => s.setListStatus);
+  const sharkMode = useSession((s) => s.sharkMode);
 
   return (
     <section className="mx-auto w-full max-w-md px-4 pt-3 pb-6">
-      <div className="mb-4 flex items-end justify-between gap-3">
-        <div>
-          <h1 className="font-display text-2xl font-extrabold tracking-tight">
-            {person.firstName}{" "}
-            <span className="text-secondary">{person.age}</span>
-          </h1>
-          <p className="text-sm text-secondary">{person.city}</p>
-        </div>
+      <div className="mb-4">
+        <h1 className="font-display text-3xl font-extrabold tracking-tight">
+          {person.firstName}{" "}
+          <span className="text-secondary">{person.age}</span>
+        </h1>
+        <p className="text-sm text-secondary">{person.city}</p>
         {sharkName && (
-          <span className="rounded-full bg-shark-soft px-3 py-1 text-xs font-bold text-shark-deep">
-            Shark: {sharkName}
-          </span>
+          <p className="mt-2 text-sm font-medium text-shark-deep">
+            Winged by {sharkName}
+          </p>
         )}
       </div>
 
       <PhotoGallery photos={person.photos} />
 
-      <p className="mt-5 text-sm leading-relaxed text-secondary">{person.bio}</p>
-      <p className="mt-2 text-sm font-medium text-foreground">{person.vibe}</p>
-
-      <div className="mt-4 flex flex-wrap gap-1.5">
-        {person.interests.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full bg-elevated px-3 py-1 text-xs font-semibold text-secondary"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
+      <p className="mt-5 text-base leading-relaxed text-foreground">
+        {person.vibe}
+      </p>
+      <p className="mt-2 text-sm leading-relaxed text-secondary">{person.bio}</p>
 
       {isSelf && (
-        <div className="mt-8 space-y-2 rounded-3xl card-surface p-4">
-          <p className="text-xs font-bold uppercase tracking-wider text-subtle">
-            Demo settings
-          </p>
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => {
-              switchRole();
-              window.location.href = "/";
-            }}
-          >
-            Switch role (demo)
-          </Button>
+        <div className="mt-8 space-y-3">
+          <h2 className="font-display text-lg font-extrabold">Account</h2>
+          <div className="rounded-2xl card-surface divide-y divide-border">
+            <div className="px-4 py-3.5">
+              <p className="text-sm font-semibold">Notifications</p>
+              <p className="text-xs text-secondary">
+                Matches, Deal Room whispers, date reminders — on
+              </p>
+            </div>
+            <div className="px-4 py-3.5">
+              <p className="text-sm font-semibold">Privacy</p>
+              <p className="text-xs text-secondary">
+                Profile visible to linked Shark network
+              </p>
+            </div>
+            <button
+              type="button"
+              className="flex w-full items-center justify-between px-4 py-3.5 text-left"
+              onClick={() => {
+                switchRole();
+                router.replace("/");
+              }}
+            >
+              <span>
+                <span className="block text-sm font-semibold">
+                  {sharkMode === "pro" || !sharkName
+                    ? "Also matchmake"
+                    : "Switch to Shark"}
+                </span>
+                <span className="block text-xs text-secondary">
+                  Open the other POVI shell for this device
+                </span>
+              </span>
+              <span className="text-romance">→</span>
+            </button>
+          </div>
           <Button
             variant="ghost"
-            className="w-full"
-            onClick={() => setListStatus("loading")}
-          >
-            Simulate Discover loading
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full"
-            onClick={() => setListStatus("empty")}
-          >
-            Simulate Discover empty
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full"
-            onClick={() => setListStatus("error")}
-          >
-            Simulate Discover error
-          </Button>
-          <Button
-            variant="destructive"
-            className="w-full"
+            className="w-full text-subtle"
             onClick={() => {
               resetDemo();
-              window.location.href = "/";
+              router.replace("/");
             }}
           >
-            Reset demo
+            Sign out
           </Button>
-          {settingsHref && (
-            <Link href={settingsHref} className="block text-center text-xs text-subtle">
-              {settingsHref}
-            </Link>
-          )}
         </div>
       )}
     </section>

@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Hide the Next.js "N" / route-info badge in local product chrome
+  devIndicators: false,
 };
 
 export default nextConfig;

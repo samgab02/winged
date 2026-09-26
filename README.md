@@ -1,39 +1,41 @@
 # POVI — Proof of Vibe
 
-Complete role-split dating demo: **Bachelor** and **Shark** get separate shells, multi-photo profiles, and full mock flows (onboarding → discover/swipe → Deal Room → date lock → flash → dates).
+Mobile dating app where **Sharks** (friends / matchmakers) vouch for **Bachelors** and lock real-world dates in a 3-minute Deal Room.
 
-Visual direction: light warm romantic (Art Direction v3). Money only inside **Shark → Me → Earnings**.
+## Run locally
 
-## Run
+From the repo root:
 
 ```bash
 npm install
-npm run dev:demo
+npm run dev
 ```
 
-Open [http://localhost:4317](http://localhost:4317).
+Open **[http://localhost:4317](http://localhost:4317)**.
 
-Requires Node 18+. No env vars.
+| Script | What it does |
+|--------|----------------|
+| `npm run dev` | Dev server on port **4317** (all interfaces) |
+| `npm run build` | Production build |
+| `npm run start` | Serve production build on **4317** |
 
-## Roles
+Requires **Node.js 18+**. No `.env` required for the local mock session.
 
-On launch, pick **Bachelor** or **Shark** (saved in `localStorage`).
+## Product shells
 
-| Bachelor nav | Shark nav |
-|---|---|
-| Discover · Matches · Dates · Profile | Swipe · Deal Room · My singles · Me |
+On launch, choose **Bachelor** or **Shark** (persisted in the browser).
 
-Switch roles anytime from Profile / Me → **Switch role (demo)** or **Reset demo**.
+- **Bachelor:** Discover · Matches · Dates · Profile  
+- **Shark:** Swipe · Deal Room · My singles · Me → Earnings  
 
-## Key routes
+## Deploy
 
-- `/` — welcome / role pick  
-- `/onboarding/bachelor` · `/onboarding/shark`  
-- `/bachelor/discover` · `/bachelor/matches` · `/bachelor/dates` · `/bachelor/profile`  
-- `/bachelor/deal-room/[id]` — observe + earpiece whisper  
-- `/shark/swipe` · `/shark/deal-room` · `/shark/singles` · `/shark/me` · `/shark/me/earnings`  
-- `/bachelor/flash/[id]` · `/shark/flash/[id]` — 180s Keep/Skip stub  
+This is a standard Next.js 15 App Router app. Connect the repo to [Vercel](https://vercel.com) (Framework Preset: Next.js). `vercel.json` is included.
+
+```bash
+npx vercel --prod
+```
 
 ## Stack
 
-Next.js 15 · React 19 · Tailwind 4 · Framer Motion · Zustand · mock data only
+Next.js 15 · React 19 · Tailwind CSS 4 · Framer Motion · Zustand

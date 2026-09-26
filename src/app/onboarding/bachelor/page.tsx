@@ -136,11 +136,11 @@ export default function BachelorOnboardingPage() {
               onClick={() => setInviteSent(true)}
             >
               <Link2 className="size-4" />
-              {inviteSent ? "Invite link copied (demo)" : "Send WhatsApp magic link"}
+              {inviteSent ? "Invite link ready" : "Send WhatsApp invite"}
             </Button>
             <p className="text-xs text-subtle">
-              Demo mode — no real WhatsApp send. {sharkName || "Your Shark"} will
-              appear linked on your profile.
+              {sharkName || "Your Shark"} gets a magic link to vouch for you and
+              join Deal Rooms.
             </p>
           </div>
         )}

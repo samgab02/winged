@@ -66,7 +66,7 @@ export default function SharkOnboardingPage() {
 
         <div>
           <label className="text-xs font-semibold text-subtle">
-            {mode === "friend" ? "Bachelor you’re linked to" : "Demo bachelor focus"}
+            {mode === "friend" ? "Bachelor you’re linked to" : "Primary bachelor focus"}
           </label>
           <input
             value={bachelorName}

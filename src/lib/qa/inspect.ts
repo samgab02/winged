@@ -149,6 +149,25 @@ function fiberName(fiber: Fiber | null | undefined): string | null {
   return null;
 }
 
+const SKIP_NAMES = new Set([
+  "MotionDOMComponent",
+  "MotionComponent",
+  "AnimatePresence",
+  "PresenceChild",
+  "PopChild",
+  "LazyMotion",
+  "LayoutGroup",
+  "ClientPageRoot",
+  "SegmentViewNode",
+  "InnerLayoutRouter",
+  "RedirectBoundary",
+  "NotFoundBoundary",
+  "LoadingBoundary",
+  "ErrorBoundary",
+  "Suspense",
+  "Fragment",
+]);
+
 function walkFiberSource(start: Fiber | null): {
   source: DebugSource | null;
   componentName: string | null;
@@ -161,7 +180,12 @@ function walkFiberSource(start: Fiber | null): {
 
   while (fiber) {
     const name = fiberName(fiber);
-    if (name && name[0] === name[0]?.toUpperCase() && !stack.includes(name)) {
+    if (
+      name &&
+      name[0] === name[0]?.toUpperCase() &&
+      !SKIP_NAMES.has(name) &&
+      !stack.includes(name)
+    ) {
       stack.push(name);
       if (!componentName) componentName = name;
     }

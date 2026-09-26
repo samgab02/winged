@@ -20,19 +20,18 @@ export const fadeEase: Transition = {
   ease: [0.22, 1, 0.36, 1],
 };
 
-/** Page / tab content enter — directional feather slide */
+/** Page / tab content enter — feather slide (no CSS filter blur — it sticks) */
 export const pageEnter: Variants = {
-  initial: { opacity: 0, y: 14, filter: "blur(4px)" },
+  initial: { opacity: 0, y: 12 },
   animate: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
     transition: { ...fadeEase, staggerChildren: 0.04 },
   },
   exit: {
     opacity: 0,
-    y: -8,
-    transition: { duration: 0.18 },
+    y: -6,
+    transition: { duration: 0.16 },
   },
 };
 

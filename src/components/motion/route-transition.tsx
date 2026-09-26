@@ -1,18 +1,16 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 const SPRITE = "/brand/winged-sprite-wing.png";
-/** Total curtain lifetime including fade-out */
-const CURTAIN_MS = 720;
-const FADE_OUT_MS = 180;
+/** Corner accents only — keep under ~450ms */
+const CORNER_MS = 380;
 
 /**
- * Cinematic route change: oversized wing curtain meets center,
- * peels to screen borders (edge roost), then fully unmounts.
- * Cancels in-flight overlays on every new navigation.
+ * Light route change: content fades without blur filters;
+ * small wing accents roost briefly in the four corners, then unmount.
  */
 export function RouteTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -20,31 +18,38 @@ export function RouteTransition({ children }: { children: React.ReactNode }) {
   const reactId = useId();
   const prevPathRef = useRef(pathname);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  /** Monotonic key so AnimatePresence always tears down the prior overlay */
-  const [curtainKey, setCurtainKey] = useState<string | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const [cornerKey, setCornerKey] = useState<string | null>(null);
 
   useEffect(() => {
     if (pathname === prevPathRef.current) return;
     prevPathRef.current = pathname;
 
-    // Cancel any in-flight hide; drop previous overlay immediately via key change
     if (hideTimerRef.current != null) {
       clearTimeout(hideTimerRef.current);
       hideTimerRef.current = null;
     }
 
+    // Hard-clear any leftover filter from a prior transition
+    const el = contentRef.current;
+    if (el) {
+      el.style.filter = "none";
+      el.style.backdropFilter = "none";
+      el.style.setProperty("-webkit-backdrop-filter", "none");
+    }
+
     if (reduced) {
-      setCurtainKey(null);
+      setCornerKey(null);
       return;
     }
 
     const key = `${pathname}-${Date.now()}-${reactId}`;
-    setCurtainKey(key);
+    setCornerKey(key);
 
     hideTimerRef.current = setTimeout(() => {
-      setCurtainKey(null);
+      setCornerKey(null);
       hideTimerRef.current = null;
-    }, CURTAIN_MS);
+    }, CORNER_MS);
 
     return () => {
       if (hideTimerRef.current != null) {
@@ -54,55 +59,63 @@ export function RouteTransition({ children }: { children: React.ReactNode }) {
     };
   }, [pathname, reduced, reactId]);
 
-  // Unmount leftover on shell unmount
   useEffect(() => {
     return () => {
       if (hideTimerRef.current != null) clearTimeout(hideTimerRef.current);
     };
   }, []);
 
+  function clearContentFilters() {
+    const el = contentRef.current;
+    if (!el) return;
+    // Drop Framer-applied filter so nothing stays soft after settle
+    el.style.removeProperty("filter");
+    el.style.removeProperty("backdrop-filter");
+    el.style.removeProperty("-webkit-backdrop-filter");
+  }
+
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={pathname}
-          className="flex min-h-0 flex-1 flex-col"
+          ref={contentRef}
+          className="flex min-h-0 flex-1 flex-col [filter:none!important] [backdrop-filter:none!important]"
           initial={
             reduced
               ? { opacity: 0 }
-              : { opacity: 0, scale: 0.985, filter: "blur(6px)" }
+              : { opacity: 0, y: 8 }
           }
           animate={{
             opacity: 1,
-            scale: 1,
-            filter: "blur(0px)",
+            y: 0,
             transition: {
-              duration: reduced ? 0.18 : 0.4,
-              delay: reduced ? 0 : 0.12,
+              duration: reduced ? 0.15 : 0.28,
+              ease: [0.22, 1, 0.36, 1],
             },
           }}
           exit={
             reduced
-              ? { opacity: 0, transition: { duration: 0.12 } }
+              ? { opacity: 0, transition: { duration: 0.1 } }
               : {
-                  opacity: 0.55,
-                  scale: 0.97,
-                  filter: "blur(5px)",
-                  transition: { duration: 0.2 },
+                  opacity: 0,
+                  y: -6,
+                  transition: { duration: 0.16 },
                 }
           }
+          onAnimationComplete={clearContentFilters}
         >
           {children}
         </motion.div>
       </AnimatePresence>
 
       <AnimatePresence initial={false}>
-        {curtainKey && !reduced ? (
-          <WingCurtainOverlay
-            key={curtainKey}
+        {cornerKey && !reduced ? (
+          <CornerWingAccents
+            key={cornerKey}
             onFinished={() => {
-              // Drop even if the hide timer was cleared by a fast re-nav
-              setCurtainKey((k) => (k === curtainKey ? null : k));
+              setCornerKey((k) => (k === cornerKey ? null : k));
+              clearContentFilters();
             }}
           />
         ) : null}
@@ -111,7 +124,7 @@ export function RouteTransition({ children }: { children: React.ReactNode }) {
   );
 }
 
-function WingCurtainOverlay({ onFinished }: { onFinished: () => void }) {
+function CornerWingAccents({ onFinished }: { onFinished: () => void }) {
   const finishedRef = useRef(false);
   function finish() {
     if (finishedRef.current) return;
@@ -119,130 +132,65 @@ function WingCurtainOverlay({ onFinished }: { onFinished: () => void }) {
     onFinished();
   }
 
+  const corners: {
+    className: string;
+    style?: CSSProperties;
+    rotate: number;
+  }[] = [
+    { className: "left-1 top-2", rotate: -28 },
+    {
+      className: "right-1 top-2 -scale-x-100",
+      rotate: 28,
+    },
+    {
+      className: "bottom-16 left-1 -scale-y-100",
+      rotate: -22,
+    },
+    {
+      className: "bottom-16 right-1 -scale-x-100 -scale-y-100",
+      rotate: 22,
+    },
+  ];
+
   return (
     <motion.div
       className="pointer-events-none fixed inset-0 z-[70] overflow-hidden"
       initial={{ opacity: 1 }}
       animate={{
-        opacity: [1, 1, 0],
+        opacity: [0, 1, 1, 0],
         transition: {
-          duration: CURTAIN_MS / 1000,
-          times: [0, (CURTAIN_MS - FADE_OUT_MS) / CURTAIN_MS, 1],
-          ease: "easeInOut",
+          duration: CORNER_MS / 1000,
+          times: [0, 0.15, 0.7, 1],
+          ease: "easeOut",
         },
       }}
-      exit={{ opacity: 0, transition: { duration: 0.12 } }}
+      exit={{ opacity: 0, transition: { duration: 0.1 } }}
       onAnimationComplete={finish}
       aria-hidden
     >
-      {/* Soft letterbox flash — ends off-screen */}
-      <motion.div
-        className="absolute inset-x-0 top-0 h-[5vh] bg-[color-mix(in_srgb,var(--canvas)_92%,var(--text-primary))]"
-        initial={{ y: "-100%", opacity: 0.85 }}
-        animate={{
-          y: ["-100%", "0%", "0%", "-120%"],
-          opacity: [0.85, 0.85, 0.85, 0],
-        }}
-        transition={{
-          duration: 0.65,
-          times: [0, 0.2, 0.55, 1],
-          ease: "easeInOut",
-        }}
-      />
-      <motion.div
-        className="absolute inset-x-0 bottom-0 h-[5vh] bg-[color-mix(in_srgb,var(--canvas)_92%,var(--text-primary))]"
-        initial={{ y: "100%", opacity: 0.85 }}
-        animate={{
-          y: ["100%", "0%", "0%", "120%"],
-          opacity: [0.85, 0.85, 0.85, 0],
-        }}
-        transition={{
-          duration: 0.65,
-          times: [0, 0.2, 0.55, 1],
-          ease: "easeInOut",
-        }}
-      />
-
-      {/* Left wing → edge roost → opacity 0 */}
-      <motion.img
-        src={SPRITE}
-        alt=""
-        className="absolute top-1/2 h-[min(70vh,520px)] w-auto max-w-none origin-right object-contain"
-        style={{ filter: "drop-shadow(0 8px 24px rgba(42,36,33,0.12))" }}
-        initial={{ left: "-45%", y: "-50%", rotate: -18, opacity: 0, scale: 1.1 }}
-        animate={{
-          left: ["-45%", "6%", "-22%"],
-          y: "-50%",
-          rotate: [-18, -6, -24],
-          opacity: [0, 0.92, 0],
-          scale: [1.1, 1.22, 0.8],
-        }}
-        transition={{
-          duration: 0.68,
-          times: [0, 0.4, 1],
-          ease: [0.22, 1, 0.36, 1],
-        }}
-      />
-
-      {/* Right wing (mirrored) → opacity 0 */}
-      <motion.img
-        src={SPRITE}
-        alt=""
-        className="absolute top-1/2 h-[min(70vh,520px)] w-auto max-w-none origin-left object-contain -scale-x-100"
-        style={{ filter: "drop-shadow(0 8px 24px rgba(42,36,33,0.12))" }}
-        initial={{ right: "-45%", y: "-50%", rotate: 18, opacity: 0, scale: 1.1 }}
-        animate={{
-          right: ["-45%", "6%", "-22%"],
-          y: "-50%",
-          rotate: [18, 6, 24],
-          opacity: [0, 0.92, 0],
-          scale: [1.1, 1.22, 0.8],
-        }}
-        transition={{
-          duration: 0.68,
-          times: [0, 0.4, 1],
-          ease: [0.22, 1, 0.36, 1],
-        }}
-      />
-
-      {/* Corner roost accents — end at opacity 0 */}
-      <motion.img
-        src={SPRITE}
-        alt=""
-        className="absolute size-28 object-contain"
-        initial={{
-          left: "50%",
-          top: "50%",
-          x: "-50%",
-          y: "-50%",
-          scale: 0.4,
-          opacity: 0,
-        }}
-        animate={{
-          left: ["50%", "3%"],
-          top: ["50%", "7%"],
-          x: ["-50%", "0%"],
-          y: ["-50%", "0%"],
-          scale: [0.4, 1],
-          opacity: [0, 0.65, 0],
-          rotate: [-30, -12],
-        }}
-        transition={{ duration: 0.62, times: [0, 0.5, 1] }}
-      />
-      <motion.img
-        src={SPRITE}
-        alt=""
-        className="absolute size-28 object-contain -scale-x-100"
-        initial={{ right: "50%", bottom: "50%", scale: 0.4, opacity: 0 }}
-        animate={{
-          right: ["50%", "3%"],
-          bottom: ["50%", "9%"],
-          scale: [0.4, 1],
-          opacity: [0, 0.65, 0],
-          rotate: [30, 12],
-        }}
-        transition={{ duration: 0.62, times: [0, 0.5, 1] }}
-      />
+      {corners.map((c, i) => (
+        <motion.img
+          key={i}
+          src={SPRITE}
+          alt=""
+          className={`absolute size-14 object-contain opacity-70 sm:size-16 ${c.className}`}
+          style={{
+            filter: "drop-shadow(0 2px 8px rgba(42,36,33,0.1))",
+          }}
+          initial={{ opacity: 0, scale: 0.7, rotate: c.rotate - 8 }}
+          animate={{
+            opacity: [0, 0.75, 0.75, 0],
+            scale: [0.7, 1, 1, 0.85],
+            rotate: [c.rotate - 8, c.rotate, c.rotate, c.rotate + 4],
+          }}
+          transition={{
+            duration: CORNER_MS / 1000,
+            times: [0, 0.2, 0.65, 1],
+            ease: [0.22, 1, 0.36, 1],
+            delay: i * 0.02,
+          }}
+        />
+      ))}
     </motion.div>
   );
 }

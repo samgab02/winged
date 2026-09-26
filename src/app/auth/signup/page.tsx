@@ -33,19 +33,19 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-6 pb-10 pt-10">
+    <div className="mx-auto flex min-h-dvh max-w-lg flex-col items-center px-6 pb-10 pt-10 text-center">
       <ToastHost />
-      <Link href="/welcome" className="inline-flex items-center" aria-label="Winged">
-        <WingedMark className="h-10 w-10" />
+      <Link href="/welcome" className="inline-flex" aria-label="Winged">
+        <WingedMark className="h-12 w-12" />
       </Link>
-      <h1 className="mt-8 font-display text-3xl font-extrabold tracking-tight">
+      <h1 className="mt-6 font-display text-3xl font-extrabold tracking-tight">
         Create your account
       </h1>
-      <p className="mt-2 text-sm text-secondary">
+      <p className="mt-2 max-w-xs text-sm text-secondary">
         Email and password to save your profile.
       </p>
 
-      <form onSubmit={onSubmit} className="mt-8 space-y-3">
+      <form onSubmit={onSubmit} className="mt-8 w-full max-w-sm space-y-3 text-left">
         <input
           type="email"
           required
@@ -69,7 +69,7 @@ export default function SignUpPage() {
         </Button>
       </form>
 
-      <div className="mt-6 space-y-2">
+      <div className="mt-6 w-full max-w-sm space-y-2">
         <p className="text-xs font-semibold uppercase tracking-wider text-subtle">
           Or continue with
         </p>
@@ -85,7 +85,7 @@ export default function SignUpPage() {
         ))}
       </div>
 
-      <p className="mt-8 text-center text-sm text-secondary">
+      <p className="mt-8 text-sm text-secondary">
         Already have an account?{" "}
         <Link href="/auth/signin" className="font-bold text-romance">
           Sign in

@@ -24,12 +24,14 @@ export default function BachelorMatchesPage() {
 
   return (
     <PageEnter className="mx-auto w-full max-w-md px-4 pt-3 pb-4">
-      <h1 className="font-display text-2xl font-extrabold tracking-tight">
-        Matches
-      </h1>
-      <p className="mt-0.5 text-sm text-secondary">
-        Mutual vibes and live planning threads.
-      </p>
+      <header className="text-center">
+        <h1 className="font-display text-2xl font-extrabold tracking-tight">
+          Matches
+        </h1>
+        <p className="mx-auto mt-0.5 max-w-xs text-sm text-secondary">
+          Mutual vibes and live planning threads.
+        </p>
+      </header>
 
       <motion.ul
         initial="initial"

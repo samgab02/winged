@@ -117,14 +117,12 @@ export function DealRoomPanel({
   return (
     <PageEnter className="relative mx-auto flex w-full max-w-md flex-1 flex-col px-4 pt-3">
       <WingBloom show={bloom} />
-      <header className="mb-3 flex items-start justify-between gap-3">
-        <div>
-          <h1 className="font-display text-2xl font-extrabold tracking-tight">
-            {mode === "wing" ? "Plan the date" : "They’re planning"}
-          </h1>
-          <p className="mt-0.5 text-sm text-secondary">Maya × Eli</p>
-        </div>
-        <div className="shrink-0 text-right">
+      <header className="mb-3 flex flex-col items-center text-center">
+        <h1 className="font-display text-2xl font-extrabold tracking-tight">
+          {mode === "wing" ? "Plan the date" : "They’re planning"}
+        </h1>
+        <p className="mt-0.5 text-sm text-secondary">Maya × Eli</p>
+        <div className="mt-3">
           <motion.div
             className="relative mx-auto mb-1 size-14 rounded-full p-[2.5px]"
             animate={
@@ -162,7 +160,7 @@ export function DealRoomPanel({
         </div>
       </header>
 
-      <div className="mb-3 flex items-center gap-3">
+      <div className="mb-3 flex flex-col items-center gap-2 text-center">
         <div className="flex -space-x-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -177,8 +175,8 @@ export function DealRoomPanel({
             className="size-12 rounded-full object-cover ring-2 ring-canvas"
           />
         </div>
-        <div className="min-w-0 flex-1">
-          <p className="flex items-center gap-1 text-sm font-semibold">
+        <div className="min-w-0">
+          <p className="flex items-center justify-center gap-1 text-sm font-semibold">
             <MapPin className="size-3.5 text-wing" />
             {venue.name}
           </p>

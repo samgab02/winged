@@ -75,17 +75,17 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-6 pb-10 pt-10">
+    <div className="mx-auto flex min-h-dvh max-w-lg flex-col items-center px-6 pb-10 pt-10 text-center">
       <DevLoginBootstrap />
-      <Link href="/welcome" className="inline-flex items-center" aria-label="Winged">
-        <WingedMark className="h-10 w-10" />
+      <Link href="/welcome" className="inline-flex" aria-label="Winged">
+        <WingedMark className="h-12 w-12" />
       </Link>
-      <h1 className="mt-8 font-display text-3xl font-extrabold tracking-tight">
+      <h1 className="mt-6 font-display text-3xl font-extrabold tracking-tight">
         Welcome back
       </h1>
-      <p className="mt-2 text-sm text-secondary">Sign in to continue.</p>
+      <p className="mt-2 max-w-xs text-sm text-secondary">Sign in to continue.</p>
 
-      <form onSubmit={onSubmit} className="mt-8 space-y-3">
+      <form onSubmit={onSubmit} className="mt-8 w-full max-w-sm space-y-3 text-left">
         <input
           type="email"
           required
@@ -108,11 +108,11 @@ export default function SignInPage() {
         </Button>
       </form>
 
-      <div className="mt-6 space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-wider text-subtle">
+      <div className="mt-6 w-full max-w-sm space-y-2 text-left">
+        <p className="text-center text-xs font-semibold uppercase tracking-wider text-subtle">
           Local defaults
         </p>
-        <p className="text-xs text-secondary">
+        <p className="text-center text-xs text-secondary">
           Password: <span className="font-semibold">{DEV_PASSWORD}</span>
         </p>
         {DEV_LOGINS.map((login) => (
@@ -129,7 +129,7 @@ export default function SignInPage() {
         ))}
       </div>
 
-      <p className="mt-8 text-center text-sm text-secondary">
+      <p className="mt-8 text-sm text-secondary">
         New here?{" "}
         <Link href="/auth/signup" className="font-bold text-romance">
           Create account

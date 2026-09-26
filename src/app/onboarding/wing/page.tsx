@@ -90,22 +90,22 @@ export default function WingOnboardingPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-5 pb-8 pt-8">
-      <div className="flex items-center justify-between">
-        <WingedMark className="h-9 w-9" />
-        <span className="text-xs font-semibold text-subtle">
+    <div className="mx-auto flex min-h-dvh max-w-lg flex-col items-center px-5 pb-8 pt-8">
+      <div className="flex flex-col items-center">
+        <WingedMark className="h-10 w-10" />
+        <span className="mt-2 text-xs font-semibold text-subtle">
           Wing · {step + 1}/4
         </span>
       </div>
 
-      <h1 className="mt-6 font-display text-2xl font-extrabold tracking-tight">
+      <h1 className="mt-6 max-w-sm text-center font-display text-2xl font-extrabold tracking-tight">
         {step === 0 && "Your Wing profile"}
         {step === 1 && "Friend or Pro?"}
         {step === 2 && "Who are you winging for?"}
         {step === 3 && "Build their vibe line"}
       </h1>
 
-      <div className="mt-6 flex-1 space-y-3">
+      <div className="mt-6 w-full max-w-sm flex-1 space-y-3">
         {step === 0 && (
           <>
             <div className="grid grid-cols-3 gap-2">
@@ -263,7 +263,7 @@ export default function WingOnboardingPage() {
         )}
       </div>
 
-      <div className="mt-6 flex gap-2">
+      <div className="mt-6 flex w-full max-w-sm gap-2">
         {step > 0 && (
           <Button
             variant="outline"

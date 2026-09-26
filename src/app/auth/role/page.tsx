@@ -34,20 +34,20 @@ export default function RolePickPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-6 pb-10 pt-10">
+    <div className="mx-auto flex min-h-dvh max-w-lg flex-col items-center px-6 pb-10 pt-10 text-center">
       <WingedMark className="h-14 w-14" />
-      <h1 className="mt-6 font-display text-3xl font-extrabold tracking-tight">
+      <h1 className="mt-6 max-w-[14ch] font-display text-3xl font-extrabold tracking-tight">
         How will you use Winged?
       </h1>
-      <p className="mt-2 text-sm text-secondary">
+      <p className="mt-2 max-w-sm text-sm text-secondary">
         You can add the other mode later from settings.
       </p>
 
-      <div className="mt-10 space-y-3">
+      <div className="mt-10 w-full max-w-sm space-y-3 text-left">
         <button
           type="button"
           onClick={() => choose("bachelor")}
-          className="w-full rounded-2xl bg-romance px-5 py-4 text-left text-white shadow-soft"
+          className="w-full rounded-2xl bg-romance px-5 py-4 text-white shadow-soft"
         >
           <span className="block font-display text-lg font-extrabold">
             I&apos;m dating
@@ -59,7 +59,7 @@ export default function RolePickPage() {
         <button
           type="button"
           onClick={() => choose("wing")}
-          className="w-full rounded-2xl bg-wing px-5 py-4 text-left text-white shadow-soft"
+          className="w-full rounded-2xl bg-wing px-5 py-4 text-white shadow-soft"
         >
           <span className="block font-display text-lg font-extrabold">
             I&apos;m a Wing

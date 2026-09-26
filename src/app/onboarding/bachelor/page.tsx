@@ -135,21 +135,21 @@ export default function BachelorOnboardingPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-5 pb-8 pt-8">
-      <div className="flex items-center justify-between">
-        <WingedMark className="h-9 w-9" />
-        <span className="text-xs font-semibold text-subtle">
+    <div className="mx-auto flex min-h-dvh max-w-lg flex-col items-center px-5 pb-8 pt-8">
+      <div className="flex w-full max-w-sm flex-col items-center">
+        <WingedMark className="h-10 w-10" />
+        <span className="mt-2 text-xs font-semibold text-subtle">
           {step + 1} / {STEPS}
         </span>
-      </div>
-      <div className="mt-3 h-1 overflow-hidden rounded-full bg-elevated">
-        <div
-          className="h-full bg-romance transition-all"
-          style={{ width: `${((step + 1) / STEPS) * 100}%` }}
-        />
+        <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-elevated">
+          <div
+            className="h-full bg-romance transition-all"
+            style={{ width: `${((step + 1) / STEPS) * 100}%` }}
+          />
+        </div>
       </div>
 
-      <h1 className="mt-6 font-display text-2xl font-extrabold tracking-tight">
+      <h1 className="mt-6 max-w-sm text-center font-display text-2xl font-extrabold tracking-tight">
         {step === 0 && "I am a…"}
         {step === 1 && "Name & birthday"}
         {step === 2 && "Where are you based?"}
@@ -159,13 +159,13 @@ export default function BachelorOnboardingPage() {
         {step === 6 && "Who are you open to?"}
         {step === 7 && "Invite your Wing"}
       </h1>
-      <p className="mt-1 text-sm text-secondary">
+      <p className="mt-1 max-w-sm text-center text-sm text-secondary">
         {step === 3 && "At least 3 photos. First photo is your primary."}
         {step === 5 && "Pick 3–5. Keep it light."}
         {step === 7 && "Share a link, or continue with a starter Wing link."}
       </p>
 
-      <div className="mt-6 flex-1">
+      <div className="mt-6 w-full max-w-sm flex-1">
         {step === 0 && (
           <div className="space-y-2">
             {(
@@ -407,7 +407,7 @@ export default function BachelorOnboardingPage() {
         )}
       </div>
 
-      <div className="mt-6 flex gap-2">
+      <div className="mt-6 flex w-full max-w-sm gap-2">
         {step > 0 && (
           <Button
             variant="outline"

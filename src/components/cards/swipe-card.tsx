@@ -162,18 +162,20 @@ export function SwipeDeck({
   const next = stack[1];
 
   return (
-    <PageEnter className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 pt-2">
-      <header className="mb-3">
+    <PageEnter className="mx-auto flex w-full max-w-md flex-1 flex-col items-center px-4 pt-2">
+      <header className="mb-3 w-full text-center">
         <motion.h1
           layout
           className="font-display text-2xl font-extrabold tracking-tight"
         >
           {title}
         </motion.h1>
-        <p className="mt-0.5 text-sm text-secondary">{subtitle}</p>
+        <p className="mx-auto mt-0.5 max-w-xs text-sm text-secondary">
+          {subtitle}
+        </p>
       </header>
 
-      <div className="relative mx-auto aspect-[3/4.7] w-full max-h-[min(70dvh,640px)]">
+      <div className="relative mx-auto aspect-[3/4.7] w-full max-w-[22rem] max-h-[min(70dvh,640px)]">
         <WingBloom show={bloom} />
         {next && (
           <CardFace

@@ -18,7 +18,15 @@ npm install
 npm run dev:demo
 ```
 
-Open [http://127.0.0.1:4317](http://127.0.0.1:4317).
+Then open [http://localhost:4317](http://localhost:4317).
+
+If the port is busy:
+
+```bash
+npx next dev --turbopack -p 4321 -H 0.0.0.0
+```
+
+Requires Node 18+. No env vars or credentials needed for the mock demo.
 
 ## Demo surfaces
 

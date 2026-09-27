@@ -46,7 +46,7 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="relative mx-auto flex min-h-dvh max-w-lg flex-col overflow-hidden px-6 pb-10 pt-12">
+    <div className="relative mx-auto flex min-h-dvh max-w-lg flex-col overflow-hidden px-6 pb-10 pt-12 lg:max-w-xl lg:justify-center lg:pt-16 xl:max-w-2xl">
       <DevLoginBootstrap />
 
       <div className="pointer-events-none absolute inset-0 -z-10">
@@ -96,7 +96,7 @@ export default function WelcomePage() {
           initial={reduced ? { opacity: 0 } : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.18, duration: 0.45 }}
-          className="mt-10 max-w-[14ch] font-display text-[2.55rem] font-extrabold leading-[1.08] tracking-tight text-foreground"
+          className="mt-10 max-w-[14ch] font-display text-[2.55rem] font-extrabold leading-[1.08] tracking-tight text-foreground lg:max-w-[16ch] lg:text-[3.1rem]"
         >
           Friends plan it. You show up.
         </motion.h1>
@@ -157,6 +157,12 @@ export default function WelcomePage() {
           <p className="pt-1 text-xs text-subtle">
             By continuing you agree to Winged&apos;s Terms & Privacy
           </p>
+          <a
+            href="/ios"
+            className="hidden pt-3 text-xs font-semibold text-subtle underline-offset-2 hover:text-foreground hover:underline lg:inline-block"
+          >
+            Prefer phone chrome? Open iPhone simulator →
+          </a>
         </div>
       </motion.div>
     </div>

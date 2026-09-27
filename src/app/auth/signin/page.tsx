@@ -83,7 +83,7 @@ export default function SignInPage() {
 
   return (
     <AuthEnterFromWelcome>
-    <div className="mx-auto flex min-h-dvh max-w-lg flex-col items-center px-6 pb-10 pt-10 text-center">
+    <div className="mx-auto flex min-h-dvh max-w-lg flex-col items-center px-6 pb-10 pt-10 text-center lg:max-w-xl lg:justify-center lg:pt-16">
       <DevLoginBootstrap />
       <Link href="/welcome" className="inline-flex" aria-label="Winged">
         <WingedMark className="h-12 w-12" />

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { SwipeDeck } from "@/components/cards/swipe-card";
+import { DiscoverSideRail } from "@/components/discover/discover-side-rail";
 import { EmptyState, ErrorState, LoadingState } from "@/components/ui/states";
 import { catalogAsDuoCards } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
@@ -40,12 +41,19 @@ export default function BachelorDiscoverPage() {
   }
 
   return (
-    <SwipeDeck
-      cards={cards}
-      title="Discover"
-      subtitle="Like someone and your Wing takes the next step."
-      leftLabel="Pass"
-      rightLabel="Like"
-    />
+    <div className="mx-auto flex w-full flex-1 flex-col lg:max-w-6xl lg:flex-row lg:items-start lg:gap-8 lg:px-6 lg:py-5 xl:gap-10 xl:px-8">
+      <div className="min-w-0 flex-1 lg:pt-1">
+        <SwipeDeck
+          cards={cards}
+          title="Discover"
+          subtitle="Like someone and your Wing takes the next step."
+          leftLabel="Pass"
+          rightLabel="Like"
+        />
+      </div>
+      <div className="w-full shrink-0 px-4 pb-6 lg:w-[20rem] lg:px-0 lg:pb-0 xl:w-[22rem]">
+        <DiscoverSideRail />
+      </div>
+    </div>
   );
 }

@@ -11,6 +11,9 @@ npm run dev
 
 Open **[http://localhost:4317](http://localhost:4317)**.
 
+- **Desktop (≥1024px):** side nav + multi-column Discover / Wings grids (not a centered phone column)
+- **iPhone simulator:** **[/ios](http://localhost:4317/ios)** — device frame with full in-app navigation (SE / 15 / 15 Pro Max). Production: [winged-app.vercel.app/ios](https://winged-app.vercel.app/ios)
+
 | Script | What it does |
 |--------|----------------|
 | `npm run dev` | Dev server on port **4317** (all interfaces, `0.0.0.0`) |
@@ -56,8 +59,9 @@ Sign out, delete account, and **Reset local data** live in Profile / Me. Reset r
 
 ## Product shells
 
-- **Bachelor:** Discover · Matches · Dates · Profile  
-- **Wing:** Swipe · Deal Room · My singles · Me → Earnings  
+- **Bachelor:** Discover · Matches · Dates · My Wing · Profile  
+- **Wing:** Swipe · Deal Room · Wings hub / network · Me → Earnings  
+- **Layouts:** mobile bottom dock; desktop left rail + wider content; `/ios` for phone chrome
 
 ## Deploy
 

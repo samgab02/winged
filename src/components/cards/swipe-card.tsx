@@ -163,15 +163,22 @@ export function SwipeDeck({
   const next = stack[1];
 
   return (
-    <PageEnter className="relative mx-auto flex w-full max-w-lg flex-1 flex-col">
+    <PageEnter
+      className={cn(
+        "relative mx-auto flex w-full max-w-lg flex-1 flex-col",
+        "lg:max-w-none lg:h-full"
+      )}
+    >
       {/*
         Explicit viewport height — absolute card faces need a real height.
-        (% height does not resolve against min-height alone.)
-        2.75rem header + ~4.75rem bottom nav clearance.
+        Mobile: header + bottom nav. Desktop: top chrome only (side nav).
       */}
       <div
-        className="relative mx-auto w-full px-1 pb-0.5 pt-0.5"
-        style={{ height: "calc(100dvh - 2.75rem - 4.75rem)" }}
+        className={cn(
+          "relative mx-auto w-full px-1 pb-0.5 pt-0.5",
+          "h-[calc(100dvh-2.75rem-4.75rem)]",
+          "lg:h-[min(calc(100dvh-3.5rem-2rem),780px)] lg:max-w-xl lg:rounded-[1.35rem] lg:shadow-card"
+        )}
       >
         {/* Compact chrome on the photo — not a banner slab above */}
         <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between px-3 pt-2.5">

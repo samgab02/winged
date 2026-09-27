@@ -23,12 +23,12 @@ export default function BachelorMatchesPage() {
   }
 
   return (
-    <PageEnter className="mx-auto w-full max-w-md px-4 pt-3 pb-4">
-      <header className="text-center">
-        <h1 className="font-display text-2xl font-extrabold tracking-tight">
+    <PageEnter className="mx-auto w-full max-w-md px-4 pt-3 pb-4 lg:max-w-4xl lg:px-6 lg:pt-6">
+      <header className="text-center lg:text-left">
+        <h1 className="font-display text-2xl font-extrabold tracking-tight lg:text-3xl">
           Matches
         </h1>
-        <p className="mx-auto mt-0.5 max-w-xs text-sm text-secondary">
+        <p className="mx-auto mt-0.5 max-w-xs text-sm text-secondary lg:mx-0">
           Mutual vibes and live planning threads.
         </p>
       </header>
@@ -36,17 +36,21 @@ export default function BachelorMatchesPage() {
       <motion.ul
         initial="initial"
         animate="animate"
-        className="mt-5 divide-y divide-border rounded-2xl bg-surface shadow-soft"
+        className="mt-5 divide-y divide-border rounded-2xl bg-surface shadow-soft lg:mt-6 lg:grid lg:grid-cols-2 lg:gap-3 lg:divide-y-0 lg:bg-transparent lg:shadow-none"
       >
         {mockMatches.map((m) => (
-          <motion.li key={m.id} variants={listItem}>
+          <motion.li
+            key={m.id}
+            variants={listItem}
+            className="lg:rounded-2xl lg:bg-surface lg:shadow-soft"
+          >
             <Link
               href={
                 m.status === "deal_room"
                   ? `/bachelor/deal-room/${m.id}`
                   : `/bachelor/profile/${m.other.id}`
               }
-              className="flex items-center gap-3 px-3 py-3.5 transition hover:bg-elevated/60"
+              className="flex items-center gap-3 px-3 py-3.5 transition hover:bg-elevated/60 lg:rounded-2xl"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img

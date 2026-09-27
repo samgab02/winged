@@ -3,20 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutGroup, motion, useReducedMotion } from "framer-motion";
-import {
-  Feather,
-  Layers3,
-  MessageCircleHeart,
-  CircleUserRound,
-} from "lucide-react";
+import { WING_NAV, navItemActive } from "@/components/layout/nav-items";
 import { cn } from "@/lib/utils";
-
-const tabs = [
-  { href: "/wing/swipe", label: "Swipe", icon: Layers3 },
-  { href: "/wing/deal-room", label: "Deal Room", icon: MessageCircleHeart },
-  { href: "/wing/hub", label: "Wings", icon: Feather },
-  { href: "/wing/me", label: "Me", icon: CircleUserRound },
-];
 
 export function WingNav() {
   const pathname = usePathname();
@@ -26,15 +14,9 @@ export function WingNav() {
     <nav className="chrome-bar fixed bottom-0 left-0 right-0 z-50 border-t safe-bottom">
       <LayoutGroup id="wing-tabs">
         <ul className="mx-auto flex max-w-md justify-around px-1 pt-1.5">
-          {tabs.map(({ href, label, icon: Icon }) => {
-            const active =
-              href === "/wing/me"
-                ? pathname.startsWith("/wing/me")
-                : href === "/wing/hub"
-                  ? pathname.startsWith("/wing/hub") ||
-                    pathname.startsWith("/wing/network") ||
-                    pathname.startsWith("/wing/singles")
-                  : pathname.startsWith(href);
+          {WING_NAV.map((item) => {
+            const { href, label, icon: Icon } = item;
+            const active = navItemActive(pathname, item);
             return (
               <li key={href} className="relative flex-1">
                 <Link

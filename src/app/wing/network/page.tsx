@@ -121,15 +121,15 @@ export default function WingsNetworkPage() {
   }
 
   return (
-    <PageEnter className="mx-auto w-full max-w-md px-4 pt-3 pb-6">
-      <header className="text-center">
+    <PageEnter className="mx-auto w-full max-w-md px-4 pt-3 pb-6 lg:max-w-5xl lg:px-6 lg:pt-6 xl:px-8">
+      <header className="text-center lg:text-left">
         <Link href="/wing/hub" className="text-sm font-semibold text-wing-deep">
           ← Wings hub
         </Link>
-        <h1 className="mt-2 font-display text-2xl font-extrabold tracking-tight">
+        <h1 className="mt-2 font-display text-2xl font-extrabold tracking-tight lg:text-3xl">
           Wings network
         </h1>
-        <p className="mx-auto mt-0.5 max-w-xs text-sm text-secondary">
+        <p className="mx-auto mt-0.5 max-w-xs text-sm text-secondary lg:mx-0 lg:max-w-lg">
           Radar for who can wing tonight — hire with escrow, not a directory.
         </p>
       </header>
@@ -159,8 +159,8 @@ export default function WingsNetworkPage() {
       </div>
 
       {tab === "pros" && (
-        <div className="mt-4 space-y-3">
-          <section className="rounded-3xl panel-soft p-4">
+        <div className="mt-4 space-y-3 lg:space-y-4">
+          <section className="rounded-3xl panel-soft p-4 lg:col-span-2">
             <div className="flex items-center justify-between gap-2">
               <div className="text-left">
                 <p className="text-[11px] font-semibold uppercase tracking-wider text-subtle">
@@ -207,7 +207,8 @@ export default function WingsNetworkPage() {
               No Pros live in this filter — try All Pros or another city.
             </p>
           ) : (
-            radar.map((w) => {
+            <div className="space-y-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
+            {radar.map((w) => {
               const score = fairPlay(w.id) || w.stats.fairPlay;
               const band = fairPlayBand(score);
               const on = following.includes(w.id);
@@ -281,11 +282,12 @@ export default function WingsNetworkPage() {
                   </p>
                 </article>
               );
-            })
+            })}
+            </div>
           )}
 
-          <section className="pt-2">
-            <h2 className="mb-2 text-center font-display text-lg font-extrabold">
+          <section className="pt-2 lg:col-span-2">
+            <h2 className="mb-2 text-center font-display text-lg font-extrabold lg:text-left">
               Collab rooms
             </h2>
             <p className="mb-3 text-center text-xs text-secondary">

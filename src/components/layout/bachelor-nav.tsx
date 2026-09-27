@@ -3,22 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutGroup, motion, useReducedMotion } from "framer-motion";
-import {
-  CalendarHeart,
-  Compass,
-  Feather,
-  HeartHandshake,
-  UserRound,
-} from "lucide-react";
+import { BACHELOR_NAV, navItemActive } from "@/components/layout/nav-items";
 import { cn } from "@/lib/utils";
-
-const tabs = [
-  { href: "/bachelor/discover", label: "Discover", icon: Compass },
-  { href: "/bachelor/matches", label: "Matches", icon: HeartHandshake },
-  { href: "/bachelor/dates", label: "Dates", icon: CalendarHeart },
-  { href: "/bachelor/my-wing", label: "My Wing", icon: Feather },
-  { href: "/bachelor/profile", label: "Profile", icon: UserRound },
-];
 
 export function BachelorNav() {
   const pathname = usePathname();
@@ -28,8 +14,8 @@ export function BachelorNav() {
     <nav className="chrome-bar fixed bottom-0 left-0 right-0 z-50 border-t safe-bottom">
       <LayoutGroup id="bachelor-tabs">
         <ul className="mx-auto flex max-w-md justify-around px-0.5 pt-1.5">
-          {tabs.map(({ href, label, icon: Icon }) => {
-            const active = pathname.startsWith(href);
+          {BACHELOR_NAV.map(({ href, label, icon: Icon, match }) => {
+            const active = navItemActive(pathname, { href, label, icon: Icon, match });
             return (
               <li key={href} className="relative flex-1">
                 <Link

@@ -59,8 +59,8 @@ export default function WingHubPage() {
   }
 
   return (
-    <PageEnter className="mx-auto w-full max-w-md px-4 pt-3 pb-6">
-      <header className="flex flex-col items-center text-center">
+    <PageEnter className="mx-auto w-full max-w-md px-4 pt-3 pb-6 lg:max-w-5xl lg:px-6 lg:pt-6 xl:px-8">
+      <header className="flex flex-col items-center text-center lg:items-start lg:text-left">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={profile.photos[0]}
@@ -78,7 +78,7 @@ export default function WingHubPage() {
         </p>
       </header>
 
-      <div className="mt-5 grid grid-cols-2 gap-2">
+      <div className="mt-5 grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-3">
         {[
           { label: "Dates locked", value: String(stats.datesLocked) },
           { label: "Conversion", value: `${stats.conversionPct}%` },
@@ -87,9 +87,11 @@ export default function WingHubPage() {
         ].map((s) => (
           <div
             key={s.label}
-            className="rounded-2xl bg-surface px-3 py-3 text-center shadow-soft"
+            className="rounded-2xl bg-surface px-3 py-3 text-center shadow-soft lg:py-4"
           >
-            <p className="font-display text-xl font-extrabold">{s.value}</p>
+            <p className="font-display text-xl font-extrabold lg:text-2xl">
+              {s.value}
+            </p>
             <p className="mt-0.5 text-[11px] font-semibold text-subtle">
               {s.label}
             </p>
@@ -97,8 +99,9 @@ export default function WingHubPage() {
         ))}
       </div>
 
-      <section className="mt-6">
-        <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-wider text-subtle">
+      <div className="lg:mt-8 lg:grid lg:grid-cols-2 lg:gap-8 lg:items-start">
+      <section className="mt-6 lg:mt-0">
+        <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-wider text-subtle lg:text-left">
           How you wing
         </p>
         <div className="grid grid-cols-3 gap-1.5">
@@ -123,7 +126,7 @@ export default function WingHubPage() {
         </p>
       </section>
 
-      <section className="mt-6 space-y-2">
+      <section className="mt-6 space-y-2 lg:mt-0">
         <div className="flex items-center justify-between px-1">
           <h2 className="font-display text-lg font-extrabold">My singles</h2>
           <Link
@@ -133,6 +136,7 @@ export default function WingHubPage() {
             See all
           </Link>
         </div>
+        <div className="space-y-2 lg:grid lg:grid-cols-1 lg:gap-2 lg:space-y-0">
         {mockSingles.map((s) => (
           <Link
             key={s.id}
@@ -152,14 +156,16 @@ export default function WingHubPage() {
             <UsersRound className="size-4 text-wing" />
           </Link>
         ))}
+        </div>
         {modeSupportsPro(mode) && (
           <p className="px-1 text-xs text-secondary">
             Pro mode on — you can also pick up open singles from the network.
           </p>
         )}
       </section>
+      </div>
 
-      <section className="mt-6 space-y-2">
+      <section className="mt-6 space-y-2 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
         <Link
           href="/wing/network"
           className="flex items-center justify-between rounded-2xl bg-surface px-4 py-4 shadow-soft"

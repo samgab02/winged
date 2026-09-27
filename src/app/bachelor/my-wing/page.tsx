@@ -48,9 +48,9 @@ export default function BachelorMyWingPage() {
   }
 
   return (
-    <PageEnter className="mx-auto w-full max-w-md px-4 pt-3 pb-6">
-      <header className="text-center">
-        <h1 className="font-display text-2xl font-extrabold tracking-tight">
+    <PageEnter className="mx-auto w-full max-w-md px-4 pt-3 pb-6 lg:max-w-3xl lg:px-6 lg:pt-6">
+      <header className="text-center lg:text-left">
+        <h1 className="font-display text-2xl font-extrabold tracking-tight lg:text-3xl">
           My Wing
         </h1>
         <p className="mx-auto mt-0.5 max-w-xs text-sm text-secondary">

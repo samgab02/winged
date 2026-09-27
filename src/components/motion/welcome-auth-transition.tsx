@@ -106,33 +106,40 @@ export function WelcomeAuthTransitionHost() {
           aria-hidden
         >
           <motion.div
-            className="absolute top-[36%] will-change-transform"
+            className="absolute top-[34%] will-change-transform"
             style={{
-              width: "min(38vw, 180px)",
+              width: "min(40vw, 190px)",
               transformOrigin: "center center",
             }}
             initial={{
               x: "-12vw",
               y: 0,
               rotate: -28,
-              opacity: 0.7,
-              scale: 0.75,
+              opacity: 0.85,
+              scale: 0.7,
             }}
             animate={{
-              x: ["-12vw", "18vw", "55vw", "110vw", "195vw"],
-              y: [0, -28, 10, -22, 16],
-              rotate: [-28, -12, 6, -4, 18],
-              opacity: [0.7, 0.95, 1, 0.85, 0],
-              scale: [0.75, 1.05, 1.45, 1.9, 2.35],
-              scaleY: [1, 0.72, 1.22, 0.78, 1.15, 0.85, 1],
+              // Organic bird path across ~2× viewport while growing
+              x: ["-12vw", "16vw", "48vw", "95vw", "160vw", "210vw"],
+              y: [0, -32, 8, -26, 14, 22],
+              rotate: [-28, -14, 4, -8, 12, 20],
+              // Stay solid while growing; fade only as it exits right
+              opacity: [0.85, 1, 1, 1, 0.75, 0],
+              scale: [0.7, 1.0, 1.4, 1.85, 2.35, 2.7],
+              scaleY: [1, 0.7, 1.25, 0.75, 1.18, 0.82, 1.05],
             }}
             transition={{
               duration: WELCOME_AUTH_FLY_MS / 1000,
-              times: [0, 0.22, 0.45, 0.72, 1],
+              times: [0, 0.18, 0.38, 0.58, 0.8, 1],
               ease: WELCOME_AUTH_EASE,
+              opacity: {
+                duration: WELCOME_AUTH_FLY_MS / 1000,
+                times: [0, 0.12, 0.35, 0.65, 0.85, 1],
+                ease: "linear",
+              },
               scaleY: {
                 duration: WELCOME_AUTH_FLY_MS / 1000,
-                times: [0, 0.14, 0.28, 0.45, 0.62, 0.8, 1],
+                times: [0, 0.12, 0.26, 0.42, 0.58, 0.78, 1],
                 ease: "easeInOut",
               },
             }}

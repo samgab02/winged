@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { WingSprite } from "@/components/brand/winged-mark";
+import { WELCOME_AUTH_FADE_MS } from "@/lib/welcome-auth-transition";
 import { cn } from "@/lib/utils";
 
 type Flyer = {
@@ -249,7 +250,8 @@ export function FlyingWings({
             transition={
               fadeOut
                 ? {
-                    duration: isEscort ? 0.35 : 0.55,
+                    // Ambient fade ~520ms; escort holds briefly then portal takes over
+                    duration: isEscort ? 0.3 : WELCOME_AUTH_FADE_MS / 1000,
                     ease: "easeOut",
                   }
                 : {

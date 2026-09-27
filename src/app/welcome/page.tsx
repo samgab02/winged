@@ -8,24 +8,29 @@ import { FlyingWings, FlutterWing } from "@/components/motion/flying-wings";
 import { DevLoginBootstrap } from "@/components/auth/dev-login-bootstrap";
 import {
   WELCOME_AUTH_EASE,
-  WELCOME_AUTH_MS,
+  WELCOME_AUTH_SLIDE_MS,
+  getWelcomeAuthServerSnapshot,
   getWelcomeAuthTransition,
   startWelcomeAuthTransition,
   subscribeWelcomeAuthTransition,
 } from "@/lib/welcome-auth-transition";
 
-function useFadeAmbient() {
+function useWelcomeAuthUi() {
+  // Return store state directly (stable until emit) — never allocate in getSnapshot
   return useSyncExternalStore(
     subscribeWelcomeAuthTransition,
-    () => getWelcomeAuthTransition().fadeAmbient,
-    () => false
+    getWelcomeAuthTransition,
+    getWelcomeAuthServerSnapshot
   );
 }
 
 export default function WelcomePage() {
   const reduced = useReducedMotion();
   const router = useRouter();
-  const fadeAmbient = useFadeAmbient();
+  const authUi = useWelcomeAuthUi();
+  const fadeAmbient = authUi.fadeAmbient;
+  const hideEscort = authUi.hideEscort;
+  const slideAway = authUi.slideAway;
   const [hoverPrimary, setHoverPrimary] = useState(false);
   const [hoverSecondary, setHoverSecondary] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -38,7 +43,6 @@ export default function WelcomePage() {
     }
     setBusy(true);
     startWelcomeAuthTransition(href);
-    // Host navigates; keep welcome mounted briefly while wings fade + slide
   }
 
   return (
@@ -47,19 +51,22 @@ export default function WelcomePage() {
 
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_50%_0%,var(--glow-a),transparent_55%),radial-gradient(ellipse_70%_50%_at_50%_100%,var(--glow-b),transparent_50%),radial-gradient(ellipse_60%_40%_at_50%_55%,var(--glow-c),transparent_55%),var(--canvas)]" />
-        <FlyingWings fadeOut={fadeAmbient} hideEscort={fadeAmbient} />
+        <FlyingWings fadeOut={fadeAmbient} hideEscort={hideEscort} />
       </div>
 
       <motion.div
         initial={reduced ? { opacity: 0 } : { opacity: 0, y: 22 }}
         animate={
-          fadeAmbient
-            ? { opacity: 0.35, x: "-28%", y: 0 }
+          slideAway
+            ? { opacity: 0.4, x: "-42%", y: 0 }
             : { opacity: 1, x: 0, y: 0 }
         }
         transition={
-          fadeAmbient
-            ? { duration: WELCOME_AUTH_MS / 1000, ease: WELCOME_AUTH_EASE }
+          slideAway
+            ? {
+                duration: WELCOME_AUTH_SLIDE_MS / 1000,
+                ease: WELCOME_AUTH_EASE,
+              }
             : { duration: 0.55, ease: WELCOME_AUTH_EASE }
         }
         className="relative z-10 flex flex-1 flex-col items-center text-center"

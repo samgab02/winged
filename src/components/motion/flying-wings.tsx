@@ -221,7 +221,7 @@ export function FlyingWings({
               scaleY: 1,
             }}
             animate={
-              fadeOut
+              fadeOut && !isEscort
                 ? {
                     x: w.driftX[0],
                     y: w.driftY[0],
@@ -229,18 +229,27 @@ export function FlyingWings({
                     opacity: 0,
                     scaleY: 1,
                   }
-                : {
-                    x: w.driftX,
-                    y: w.driftY,
-                    rotate: w.rotate,
-                    opacity: w.opacity,
-                    scaleY: [1, 0.82, w.flap ?? 1.12, 0.9, 1],
-                  }
+                : fadeOut && isEscort
+                  ? {
+                      // Hold left escort steady while others fade — then portal takes over
+                      x: w.driftX[0],
+                      y: w.driftY[0],
+                      rotate: w.rotate[0],
+                      opacity: w.opacity[Math.min(1, w.opacity.length - 1)] ?? 0.7,
+                      scaleY: 1,
+                    }
+                  : {
+                      x: w.driftX,
+                      y: w.driftY,
+                      rotate: w.rotate,
+                      opacity: w.opacity,
+                      scaleY: [1, 0.82, w.flap ?? 1.12, 0.9, 1],
+                    }
             }
             transition={
               fadeOut
                 ? {
-                    duration: 0.85,
+                    duration: isEscort ? 0.35 : 0.55,
                     ease: "easeOut",
                   }
                 : {

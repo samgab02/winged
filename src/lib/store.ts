@@ -146,6 +146,11 @@ export const useApp = create<AppState>()(
             [id]: next,
           },
         });
+        void import("@/lib/supabase/profile-sync").then(
+          ({ pushProfileToSupabase }) => {
+            void pushProfileToSupabase(next);
+          }
+        );
       },
 
       completeOnboarding: () => {
@@ -159,6 +164,11 @@ export const useApp = create<AppState>()(
             [profile.accountId]: next,
           },
         });
+        void import("@/lib/supabase/profile-sync").then(
+          ({ pushProfileToSupabase }) => {
+            void pushProfileToSupabase(next);
+          }
+        );
       },
 
       lockDate: (id) =>

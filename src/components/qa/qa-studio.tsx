@@ -26,9 +26,13 @@ import {
   removeTicket,
   setTicketStatus,
   syncQaTicketsMirror,
+  syncTicketsFromDb,
   type QaTicket,
   type QaTicketStatus,
 } from "@/lib/qa/tickets";
+import { seedSampleTicketsIfEmpty } from "@/lib/qa/sample-tickets";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { pushTicketsToDb } from "@/lib/qa/tickets-db";
 
 const QA_POS_KEY = "winged-qa-fab-pos";
 const FAB_SIZE = 48;
@@ -135,8 +139,14 @@ export function QaStudio() {
 
   useEffect(() => {
     void bootstrapDevLogins();
+    seedSampleTicketsIfEmpty();
     setTickets(loadTickets());
     syncQaTicketsMirror();
+    if (isSupabaseConfigured()) {
+      void syncTicketsFromDb().then((r) => {
+        if (r.ok) setTickets(loadTickets());
+      });
+    }
     const saved = loadFabPos();
     setFabPos(saved ? clampFab(saved.x, saved.y) : defaultFabPos());
   }, [bootstrapDevLogins]);
@@ -420,6 +430,23 @@ export function QaStudio() {
     };
     reader.onerror = () => showToast("Could not read file");
     reader.readAsText(file);
+  }
+
+  async function onSyncDb() {
+    if (!isSupabaseConfigured()) {
+      showToast("Add NEXT_PUBLIC_SUPABASE_URL + ANON_KEY to enable DB sync");
+      return;
+    }
+    const pull = await syncTicketsFromDb();
+    setTickets(loadTickets());
+    const push = await pushTicketsToDb(loadTickets());
+    if (!pull.ok && !push.ok) {
+      showToast(pull.error || push.error || "DB sync failed");
+      return;
+    }
+    showToast(
+      `Synced DB · pulled ${pull.merged} · pushed ${push.pushed ?? 0}`
+    );
   }
 
   return (
@@ -772,6 +799,15 @@ export function QaStudio() {
                           }}
                         />
                       </label>
+                      <button
+                        type="button"
+                        data-qa-chrome
+                        onClick={() => void onSyncDb()}
+                        className="text-[10px] font-bold text-wing-deep"
+                        title="Pull/push qa_tickets table"
+                      >
+                        Sync DB
+                      </button>
                       {tickets.length > 0 && (
                         <button
                           type="button"

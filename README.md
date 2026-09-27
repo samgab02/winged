@@ -22,7 +22,7 @@ Open **[http://localhost:4317](http://localhost:4317)**.
 | `npm run build` | Production build |
 | `npm run start` | Serve production build on **4317** |
 
-Requires **Node.js 18+**. No `.env` required — accounts and sessions persist in the browser (`localStorage`). See `.env.example` for optional future Supabase keys.
+Requires **Node.js 18+**. Runs without `.env` (localStorage auth + QA). For **free Supabase Auth + Postgres**, see [`docs/supabase-setup.md`](docs/supabase-setup.md) and set `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Apply `supabase/migrations/20260927050000_winged_core.sql`. Health: `/api/health/supabase`.
 
 ## Default logins (local development)
 

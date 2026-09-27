@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 const SPRITE = "/brand/winged-sprite-wing.png";
-/** Corner accents only — keep under ~450ms */
-const CORNER_MS = 380;
+/** Side wings linger while the page is already visible */
+const WING_MS = 1000;
 
 /**
- * Light route change: content fades without blur filters;
- * small wing accents roost briefly in the four corners, then unmount.
+ * Route change: page content always visible (no AnimatePresence / opacity trap).
+ * Left + right wing accents fade slowly after the page is already shown.
  */
 export function RouteTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -18,8 +18,7 @@ export function RouteTransition({ children }: { children: React.ReactNode }) {
   const reactId = useId();
   const prevPathRef = useRef(pathname);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null);
-  const [cornerKey, setCornerKey] = useState<string | null>(null);
+  const [wingKey, setWingKey] = useState<string | null>(null);
 
   useEffect(() => {
     if (pathname === prevPathRef.current) return;
@@ -30,26 +29,18 @@ export function RouteTransition({ children }: { children: React.ReactNode }) {
       hideTimerRef.current = null;
     }
 
-    // Hard-clear any leftover filter from a prior transition
-    const el = contentRef.current;
-    if (el) {
-      el.style.filter = "none";
-      el.style.backdropFilter = "none";
-      el.style.setProperty("-webkit-backdrop-filter", "none");
-    }
-
     if (reduced) {
-      setCornerKey(null);
+      setWingKey(null);
       return;
     }
 
     const key = `${pathname}-${Date.now()}-${reactId}`;
-    setCornerKey(key);
+    setWingKey(key);
 
     hideTimerRef.current = setTimeout(() => {
-      setCornerKey(null);
+      setWingKey(null);
       hideTimerRef.current = null;
-    }, CORNER_MS);
+    }, WING_MS + 100);
 
     return () => {
       if (hideTimerRef.current != null) {
@@ -65,57 +56,19 @@ export function RouteTransition({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  function clearContentFilters() {
-    const el = contentRef.current;
-    if (!el) return;
-    // Drop Framer-applied filter so nothing stays soft after settle
-    el.style.removeProperty("filter");
-    el.style.removeProperty("backdrop-filter");
-    el.style.removeProperty("-webkit-backdrop-filter");
-  }
-
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={pathname}
-          ref={contentRef}
-          className="flex min-h-0 flex-1 flex-col [filter:none!important] [backdrop-filter:none!important]"
-          initial={
-            reduced
-              ? { opacity: 0 }
-              : { opacity: 0, y: 8 }
-          }
-          animate={{
-            opacity: 1,
-            y: 0,
-            transition: {
-              duration: reduced ? 0.15 : 0.28,
-              ease: [0.22, 1, 0.36, 1],
-            },
-          }}
-          exit={
-            reduced
-              ? { opacity: 0, transition: { duration: 0.1 } }
-              : {
-                  opacity: 0,
-                  y: -6,
-                  transition: { duration: 0.16 },
-                }
-          }
-          onAnimationComplete={clearContentFilters}
-        >
-          {children}
-        </motion.div>
-      </AnimatePresence>
+      {/* Current route content — always mounted, never opacity-gated */}
+      <div className="flex min-h-0 flex-1 flex-col opacity-100">
+        {children}
+      </div>
 
       <AnimatePresence initial={false}>
-        {cornerKey && !reduced ? (
-          <CornerWingAccents
-            key={cornerKey}
+        {wingKey && !reduced ? (
+          <SideWingAccents
+            key={wingKey}
             onFinished={() => {
-              setCornerKey((k) => (k === cornerKey ? null : k));
-              clearContentFilters();
+              setWingKey((k) => (k === wingKey ? null : k));
             }}
           />
         ) : null}
@@ -124,7 +77,8 @@ export function RouteTransition({ children }: { children: React.ReactNode }) {
   );
 }
 
-function CornerWingAccents({ onFinished }: { onFinished: () => void }) {
+/** One wing on the left edge, one on the right — slow fade (~1s) */
+function SideWingAccents({ onFinished }: { onFinished: () => void }) {
   const finishedRef = useRef(false);
   function finish() {
     if (finishedRef.current) return;
@@ -132,65 +86,60 @@ function CornerWingAccents({ onFinished }: { onFinished: () => void }) {
     onFinished();
   }
 
-  const corners: {
-    className: string;
-    style?: CSSProperties;
-    rotate: number;
-  }[] = [
-    { className: "left-1 top-2", rotate: -28 },
-    {
-      className: "right-1 top-2 -scale-x-100",
-      rotate: 28,
-    },
-    {
-      className: "bottom-16 left-1 -scale-y-100",
-      rotate: -22,
-    },
-    {
-      className: "bottom-16 right-1 -scale-x-100 -scale-y-100",
-      rotate: 22,
-    },
-  ];
-
   return (
     <motion.div
       className="pointer-events-none fixed inset-0 z-[70] overflow-hidden"
-      initial={{ opacity: 1 }}
+      initial={{ opacity: 0 }}
       animate={{
         opacity: [0, 1, 1, 0],
         transition: {
-          duration: CORNER_MS / 1000,
-          times: [0, 0.15, 0.7, 1],
+          duration: WING_MS / 1000,
+          times: [0, 0.1, 0.4, 1],
           ease: "easeOut",
         },
       }}
-      exit={{ opacity: 0, transition: { duration: 0.1 } }}
+      exit={{ opacity: 0, transition: { duration: 0.25 } }}
       onAnimationComplete={finish}
       aria-hidden
     >
-      {corners.map((c, i) => (
-        <motion.img
-          key={i}
-          src={SPRITE}
-          alt=""
-          className={`absolute size-14 object-contain opacity-70 sm:size-16 ${c.className}`}
-          style={{
-            filter: "drop-shadow(0 2px 8px rgba(42,36,33,0.1))",
-          }}
-          initial={{ opacity: 0, scale: 0.7, rotate: c.rotate - 8 }}
-          animate={{
-            opacity: [0, 0.75, 0.75, 0],
-            scale: [0.7, 1, 1, 0.85],
-            rotate: [c.rotate - 8, c.rotate, c.rotate, c.rotate + 4],
-          }}
-          transition={{
-            duration: CORNER_MS / 1000,
-            times: [0, 0.2, 0.65, 1],
-            ease: [0.22, 1, 0.36, 1],
-            delay: i * 0.02,
-          }}
-        />
-      ))}
+      <motion.img
+        src={SPRITE}
+        alt=""
+        className="absolute left-[-6px] top-1/2 size-[4.5rem] -translate-y-1/2 object-contain sm:size-20"
+        style={{
+          filter: "drop-shadow(0 2px 10px rgba(42,36,33,0.12))",
+        }}
+        initial={{ opacity: 0, x: -16, rotate: -24 }}
+        animate={{
+          opacity: [0, 0.85, 0.75, 0],
+          x: [-16, 0, 0, -8],
+          rotate: [-24, -16, -16, -20],
+        }}
+        transition={{
+          duration: WING_MS / 1000,
+          times: [0, 0.12, 0.45, 1],
+          ease: [0.22, 1, 0.36, 1],
+        }}
+      />
+      <motion.img
+        src={SPRITE}
+        alt=""
+        className="absolute right-[-6px] top-1/2 size-[4.5rem] -translate-y-1/2 -scale-x-100 object-contain sm:size-20"
+        style={{
+          filter: "drop-shadow(0 2px 10px rgba(42,36,33,0.12))",
+        }}
+        initial={{ opacity: 0, x: 16, rotate: 24 }}
+        animate={{
+          opacity: [0, 0.85, 0.75, 0],
+          x: [16, 0, 0, 8],
+          rotate: [24, 16, 16, 20],
+        }}
+        transition={{
+          duration: WING_MS / 1000,
+          times: [0, 0.12, 0.45, 1],
+          ease: [0.22, 1, 0.36, 1],
+        }}
+      />
     </motion.div>
   );
 }

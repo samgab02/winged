@@ -5,18 +5,73 @@ import Link from "next/link";
 import { WingedMark } from "@/components/brand/winged-mark";
 import { cn } from "@/lib/utils";
 
-type DeviceId = "se" | "15" | "15pm";
+type DeviceId = "se" | "15" | "15pm" | "s24" | "s24u";
 
-const DEVICES: Record<
-  DeviceId,
-  { label: string; width: number; height: number; island: boolean }
-> = {
-  se: { label: "iPhone SE", width: 375, height: 667, island: false },
-  "15": { label: "iPhone 15", width: 390, height: 844, island: true },
-  "15pm": { label: "15 Pro Max", width: 430, height: 932, island: true },
+type DeviceChrome = "island" | "notch" | "punch" | "flat";
+
+type DeviceSpec = {
+  label: string;
+  group: "Apple" | "Samsung";
+  width: number;
+  height: number;
+  chrome: DeviceChrome;
+  /** Outer bezel corner radius (px) */
+  outerRadius: number;
+  /** Inner screen corner radius (px) */
+  screenRadius: number;
 };
 
-function StatusBar({ island }: { island: boolean }) {
+const DEVICES: Record<DeviceId, DeviceSpec> = {
+  se: {
+    label: "iPhone SE",
+    group: "Apple",
+    width: 375,
+    height: 667,
+    chrome: "notch",
+    outerRadius: 44,
+    screenRadius: 36,
+  },
+  "15": {
+    label: "iPhone 15",
+    group: "Apple",
+    width: 390,
+    height: 844,
+    chrome: "island",
+    outerRadius: 48,
+    screenRadius: 40,
+  },
+  "15pm": {
+    label: "15 Pro Max",
+    group: "Apple",
+    width: 430,
+    height: 932,
+    chrome: "island",
+    outerRadius: 52,
+    screenRadius: 44,
+  },
+  s24: {
+    label: "Galaxy S24",
+    group: "Samsung",
+    width: 360,
+    height: 780,
+    chrome: "punch",
+    outerRadius: 28,
+    screenRadius: 22,
+  },
+  s24u: {
+    label: "S24 Ultra",
+    group: "Samsung",
+    width: 412,
+    height: 915,
+    chrome: "punch",
+    outerRadius: 22,
+    screenRadius: 16,
+  },
+};
+
+const DEVICE_ORDER: DeviceId[] = ["15", "se", "15pm", "s24", "s24u"];
+
+function StatusBar({ chrome }: { chrome: DeviceChrome }) {
   const [time, setTime] = useState("9:41");
 
   useEffect(() => {
@@ -31,41 +86,71 @@ function StatusBar({ island }: { island: boolean }) {
     return () => window.clearInterval(id);
   }, []);
 
+  const tall = chrome === "island" || chrome === "notch";
+
   return (
     <div
       className={cn(
-        "pointer-events-none absolute inset-x-0 top-0 z-20 flex items-end justify-between px-6 text-[12px] font-semibold text-black",
-        island ? "h-[54px] pb-1.5" : "h-[44px] pb-1"
+        "pointer-events-none absolute inset-x-0 top-0 z-20 flex items-end justify-between px-5 text-[12px] font-semibold text-[#2a2421]",
+        tall ? "h-[52px] pb-1.5" : "h-[28px] pb-0.5"
       )}
     >
-      <span className="min-w-[3.5rem]">{time}</span>
-      {island ? (
+      <span className="min-w-[3.25rem] tabular-nums">{time}</span>
+
+      {chrome === "island" && (
         <span
           className="absolute left-1/2 top-2.5 h-[34px] w-[118px] -translate-x-1/2 rounded-full bg-black"
           aria-hidden
         />
-      ) : (
+      )}
+      {chrome === "notch" && (
         <span
           className="absolute left-1/2 top-0 h-[28px] w-[160px] -translate-x-1/2 rounded-b-2xl bg-black"
           aria-hidden
         />
       )}
-      <span className="flex min-w-[3.5rem] items-center justify-end gap-1 text-[11px]">
-        <span aria-hidden>●●●●</span>
-        <span aria-hidden>⌂</span>
-        <span className="inline-block h-2.5 w-5 rounded-sm border border-black/80">
-          <span className="m-[1px] block h-full w-3/4 rounded-[1px] bg-black/80" />
-        </span>
+      {chrome === "punch" && (
+        <span
+          className="absolute left-1/2 top-2 size-[11px] -translate-x-1/2 rounded-full bg-black ring-1 ring-black/40"
+          aria-hidden
+        />
+      )}
+
+      <span className="flex min-w-[3.25rem] items-center justify-end gap-1 text-[11px] text-[#2a2421]/70">
+        {chrome === "punch" || chrome === "flat" ? (
+          <>
+            <span aria-hidden className="tracking-tighter">
+              ▮▮▮
+            </span>
+            <span
+              className="inline-block h-2.5 w-[18px] rounded-[2px] border border-[#2a2421]/70"
+              aria-hidden
+            >
+              <span className="m-px block h-[calc(100%-2px)] w-3/4 rounded-[1px] bg-[#2a2421]/70" />
+            </span>
+          </>
+        ) : (
+          <>
+            <span aria-hidden>●●●●</span>
+            <span
+              className="inline-block h-2.5 w-5 rounded-sm border border-[#2a2421]/80"
+              aria-hidden
+            >
+              <span className="m-[1px] block h-full w-3/4 rounded-[1px] bg-[#2a2421]/80" />
+            </span>
+          </>
+        )}
       </span>
     </div>
   );
 }
 
-export default function IosSimulatorPage() {
+export default function PhoneSimulatorPage() {
   const [device, setDevice] = useState<DeviceId>("15");
   const [path, setPath] = useState("/welcome");
   const [frameKey, setFrameKey] = useState(0);
   const spec = DEVICES[device];
+  const isAndroid = spec.group === "Samsung";
 
   const iframeSrc = useMemo(() => {
     const base = path.startsWith("/") ? path : `/${path}`;
@@ -74,7 +159,6 @@ export default function IosSimulatorPage() {
   }, [path]);
 
   useEffect(() => {
-    // Avoid nesting simulators inside the iframe
     if (typeof window !== "undefined" && window.self !== window.top) {
       window.top!.location.href = "/welcome";
     }
@@ -85,42 +169,80 @@ export default function IosSimulatorPage() {
   }
 
   return (
-    <div className="relative min-h-dvh overflow-hidden bg-[radial-gradient(ellipse_80%_55%_at_50%_0%,var(--glow-a),transparent_55%),radial-gradient(ellipse_60%_45%_at_80%_80%,var(--glow-b),transparent_50%),#1c1917]">
+    <div
+      className="relative min-h-dvh overflow-hidden"
+      style={{
+        background:
+          "radial-gradient(ellipse 80% 55% at 50% 0%, rgba(212,81,108,0.08), transparent 55%), radial-gradient(ellipse 60% 45% at 85% 85%, rgba(107,143,156,0.1), transparent 50%), #f3eee8",
+      }}
+    >
       <div className="mx-auto flex min-h-dvh max-w-6xl flex-col px-4 py-6 lg:flex-row lg:items-center lg:gap-12 lg:px-8 lg:py-10">
-        <div className="mb-6 text-center text-stone-100 lg:mb-0 lg:w-[18rem] lg:shrink-0 lg:text-left xl:w-[20rem]">
-          <Link href="/welcome" className="inline-flex items-center gap-2">
+        <div className="mb-6 text-center text-[#2a2421] lg:mb-0 lg:w-[19rem] lg:shrink-0 lg:text-left xl:w-[21rem]">
+          <Link
+            href="/welcome"
+            className="inline-flex items-center gap-2 text-[#2a2421]"
+          >
             <WingedMark className="h-10 w-10" />
             <span className="font-display text-2xl font-extrabold tracking-tight">
               Winged
             </span>
           </Link>
-          <h1 className="mt-5 font-display text-3xl font-extrabold tracking-tight">
-            iPhone simulator
+
+          <h1 className="mt-5 font-display text-3xl font-extrabold tracking-tight text-[#2a2421]">
+            Phone simulator
           </h1>
-          <p className="mt-2 text-sm leading-relaxed text-stone-300">
+          <p className="mt-2 text-sm leading-relaxed text-[#5c534e]">
             Full app at mobile size — navigate inside the frame. On a big screen
             use the desktop layout; share this URL for the phone feel.
           </p>
 
-          <div className="mt-6 flex flex-wrap justify-center gap-2 lg:justify-start">
-            {(Object.keys(DEVICES) as DeviceId[]).map((id) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => setDevice(id)}
-                className={cn(
-                  "rounded-full px-3 py-1.5 text-xs font-bold transition",
-                  device === id
-                    ? "bg-white text-stone-900"
-                    : "bg-white/10 text-stone-200 hover:bg-white/15"
-                )}
-              >
-                {DEVICES[id].label}
-              </button>
-            ))}
+          <p className="mt-5 text-left text-[11px] font-bold uppercase tracking-wider text-[#6b615c]">
+            Apple
+          </p>
+          <div className="mt-1.5 flex flex-wrap justify-center gap-2 lg:justify-start">
+            {DEVICE_ORDER.filter((id) => DEVICES[id].group === "Apple").map(
+              (id) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setDevice(id)}
+                  className={cn(
+                    "rounded-full border px-3 py-1.5 text-xs font-bold transition",
+                    device === id
+                      ? "border-[#2a2421] bg-[#2a2421] text-white"
+                      : "border-[#cfc4bb] bg-white text-[#2a2421] hover:border-[#2a2421]/40"
+                  )}
+                >
+                  {DEVICES[id].label}
+                </button>
+              )
+            )}
           </div>
 
-          <label className="mt-5 block text-left text-[11px] font-semibold uppercase tracking-wider text-stone-400">
+          <p className="mt-4 text-left text-[11px] font-bold uppercase tracking-wider text-[#6b615c]">
+            Samsung
+          </p>
+          <div className="mt-1.5 flex flex-wrap justify-center gap-2 lg:justify-start">
+            {DEVICE_ORDER.filter((id) => DEVICES[id].group === "Samsung").map(
+              (id) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setDevice(id)}
+                  className={cn(
+                    "rounded-full border px-3 py-1.5 text-xs font-bold transition",
+                    device === id
+                      ? "border-[#2a2421] bg-[#2a2421] text-white"
+                      : "border-[#cfc4bb] bg-white text-[#2a2421] hover:border-[#2a2421]/40"
+                  )}
+                >
+                  {DEVICES[id].label}
+                </button>
+              )
+            )}
+          </div>
+
+          <label className="mt-5 block text-left text-[11px] font-bold uppercase tracking-wider text-[#6b615c]">
             Start path
             <div className="mt-1.5 flex gap-2">
               <input
@@ -129,7 +251,7 @@ export default function IosSimulatorPage() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") reload();
                 }}
-                className="h-10 flex-1 rounded-xl border border-white/15 bg-white/10 px-3 text-sm font-medium text-white outline-none placeholder:text-stone-500 focus:border-white/40"
+                className="h-10 flex-1 rounded-xl border border-[#cfc4bb] bg-white px-3 text-sm font-medium text-[#2a2421] outline-none placeholder:text-[#9a8f89] focus:border-[#2a2421]"
                 placeholder="/welcome"
               />
               <button
@@ -156,7 +278,7 @@ export default function IosSimulatorPage() {
                   setPath(p);
                   setFrameKey((k) => k + 1);
                 }}
-                className="rounded-full border border-white/15 px-2.5 py-1 font-semibold text-stone-300 hover:border-white/30 hover:text-white"
+                className="rounded-full border border-[#cfc4bb] bg-white px-2.5 py-1 font-semibold text-[#2a2421] hover:border-[#2a2421]/50"
               >
                 {label}
               </button>
@@ -165,7 +287,7 @@ export default function IosSimulatorPage() {
 
           <Link
             href="/"
-            className="mt-8 inline-block text-sm font-semibold text-stone-400 underline-offset-2 hover:text-white hover:underline"
+            className="mt-8 inline-block text-sm font-semibold text-[#5c534e] underline-offset-2 hover:text-[#2a2421] hover:underline"
           >
             ← Back to desktop app
           </Link>
@@ -173,49 +295,78 @@ export default function IosSimulatorPage() {
 
         <div className="flex flex-1 items-center justify-center pb-6">
           <div
-            className="relative shrink-0 rounded-[3rem] bg-gradient-to-b from-stone-600 to-stone-900 p-[12px] shadow-[0_40px_80px_rgba(0,0,0,0.55)] ring-1 ring-white/10"
+            className="relative shrink-0 bg-gradient-to-b from-[#4a4541] to-[#1c1917] p-[11px] shadow-[0_28px_60px_rgba(42,36,33,0.28)] ring-1 ring-black/20"
             style={{
-              width: spec.width + 24,
-              height: spec.height + 24,
+              width: spec.width + 22,
+              height: spec.height + 22,
+              borderRadius: spec.outerRadius,
             }}
           >
-            {/* Side buttons */}
-            <span
-              className="absolute -left-[3px] top-28 h-8 w-[3px] rounded-l bg-stone-500"
-              aria-hidden
-            />
-            <span
-              className="absolute -left-[3px] top-40 h-14 w-[3px] rounded-l bg-stone-500"
-              aria-hidden
-            />
-            <span
-              className="absolute -left-[3px] top-56 h-14 w-[3px] rounded-l bg-stone-500"
-              aria-hidden
-            />
-            <span
-              className="absolute -right-[3px] top-44 h-20 w-[3px] rounded-r bg-stone-500"
-              aria-hidden
-            />
+            {/* Side buttons — Apple left, Android right volume */}
+            {!isAndroid && (
+              <>
+                <span
+                  className="absolute -left-[3px] top-28 h-8 w-[3px] rounded-l bg-[#6b6560]"
+                  aria-hidden
+                />
+                <span
+                  className="absolute -left-[3px] top-40 h-14 w-[3px] rounded-l bg-[#6b6560]"
+                  aria-hidden
+                />
+                <span
+                  className="absolute -left-[3px] top-56 h-14 w-[3px] rounded-l bg-[#6b6560]"
+                  aria-hidden
+                />
+                <span
+                  className="absolute -right-[3px] top-44 h-20 w-[3px] rounded-r bg-[#6b6560]"
+                  aria-hidden
+                />
+              </>
+            )}
+            {isAndroid && (
+              <>
+                <span
+                  className="absolute -left-[2px] top-36 h-10 w-[2px] rounded-l bg-[#6b6560]"
+                  aria-hidden
+                />
+                <span
+                  className="absolute -right-[2px] top-32 h-12 w-[2px] rounded-r bg-[#6b6560]"
+                  aria-hidden
+                />
+                <span
+                  className="absolute -right-[2px] top-48 h-16 w-[2px] rounded-r bg-[#6b6560]"
+                  aria-hidden
+                />
+              </>
+            )}
 
             <div
-              className="relative overflow-hidden rounded-[2.35rem] bg-canvas"
-              style={{ width: spec.width, height: spec.height }}
+              className="relative overflow-hidden bg-canvas"
+              style={{
+                width: spec.width,
+                height: spec.height,
+                borderRadius: spec.screenRadius,
+              }}
             >
-              <StatusBar island={spec.island} />
+              <StatusBar chrome={spec.chrome} />
               <iframe
                 key={frameKey}
-                title="Winged iPhone simulator"
+                title="Winged phone simulator"
                 src={iframeSrc}
                 className="absolute inset-0 h-full w-full border-0 bg-canvas"
-                // Allow full interaction
                 allow="clipboard-read; clipboard-write"
               />
-              {/* Home indicator */}
+              {/* Home indicator — thin bar on iOS; Android gesture bar */}
               <div
                 className="pointer-events-none absolute inset-x-0 bottom-1.5 z-20 flex justify-center"
                 aria-hidden
               >
-                <span className="h-[5px] w-[134px] rounded-full bg-black/35" />
+                <span
+                  className={cn(
+                    "rounded-full bg-black/35",
+                    isAndroid ? "h-[4px] w-[108px]" : "h-[5px] w-[134px]"
+                  )}
+                />
               </div>
             </div>
           </div>

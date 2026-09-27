@@ -161,7 +161,7 @@ export default function WelcomePage() {
             href="/ios"
             className="hidden pt-3 text-xs font-semibold text-subtle underline-offset-2 hover:text-foreground hover:underline lg:inline-block"
           >
-            Prefer phone chrome? Open iPhone simulator →
+            Prefer phone chrome? Open phone simulator →
           </a>
         </div>
       </motion.div>

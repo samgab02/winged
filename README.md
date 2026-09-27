@@ -12,7 +12,7 @@ npm run dev
 Open **[http://localhost:4317](http://localhost:4317)**.
 
 - **Desktop (≥1024px):** side nav + multi-column Discover / Wings grids (not a centered phone column)
-- **iPhone simulator:** **[/ios](http://localhost:4317/ios)** — device frame with full in-app navigation (SE / 15 / 15 Pro Max). Production: [winged-app.vercel.app/ios](https://winged-app.vercel.app/ios)
+- **Phone simulator:** **[/ios](http://localhost:4317/ios)** — iPhone + Galaxy frames with full in-app navigation. Production: [winged-app.vercel.app/ios](https://winged-app.vercel.app/ios)
 
 | Script | What it does |
 |--------|----------------|

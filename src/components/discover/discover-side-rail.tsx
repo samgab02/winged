@@ -113,7 +113,7 @@ export function DiscoverSideRail() {
         <p className="mt-1 text-sm text-secondary">
           Drag the card or use Pass / Like. Want the phone feel?{" "}
           <Link href="/ios" className="font-bold text-romance">
-            Open the iPhone simulator
+            Open the phone simulator
           </Link>
           .
         </p>

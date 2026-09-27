@@ -85,7 +85,7 @@ export function DesktopSideNav({
         href="/ios"
         className="mt-2 px-2 text-[11px] font-semibold text-subtle underline-offset-2 hover:text-foreground hover:underline"
       >
-        Open iPhone simulator →
+        Open phone simulator →
       </Link>
     </aside>
   );

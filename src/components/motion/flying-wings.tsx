@@ -151,12 +151,20 @@ const FLYERS: Flyer[] = [
   },
 ];
 
+/** Left-side flyer used as the escort source (id 3 — mid-left, large) */
+export const ESCORT_FLYER_ID = 3;
+
 export function FlyingWings({
   className,
   density = "full",
+  /** Fade ambient wings (escort id disappears into the portal wing) */
+  fadeOut = false,
+  hideEscort = false,
 }: {
   className?: string;
   density?: "full" | "light";
+  fadeOut?: boolean;
+  hideEscort?: boolean;
 }) {
   const reduced = useReducedMotion();
   const set = density === "light" ? FLYERS.slice(0, 4) : FLYERS;
@@ -166,7 +174,8 @@ export function FlyingWings({
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute inset-0 overflow-hidden",
+          "pointer-events-none absolute inset-0 overflow-hidden transition-opacity duration-500",
+          fadeOut && "opacity-0",
           className
         )}
       >
@@ -192,39 +201,60 @@ export function FlyingWings({
         className
       )}
     >
-      {set.map((w) => (
-        <motion.div
-          key={w.id}
-          className="absolute will-change-transform"
-          style={{
-            top: w.start.y,
-            left: w.start.x,
-            width: w.size,
-          }}
-          initial={{
-            x: 0,
-            y: 0,
-            rotate: w.rotate[0],
-            opacity: 0,
-            scaleY: 1,
-          }}
-          animate={{
-            x: w.driftX,
-            y: w.driftY,
-            rotate: w.rotate,
-            opacity: w.opacity,
-            scaleY: [1, 0.82, w.flap ?? 1.12, 0.9, 1],
-          }}
-          transition={{
-            duration: w.duration,
-            delay: w.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        >
-          <WingSprite flip={w.flip} className="h-auto w-full drop-shadow-sm" />
-        </motion.div>
-      ))}
+      {set.map((w) => {
+        const isEscort = w.id === ESCORT_FLYER_ID;
+        if (hideEscort && isEscort) return null;
+        return (
+          <motion.div
+            key={w.id}
+            className="absolute will-change-transform"
+            style={{
+              top: w.start.y,
+              left: w.start.x,
+              width: w.size,
+            }}
+            initial={{
+              x: 0,
+              y: 0,
+              rotate: w.rotate[0],
+              opacity: 0,
+              scaleY: 1,
+            }}
+            animate={
+              fadeOut
+                ? {
+                    x: w.driftX[0],
+                    y: w.driftY[0],
+                    rotate: w.rotate[0],
+                    opacity: 0,
+                    scaleY: 1,
+                  }
+                : {
+                    x: w.driftX,
+                    y: w.driftY,
+                    rotate: w.rotate,
+                    opacity: w.opacity,
+                    scaleY: [1, 0.82, w.flap ?? 1.12, 0.9, 1],
+                  }
+            }
+            transition={
+              fadeOut
+                ? {
+                    duration: 0.85,
+                    ease: "easeOut",
+                  }
+                : {
+                    duration: w.duration,
+                    delay: w.delay,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }
+            }
+          >
+            <WingSprite flip={w.flip} className="h-auto w-full drop-shadow-sm" />
+          </motion.div>
+        );
+      })}
     </div>
   );
 }

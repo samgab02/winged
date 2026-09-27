@@ -7,6 +7,7 @@ import { WingedMark } from "@/components/brand/winged-mark";
 import { Button } from "@/components/ui/button";
 import { DevLoginBootstrap } from "@/components/auth/dev-login-bootstrap";
 import { OAuthButtons } from "@/components/auth/oauth-buttons";
+import { AuthEnterFromWelcome } from "@/components/motion/welcome-auth-transition";
 import { signIn } from "@/lib/auth";
 import { DEV_LOGINS, DEV_PASSWORD } from "@/lib/dev-logins";
 import { useApp } from "@/lib/store";
@@ -81,6 +82,7 @@ export default function SignInPage() {
   }
 
   return (
+    <AuthEnterFromWelcome>
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col items-center px-6 pb-10 pt-10 text-center">
       <DevLoginBootstrap />
       <Link href="/welcome" className="inline-flex" aria-label="Winged">
@@ -147,5 +149,6 @@ export default function SignInPage() {
         </Link>
       </p>
     </div>
+    </AuthEnterFromWelcome>
   );
 }

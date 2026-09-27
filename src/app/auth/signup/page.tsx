@@ -7,6 +7,7 @@ import { WingedMark } from "@/components/brand/winged-mark";
 import { Button } from "@/components/ui/button";
 import { ToastHost } from "@/components/ui/toast";
 import { OAuthButtons } from "@/components/auth/oauth-buttons";
+import { AuthEnterFromWelcome } from "@/components/motion/welcome-auth-transition";
 import { signUp } from "@/lib/auth";
 import { useApp } from "@/lib/store";
 
@@ -33,6 +34,7 @@ export default function SignUpPage() {
   }
 
   return (
+    <AuthEnterFromWelcome>
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col items-center px-6 pb-10 pt-10 text-center">
       <ToastHost />
       <Link href="/welcome" className="inline-flex" aria-label="Winged">
@@ -81,5 +83,6 @@ export default function SignUpPage() {
         </Link>
       </p>
     </div>
+    </AuthEnterFromWelcome>
   );
 }

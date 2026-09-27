@@ -196,7 +196,7 @@ export default function PhoneSimulatorPage() {
             use the desktop layout; share this URL for the phone feel.
           </p>
 
-          <p className="mt-5 text-left text-[11px] font-bold uppercase tracking-wider text-[#6b615c]">
+          <p className="mt-5 text-left text-[11px] font-bold uppercase tracking-wider text-[#3f3834]">
             Apple
           </p>
           <div className="mt-1.5 flex flex-wrap justify-center gap-2 lg:justify-start">
@@ -207,10 +207,10 @@ export default function PhoneSimulatorPage() {
                   type="button"
                   onClick={() => setDevice(id)}
                   className={cn(
-                    "rounded-full border px-3 py-1.5 text-xs font-bold transition",
+                    "rounded-full border-2 px-3 py-1.5 text-xs font-bold transition",
                     device === id
                       ? "border-[#2a2421] bg-[#2a2421] text-white"
-                      : "border-[#cfc4bb] bg-white text-[#2a2421] hover:border-[#2a2421]/40"
+                      : "border-[#2a2421]/35 bg-white text-[#2a2421] hover:border-[#2a2421]"
                   )}
                 >
                   {DEVICES[id].label}
@@ -219,7 +219,7 @@ export default function PhoneSimulatorPage() {
             )}
           </div>
 
-          <p className="mt-4 text-left text-[11px] font-bold uppercase tracking-wider text-[#6b615c]">
+          <p className="mt-4 text-left text-[11px] font-bold uppercase tracking-wider text-[#3f3834]">
             Samsung
           </p>
           <div className="mt-1.5 flex flex-wrap justify-center gap-2 lg:justify-start">
@@ -230,10 +230,10 @@ export default function PhoneSimulatorPage() {
                   type="button"
                   onClick={() => setDevice(id)}
                   className={cn(
-                    "rounded-full border px-3 py-1.5 text-xs font-bold transition",
+                    "rounded-full border-2 px-3 py-1.5 text-xs font-bold transition",
                     device === id
                       ? "border-[#2a2421] bg-[#2a2421] text-white"
-                      : "border-[#cfc4bb] bg-white text-[#2a2421] hover:border-[#2a2421]/40"
+                      : "border-[#2a2421]/35 bg-white text-[#2a2421] hover:border-[#2a2421]"
                   )}
                 >
                   {DEVICES[id].label}
@@ -242,7 +242,7 @@ export default function PhoneSimulatorPage() {
             )}
           </div>
 
-          <label className="mt-5 block text-left text-[11px] font-bold uppercase tracking-wider text-[#6b615c]">
+          <label className="mt-5 block text-left text-[11px] font-bold uppercase tracking-wider text-[#3f3834]">
             Start path
             <div className="mt-1.5 flex gap-2">
               <input
@@ -251,7 +251,7 @@ export default function PhoneSimulatorPage() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") reload();
                 }}
-                className="h-10 flex-1 rounded-xl border border-[#cfc4bb] bg-white px-3 text-sm font-medium text-[#2a2421] outline-none placeholder:text-[#9a8f89] focus:border-[#2a2421]"
+                className="h-10 flex-1 rounded-xl border-2 border-[#2a2421]/30 bg-white px-3 text-sm font-semibold text-[#2a2421] outline-none placeholder:text-[#6b615c] focus:border-[#2a2421]"
                 placeholder="/welcome"
               />
               <button
@@ -278,7 +278,7 @@ export default function PhoneSimulatorPage() {
                   setPath(p);
                   setFrameKey((k) => k + 1);
                 }}
-                className="rounded-full border border-[#cfc4bb] bg-white px-2.5 py-1 font-semibold text-[#2a2421] hover:border-[#2a2421]/50"
+                className="rounded-full border-2 border-[#2a2421]/30 bg-white px-2.5 py-1 font-bold text-[#2a2421] hover:border-[#2a2421]"
               >
                 {label}
               </button>
@@ -287,7 +287,7 @@ export default function PhoneSimulatorPage() {
 
           <Link
             href="/"
-            className="mt-8 inline-block text-sm font-semibold text-[#5c534e] underline-offset-2 hover:text-[#2a2421] hover:underline"
+            className="mt-8 inline-block text-sm font-bold text-[#2a2421] underline-offset-2 hover:underline"
           >
             ← Back to desktop app
           </Link>

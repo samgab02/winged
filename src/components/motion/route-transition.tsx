@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 const SPRITE = "/brand/winged-sprite-wing.png";
-/** Side wings linger while the page is already visible */
-const WING_MS = 1000;
+/** Side wings linger and fade slowly while the page is already visible */
+const WING_MS = 2200;
 
 /**
  * Route change: page content always visible (no AnimatePresence / opacity trap).
@@ -40,7 +40,7 @@ export function RouteTransition({ children }: { children: React.ReactNode }) {
     hideTimerRef.current = setTimeout(() => {
       setWingKey(null);
       hideTimerRef.current = null;
-    }, WING_MS + 100);
+    }, WING_MS + 160);
 
     return () => {
       if (hideTimerRef.current != null) {
@@ -58,7 +58,6 @@ export function RouteTransition({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
-      {/* Current route content — always mounted, never opacity-gated */}
       <div className="flex min-h-0 flex-1 flex-col opacity-100">
         {children}
       </div>
@@ -77,7 +76,10 @@ export function RouteTransition({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** One wing on the left edge, one on the right — slow fade (~1s) */
+/**
+ * Anatomical left wing on the LEFT edge, right wing on the RIGHT.
+ * Sprite faces right by default → flip on the left side.
+ */
 function SideWingAccents({ onFinished }: { onFinished: () => void }) {
   const finishedRef = useRef(false);
   function finish() {
@@ -94,49 +96,53 @@ function SideWingAccents({ onFinished }: { onFinished: () => void }) {
         opacity: [0, 1, 1, 0],
         transition: {
           duration: WING_MS / 1000,
-          times: [0, 0.1, 0.4, 1],
-          ease: "easeOut",
+          times: [0, 0.12, 0.58, 1],
+          ease: "easeInOut",
         },
       }}
-      exit={{ opacity: 0, transition: { duration: 0.25 } }}
+      exit={{ opacity: 0, transition: { duration: 0.4 } }}
       onAnimationComplete={finish}
       aria-hidden
     >
+      {/* LEFT wing — mirrored so feathers read as left side */}
       <motion.img
         src={SPRITE}
         alt=""
-        className="absolute left-[-6px] top-1/2 size-[4.5rem] -translate-y-1/2 object-contain sm:size-20"
+        data-route-wing="left"
+        className="absolute left-[-8px] top-1/2 size-[4.75rem] -translate-y-1/2 -scale-x-100 object-contain sm:size-[5.25rem]"
         style={{
           filter: "drop-shadow(0 2px 10px rgba(42,36,33,0.12))",
         }}
-        initial={{ opacity: 0, x: -16, rotate: -24 }}
+        initial={{ opacity: 0, x: -28, rotate: 18 }}
         animate={{
-          opacity: [0, 0.85, 0.75, 0],
-          x: [-16, 0, 0, -8],
-          rotate: [-24, -16, -16, -20],
+          opacity: [0, 0.9, 0.85, 0.55, 0],
+          x: [-28, 0, 0, -6, -14],
+          rotate: [18, 10, 10, 14, 16],
         }}
         transition={{
           duration: WING_MS / 1000,
-          times: [0, 0.12, 0.45, 1],
+          times: [0, 0.14, 0.45, 0.72, 1],
           ease: [0.22, 1, 0.36, 1],
         }}
       />
+      {/* RIGHT wing — natural sprite orientation */}
       <motion.img
         src={SPRITE}
         alt=""
-        className="absolute right-[-6px] top-1/2 size-[4.5rem] -translate-y-1/2 -scale-x-100 object-contain sm:size-20"
+        data-route-wing="right"
+        className="absolute right-[-8px] top-1/2 size-[4.75rem] -translate-y-1/2 object-contain sm:size-[5.25rem]"
         style={{
           filter: "drop-shadow(0 2px 10px rgba(42,36,33,0.12))",
         }}
-        initial={{ opacity: 0, x: 16, rotate: 24 }}
+        initial={{ opacity: 0, x: 28, rotate: -18 }}
         animate={{
-          opacity: [0, 0.85, 0.75, 0],
-          x: [16, 0, 0, 8],
-          rotate: [24, 16, 16, 20],
+          opacity: [0, 0.9, 0.85, 0.55, 0],
+          x: [28, 0, 0, 6, 14],
+          rotate: [-18, -10, -10, -14, -16],
         }}
         transition={{
           duration: WING_MS / 1000,
-          times: [0, 0.12, 0.45, 1],
+          times: [0, 0.14, 0.45, 0.72, 1],
           ease: [0.22, 1, 0.36, 1],
         }}
       />

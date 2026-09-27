@@ -1,6 +1,8 @@
 # Winged — Friends plan it. You show up.
 
-Mobile dating app where **Wings** (friends / matchmakers) vouch for **Bachelors** and lock real-world dates in a 3-minute Deal Room.
+Dating app where **Wings** negotiate a live **Deal Room** (venue + time in ~3 minutes) for **Bachelors**. Distinctive flows: Pro Wings network, Date Pass escrow, Proof of Stay, dual Keep/Skip flash — not profile-writing-as-a-service.
+
+> Winged is not affiliated with Wingman App or Wingman Group, Inc. Brand stays **Winged**; matchmakers stay **Wings**. See `docs/trademark-wingman-note.md`.
 
 ## Run locally
 

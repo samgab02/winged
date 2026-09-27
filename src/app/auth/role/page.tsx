@@ -53,7 +53,7 @@ export default function RolePickPage() {
             I&apos;m dating
           </span>
           <span className="mt-0.5 block text-sm text-white/85">
-            Bachelor · discover people with a Wing in your corner
+            Bachelor · Discover, then your Wing locks a Deal Room
           </span>
         </button>
         <button
@@ -65,7 +65,7 @@ export default function RolePickPage() {
             I&apos;m a Wing
           </span>
           <span className="mt-0.5 block text-sm text-white/85">
-            Wing · vouch, negotiate, lock the date
+            Wing · Negotiate live · Pro escrow when you hire
           </span>
         </button>
       </div>

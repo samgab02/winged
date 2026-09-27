@@ -127,6 +127,9 @@ export function ProfileView({
           >
             Reset local data
           </Button>
+          <p className="mt-4 text-center text-[10px] leading-relaxed text-subtle">
+            Winged is not affiliated with Wingman App or Wingman Group, Inc.
+          </p>
         </div>
       )}
     </section>

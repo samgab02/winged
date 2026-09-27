@@ -167,6 +167,44 @@ export async function copyTicketsJson(
   }
 }
 
+export type ImportTicketsResult =
+  | { ok: true; count: number; merged: number }
+  | { ok: false; error: string };
+
+/** Merge tickets from Export JSON (or a bare array). Newer ids win on conflict. */
+export function importTicketsFromJson(raw: string): ImportTicketsResult {
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    const list = Array.isArray(parsed)
+      ? parsed
+      : parsed &&
+          typeof parsed === "object" &&
+          Array.isArray((parsed as { tickets?: unknown }).tickets)
+        ? (parsed as { tickets: unknown[] }).tickets
+        : null;
+    if (!list) {
+      return { ok: false, error: "JSON must be an array or { tickets: [] }" };
+    }
+    const incoming = normalize(list);
+    const byId = new Map(loadTickets().map((t) => [t.id, t]));
+    let merged = 0;
+    for (const t of incoming) {
+      if (byId.has(t.id)) merged += 1;
+      byId.set(t.id, t);
+    }
+    const next = [...byId.values()].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+    if (!saveTickets(next)) {
+      return { ok: false, error: "Could not persist imported tickets" };
+    }
+    return { ok: true, count: incoming.length, merged };
+  } catch {
+    return { ok: false, error: "Invalid JSON" };
+  }
+}
+
 /** Keep window mirror warm for agent dumps */
 export function syncQaTicketsMirror() {
   if (typeof window === "undefined") return;

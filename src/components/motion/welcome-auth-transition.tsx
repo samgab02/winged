@@ -6,12 +6,14 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { WingSprite } from "@/components/brand/winged-mark";
 import {
+  WELCOME_AUTH_BG,
   WELCOME_AUTH_EASE,
   WELCOME_AUTH_FLAG,
   WELCOME_AUTH_FLY_AT_MS,
   WELCOME_AUTH_FLY_MS,
   WELCOME_AUTH_MS,
   WELCOME_AUTH_NAV_AT_MS,
+  WELCOME_AUTH_SLIDE_AT_MS,
   WELCOME_AUTH_SLIDE_MS,
   finishWelcomeAuthTransition,
   getWelcomeAuthServerSnapshot,
@@ -30,10 +32,10 @@ function useWelcomeAuthState() {
 }
 
 /**
- * Sequenced welcome→auth (~1.7s):
+ * Sequenced welcome→auth (~2s):
  * 1) ambient wings fade
  * 2) left wing bird-flies + grows
- * 3) auth page slides in slowly
+ * 3) outgoing bg + auth ease-slide as one continuous push
  */
 export function WelcomeAuthTransitionHost() {
   const state = useWelcomeAuthState();
@@ -48,7 +50,6 @@ export function WelcomeAuthTransitionHost() {
 
   useEffect(() => {
     if (!state.active || !state.href) return;
-    // Survive remounts: only arm timers once per transition
     if (state.choreographyArmed) return;
 
     const href = state.href;
@@ -64,8 +65,16 @@ export function WelcomeAuthTransitionHost() {
       setWelcomeAuthPhase("fly", { hideEscort: true, escortOn: true });
     }, WELCOME_AUTH_FLY_AT_MS);
 
+    const slideAt = window.setTimeout(() => {
+      setWelcomeAuthPhase("slide", {
+        hideEscort: true,
+        escortOn: true,
+        slideAway: true,
+      });
+    }, WELCOME_AUTH_SLIDE_AT_MS);
+
     const navAt = window.setTimeout(() => {
-      setWelcomeAuthPhase("fly", {
+      setWelcomeAuthPhase("slide", {
         hideEscort: true,
         escortOn: true,
         slideAway: true,
@@ -75,9 +84,9 @@ export function WelcomeAuthTransitionHost() {
 
     const doneAt = window.setTimeout(() => {
       finishWelcomeAuthTransition();
-    }, WELCOME_AUTH_MS + 120);
+    }, WELCOME_AUTH_MS + 160);
 
-    timersRef.current = [flyAt, navAt, doneAt];
+    timersRef.current = [flyAt, slideAt, navAt, doneAt];
 
     return () => {
       // Keep timers alive across remount — only clear when transition ends
@@ -94,61 +103,81 @@ export function WelcomeAuthTransitionHost() {
   if (!mounted) return null;
 
   return createPortal(
-    <AnimatePresence>
-      {state.escortOn && !reduced ? (
-        <motion.div
-          key="welcome-auth-escort"
-          data-welcome-auth-escort
-          className="pointer-events-none fixed inset-0 z-[80] overflow-hidden"
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.3 } }}
-          aria-hidden
-        >
+    <>
+      {/* Outgoing stage — survives welcome unmount; slides left with auth enter */}
+      <AnimatePresence>
+        {state.slideAway && !reduced ? (
           <motion.div
-            className="absolute top-[34%] will-change-transform"
-            style={{
-              width: "min(40vw, 190px)",
-              transformOrigin: "center center",
-            }}
-            initial={{
-              x: "-12vw",
-              y: 0,
-              rotate: -28,
-              opacity: 0.85,
-              scale: 0.7,
-            }}
-            animate={{
-              // Organic bird path across ~2× viewport while growing
-              x: ["-12vw", "16vw", "48vw", "95vw", "160vw", "210vw"],
-              y: [0, -32, 8, -26, 14, 22],
-              rotate: [-28, -14, 4, -8, 12, 20],
-              // Stay solid while growing; fade only as it exits right
-              opacity: [0.85, 1, 1, 1, 0.75, 0],
-              scale: [0.7, 1.0, 1.4, 1.85, 2.35, 2.7],
-              scaleY: [1, 0.7, 1.25, 0.75, 1.18, 0.82, 1.05],
-            }}
+            key="welcome-auth-outgoing"
+            data-welcome-auth-outgoing
+            className="pointer-events-none fixed inset-0 z-[74]"
+            initial={{ x: "0%" }}
+            animate={{ x: "-100%" }}
+            exit={{ opacity: 0, transition: { duration: 0.2 } }}
             transition={{
-              duration: WELCOME_AUTH_FLY_MS / 1000,
-              times: [0, 0.18, 0.38, 0.58, 0.8, 1],
+              duration: WELCOME_AUTH_SLIDE_MS / 1000,
               ease: WELCOME_AUTH_EASE,
-              opacity: {
-                duration: WELCOME_AUTH_FLY_MS / 1000,
-                times: [0, 0.12, 0.35, 0.65, 0.85, 1],
-                ease: "linear",
-              },
-              scaleY: {
-                duration: WELCOME_AUTH_FLY_MS / 1000,
-                times: [0, 0.12, 0.26, 0.42, 0.58, 0.78, 1],
-                ease: "easeInOut",
-              },
             }}
+            style={{ background: WELCOME_AUTH_BG }}
+            aria-hidden
+          />
+        ) : null}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {state.escortOn && !reduced ? (
+          <motion.div
+            key="welcome-auth-escort"
+            data-welcome-auth-escort
+            className="pointer-events-none fixed inset-0 z-[80] overflow-hidden"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.35 } }}
+            aria-hidden
           >
-            <WingSprite className="h-auto w-full drop-shadow-md" />
+            <motion.div
+              className="absolute top-[34%] will-change-transform"
+              style={{
+                width: "min(40vw, 190px)",
+                transformOrigin: "center center",
+              }}
+              initial={{
+                x: "-12vw",
+                y: 0,
+                rotate: -28,
+                opacity: 0.85,
+                scale: 0.7,
+              }}
+              animate={{
+                x: ["-12vw", "16vw", "48vw", "95vw", "160vw", "210vw"],
+                y: [0, -32, 8, -26, 14, 22],
+                rotate: [-28, -14, 4, -8, 12, 20],
+                opacity: [0.85, 1, 1, 1, 0.75, 0],
+                scale: [0.7, 1.0, 1.4, 1.85, 2.35, 2.7],
+                scaleY: [1, 0.7, 1.25, 0.75, 1.18, 0.82, 1.05],
+              }}
+              transition={{
+                duration: WELCOME_AUTH_FLY_MS / 1000,
+                times: [0, 0.18, 0.38, 0.58, 0.8, 1],
+                ease: WELCOME_AUTH_EASE,
+                opacity: {
+                  duration: WELCOME_AUTH_FLY_MS / 1000,
+                  times: [0, 0.12, 0.35, 0.65, 0.85, 1],
+                  ease: "linear",
+                },
+                scaleY: {
+                  duration: WELCOME_AUTH_FLY_MS / 1000,
+                  times: [0, 0.12, 0.26, 0.42, 0.58, 0.78, 1],
+                  ease: "easeInOut",
+                },
+              }}
+            >
+              <WingSprite className="h-auto w-full drop-shadow-md" />
+            </motion.div>
           </motion.div>
-        </motion.div>
-      ) : null}
-    </AnimatePresence>,
+        ) : null}
+      </AnimatePresence>
+    </>,
     document.body
   );
 }
@@ -159,7 +188,7 @@ function readWelcomeAuthFlag(): boolean {
     const raw = sessionStorage.getItem(WELCOME_AUTH_FLAG);
     if (!raw) return false;
     const data = JSON.parse(raw) as { t?: number };
-    return Boolean(data.t && Date.now() - data.t < WELCOME_AUTH_MS + 800);
+    return Boolean(data.t && Date.now() - data.t < WELCOME_AUTH_MS + 1000);
   } catch {
     return false;
   }
@@ -179,14 +208,15 @@ export function AuthEnterFromWelcome({
 
   return (
     <motion.div
+      data-welcome-auth-incoming
       className="min-h-dvh opacity-100 will-change-transform"
       initial={{ x: "100%" }}
-      animate={{ x: 0 }}
+      animate={{ x: "0%" }}
       transition={{
         duration: WELCOME_AUTH_SLIDE_MS / 1000,
         ease: WELCOME_AUTH_EASE,
       }}
-      style={{ opacity: 1 }}
+      style={{ opacity: 1, background: WELCOME_AUTH_BG }}
     >
       {children}
     </motion.div>

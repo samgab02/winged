@@ -19,7 +19,7 @@ const syne = Syne({
 export const metadata: Metadata = {
   title: "Winged — Friends plan it. You show up.",
   description:
-    "The dating app where friends vouch and lock real dates. Discover, vouch as a Wing, Deal Room in 3 minutes.",
+    "Dating with a live Deal Room: Wings negotiate venue and time in three minutes. Pro Wings, escrow, and Proof of Stay — not endless chat.",
   applicationName: "Winged",
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Winged — Friends plan it. You show up.",
     description:
-      "Friends plan it. You show up. Bachelor + Wing co-op matchmaking.",
+      "Deal Room locks. Pro Wings with escrow. Bachelor + Wing shells — planned dates, not endless chat.",
     siteName: "Winged",
     images: [{ url: "/brand/winged-lockup-v2.png" }],
   },

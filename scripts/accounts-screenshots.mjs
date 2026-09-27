@@ -197,7 +197,7 @@ async function main() {
   });
   await clickIncludes(page, "Continue");
 
-  // Wingmanning pick
+  // Wing role / onboarding pick
   await new Promise((r) => setTimeout(r, 300));
   await clickIncludes(page, "Continue");
 

@@ -21,6 +21,7 @@ import {
   clearTickets,
   copyTicketsJson,
   exportTicketsDownload,
+  importTicketsFromJson,
   loadTickets,
   removeTicket,
   setTicketStatus,
@@ -390,12 +391,35 @@ export function QaStudio() {
 
   async function onExport() {
     await exportTicketsDownload(tickets);
-    showToast("Tickets exported as JSON");
+    showToast(
+      tickets.length
+        ? "Tickets exported as JSON"
+        : "Exported empty ticket list — share after filing bugs"
+    );
   }
 
   async function onCopyExport() {
     const result = await copyTicketsJson(tickets);
     showToast(result === "copied" ? "Tickets JSON copied" : "Copy failed");
+  }
+
+  function onImportFile(file: File | null) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = String(reader.result ?? "");
+      const result = importTicketsFromJson(text);
+      if (!result.ok) {
+        showToast(result.error);
+        return;
+      }
+      setTickets(loadTickets());
+      showToast(
+        `Imported ${result.count} ticket${result.count === 1 ? "" : "s"}`
+      );
+    };
+    reader.onerror = () => showToast("Could not read file");
+    reader.readAsText(file);
   }
 
   return (
@@ -425,6 +449,23 @@ export function QaStudio() {
           QA
         </span>
       </motion.button>
+
+      {openCount > 0 && !open && !picking && !draft && (
+        <button
+          type="button"
+          data-qa-chrome
+          onClick={() => {
+            setTicketFilter("open");
+            setOpen(true);
+          }}
+          className="fixed bottom-4 left-3 z-[99] flex items-center gap-1.5 rounded-full bg-romance px-3 py-1.5 text-[11px] font-bold text-white shadow-soft safe-bottom"
+        >
+          <span className="flex size-4 items-center justify-center rounded-full bg-white/20 text-[10px]">
+            !
+          </span>
+          {openCount} Issue{openCount === 1 ? "" : "s"}
+        </button>
+      )}
 
       {/* Pick highlight + banner */}
       <AnimatePresence>
@@ -701,7 +742,7 @@ export function QaStudio() {
                     <p className="text-[11px] font-semibold uppercase tracking-wider text-subtle">
                       Tickets ({openCount} open · {fixedCount} fixed)
                     </p>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap justify-end gap-2">
                       <button
                         type="button"
                         data-qa-chrome
@@ -714,10 +755,23 @@ export function QaStudio() {
                         type="button"
                         data-qa-chrome
                         onClick={() => void onExport()}
-                        className="text-[10px] font-semibold text-wing-deep"
+                        className="text-[10px] font-bold text-wing-deep"
                       >
                         Export
                       </button>
+                      <label className="cursor-pointer text-[10px] font-semibold text-wing-deep">
+                        Import
+                        <input
+                          type="file"
+                          accept="application/json,.json"
+                          data-qa-chrome
+                          className="sr-only"
+                          onChange={(e) => {
+                            onImportFile(e.target.files?.[0] ?? null);
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
                       {tickets.length > 0 && (
                         <button
                           type="button"
@@ -758,11 +812,23 @@ export function QaStudio() {
                     ))}
                   </div>
                   {filteredTickets.length === 0 ? (
-                    <p className="rounded-xl border border-dashed border-border px-3 py-4 text-center text-[11px] text-secondary">
-                      {tickets.length === 0
-                        ? "No tickets yet — tap QA, pick an element, save."
-                        : `No ${ticketFilter} tickets.`}
-                    </p>
+                    <div className="space-y-2 rounded-xl border border-dashed border-border px-3 py-4 text-center">
+                      <p className="text-[11px] text-secondary">
+                        {tickets.length === 0
+                          ? "No tickets in this browser. Pick an element to file one, or Import JSON from another device."
+                          : `No ${ticketFilter} tickets.`}
+                      </p>
+                      {tickets.length === 0 && (
+                        <button
+                          type="button"
+                          data-qa-chrome
+                          onClick={() => void onExport()}
+                          className="text-[11px] font-bold text-wing-deep underline-offset-2 hover:underline"
+                        >
+                          Export empty JSON template
+                        </button>
+                      )}
+                    </div>
                   ) : (
                     <ul className="max-h-48 space-y-1.5 overflow-y-auto">
                       {filteredTickets.map((t) => (

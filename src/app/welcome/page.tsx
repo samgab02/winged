@@ -1,12 +1,14 @@
 "use client";
 
 import { useSyncExternalStore, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { AnimatedWingMark } from "@/components/motion/animated-wing-mark";
 import { FlyingWings, FlutterWing } from "@/components/motion/flying-wings";
 import { DevLoginBootstrap } from "@/components/auth/dev-login-bootstrap";
 import {
+  WELCOME_AUTH_BG,
   WELCOME_AUTH_EASE,
   WELCOME_AUTH_SLIDE_MS,
   getWelcomeAuthServerSnapshot,
@@ -16,7 +18,6 @@ import {
 } from "@/lib/welcome-auth-transition";
 
 function useWelcomeAuthUi() {
-  // Return store state directly (stable until emit) — never allocate in getSnapshot
   return useSyncExternalStore(
     subscribeWelcomeAuthTransition,
     getWelcomeAuthTransition,
@@ -46,31 +47,34 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="relative mx-auto flex min-h-dvh max-w-lg flex-col overflow-hidden px-6 pb-10 pt-12 lg:max-w-xl lg:justify-center lg:pt-16 xl:max-w-2xl">
+    <motion.div
+      className="relative mx-auto flex min-h-dvh max-w-lg flex-col overflow-hidden px-6 pb-10 pt-12 will-change-transform lg:max-w-xl lg:justify-center lg:pt-16 xl:max-w-2xl"
+      style={{ background: WELCOME_AUTH_BG }}
+      animate={
+        slideAway && !reduced
+          ? { x: "-100%" }
+          : { x: 0 }
+      }
+      transition={
+        slideAway && !reduced
+          ? {
+              duration: WELCOME_AUTH_SLIDE_MS / 1000,
+              ease: WELCOME_AUTH_EASE,
+            }
+          : { duration: 0 }
+      }
+    >
       <DevLoginBootstrap />
 
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_50%_0%,var(--glow-a),transparent_55%),radial-gradient(ellipse_70%_50%_at_50%_100%,var(--glow-b),transparent_50%),radial-gradient(ellipse_60%_40%_at_50%_55%,var(--glow-c),transparent_55%),var(--canvas)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div
+          className="absolute inset-0"
+          style={{ background: WELCOME_AUTH_BG }}
+        />
         <FlyingWings fadeOut={fadeAmbient} hideEscort={hideEscort} />
       </div>
 
-      <motion.div
-        initial={reduced ? { opacity: 0 } : { opacity: 0, y: 22 }}
-        animate={
-          slideAway
-            ? { opacity: 0.4, x: "-42%", y: 0 }
-            : { opacity: 1, x: 0, y: 0 }
-        }
-        transition={
-          slideAway
-            ? {
-                duration: WELCOME_AUTH_SLIDE_MS / 1000,
-                ease: WELCOME_AUTH_EASE,
-              }
-            : { duration: 0.55, ease: WELCOME_AUTH_EASE }
-        }
-        className="relative z-10 flex flex-1 flex-col items-center text-center"
-      >
+      <div className="relative z-10 flex flex-1 flex-col items-center text-center">
         <div className="flex flex-col items-center pt-4">
           <AnimatedWingMark className="size-24" />
           <motion.span
@@ -107,8 +111,8 @@ export default function WelcomePage() {
           transition={{ delay: 0.32 }}
           className="mt-4 max-w-sm text-[1.05rem] leading-relaxed text-secondary"
         >
-          Discover people. Vouch as a Wing. Lock a real plan in three minutes —
-          not another endless chat.
+          Wings open a live Deal Room and lock venue + time in three minutes.
+          Hire a Pro Wing with escrow and Proof of Stay — not endless chat.
         </motion.p>
 
         <div className="mt-auto w-full max-w-sm space-y-3 pt-14">
@@ -157,14 +161,17 @@ export default function WelcomePage() {
           <p className="pt-1 text-xs text-subtle">
             By continuing you agree to Winged&apos;s Terms & Privacy
           </p>
-          <a
+          <p className="pt-2 text-[10px] leading-relaxed text-subtle/90">
+            Winged is not affiliated with Wingman App or Wingman Group, Inc.
+          </p>
+          <Link
             href="/ios"
-            className="hidden pt-3 text-xs font-semibold text-subtle underline-offset-2 hover:text-foreground hover:underline lg:inline-block"
+            className="hidden pt-2 text-xs font-semibold text-subtle underline-offset-2 hover:text-foreground hover:underline lg:inline-block"
           >
             Prefer phone chrome? Open phone simulator →
-          </a>
+          </Link>
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   );
 }

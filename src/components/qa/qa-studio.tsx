@@ -19,8 +19,14 @@ import {
 import {
   addTicket,
   clearTickets,
+  copyTicketsJson,
+  exportTicketsDownload,
   loadTickets,
+  removeTicket,
+  setTicketStatus,
+  syncQaTicketsMirror,
   type QaTicket,
+  type QaTicketStatus,
 } from "@/lib/qa/tickets";
 
 const QA_POS_KEY = "winged-qa-fab-pos";
@@ -92,6 +98,9 @@ export function QaStudio() {
   const [ticketNote, setTicketNote] = useState("");
   const [tickets, setTickets] = useState<QaTicket[]>([]);
   const [busy, setBusy] = useState(false);
+  const [ticketFilter, setTicketFilter] = useState<"open" | "fixed" | "all">(
+    "open"
+  );
   const [fabPos, setFabPos] = useState<FabPos>(() => loadFabPos() ?? defaultFabPos());
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const longPressed = useRef(false);
@@ -126,17 +135,35 @@ export function QaStudio() {
   useEffect(() => {
     void bootstrapDevLogins();
     setTickets(loadTickets());
+    syncQaTicketsMirror();
     const saved = loadFabPos();
     setFabPos(saved ? clampFab(saved.x, saved.y) : defaultFabPos());
   }, [bootstrapDevLogins]);
 
   useEffect(() => {
+    function refresh() {
+      setTickets(loadTickets());
+      syncQaTicketsMirror();
+    }
     function onResize() {
       setFabPos((p) => clampFab(p.x, p.y));
     }
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    window.addEventListener("storage", refresh);
+    window.addEventListener("winged-qa-tickets-changed", refresh);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener("winged-qa-tickets-changed", refresh);
+    };
   }, []);
+
+  const filteredTickets = tickets.filter((t) => {
+    if (ticketFilter === "all") return true;
+    return t.status === ticketFilter;
+  });
+  const openCount = tickets.filter((t) => t.status === "open").length;
+  const fixedCount = tickets.filter((t) => t.status === "fixed").length;
 
   useEffect(() => {
     if (!picking) {
@@ -325,22 +352,50 @@ export function QaStudio() {
 
   function confirmTicket() {
     if (!draft) return;
-    const ticket = addTicket({
-      note: ticketNote.trim() || "UI issue",
-      route: pathname,
-      href: typeof window !== "undefined" ? window.location.href : pathname,
-      click: {
-        x: draft.x,
-        y: draft.y,
-        xPct: draft.xPct,
-        yPct: draft.yPct,
-      },
-      target: draft.target,
-    });
+    try {
+      const ticket = addTicket({
+        note: ticketNote.trim() || "UI issue",
+        route: pathname,
+        href: typeof window !== "undefined" ? window.location.href : pathname,
+        click: {
+          x: draft.x,
+          y: draft.y,
+          xPct: draft.xPct,
+          yPct: draft.yPct,
+        },
+        target: draft.target,
+        status: "open",
+      });
+      const persisted = loadTickets();
+      setTickets(persisted);
+      const ok = persisted.some((t) => t.id === ticket.id);
+      setDraft(null);
+      setOpen(true);
+      setTicketFilter("open");
+      showToast(
+        ok
+          ? `Ticket saved · ${ticket.target.sourceLabel}`
+          : "Ticket save may have failed — check storage"
+      );
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Could not save ticket");
+    }
+  }
+
+  function markTicket(id: string, status: QaTicketStatus) {
+    setTicketStatus(id, status);
     setTickets(loadTickets());
-    setDraft(null);
-    setOpen(true);
-    showToast(`Ticket saved · ${ticket.target.sourceLabel}`);
+    showToast(status === "fixed" ? "Marked fixed" : "Reopened");
+  }
+
+  async function onExport() {
+    await exportTicketsDownload(tickets);
+    showToast("Tickets exported as JSON");
+  }
+
+  async function onCopyExport() {
+    const result = await copyTicketsJson(tickets);
+    showToast(result === "copied" ? "Tickets JSON copied" : "Copy failed");
   }
 
   return (
@@ -641,42 +696,140 @@ export function QaStudio() {
                   </button>
                 </section>
 
-                {tickets.length > 0 && (
-                  <section>
-                    <div className="mb-1.5 flex items-center justify-between">
-                      <p className="text-[11px] font-semibold uppercase tracking-wider text-subtle">
-                        Tickets ({tickets.length})
-                      </p>
+                <section>
+                  <div className="mb-1.5 flex items-center justify-between gap-2">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-subtle">
+                      Tickets ({openCount} open · {fixedCount} fixed)
+                    </p>
+                    <div className="flex gap-2">
                       <button
                         type="button"
                         data-qa-chrome
-                        onClick={() => {
-                          clearTickets();
-                          setTickets([]);
-                        }}
-                        className="text-[10px] font-semibold text-romance"
+                        onClick={() => void onCopyExport()}
+                        className="text-[10px] font-semibold text-wing-deep"
                       >
-                        Clear
+                        Copy
                       </button>
+                      <button
+                        type="button"
+                        data-qa-chrome
+                        onClick={() => void onExport()}
+                        className="text-[10px] font-semibold text-wing-deep"
+                      >
+                        Export
+                      </button>
+                      {tickets.length > 0 && (
+                        <button
+                          type="button"
+                          data-qa-chrome
+                          onClick={() => {
+                            clearTickets();
+                            setTickets([]);
+                          }}
+                          className="text-[10px] font-semibold text-romance"
+                        >
+                          Clear
+                        </button>
+                      )}
                     </div>
-                    <ul className="max-h-40 space-y-1.5 overflow-y-auto">
-                      {tickets.map((t) => (
+                  </div>
+                  <div className="mb-2 flex gap-1">
+                    {(
+                      [
+                        ["open", `Open (${openCount})`],
+                        ["fixed", `Fixed (${fixedCount})`],
+                        ["all", "All"],
+                      ] as const
+                    ).map(([id, label]) => (
+                      <button
+                        key={id}
+                        type="button"
+                        data-qa-chrome
+                        onClick={() => setTicketFilter(id)}
+                        className={cn(
+                          "rounded-full border px-2.5 py-0.5 text-[10px] font-bold",
+                          ticketFilter === id
+                            ? "border-romance/40 panel-wash text-romance-deep"
+                            : "border-border text-secondary"
+                        )}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  {filteredTickets.length === 0 ? (
+                    <p className="rounded-xl border border-dashed border-border px-3 py-4 text-center text-[11px] text-secondary">
+                      {tickets.length === 0
+                        ? "No tickets yet — tap QA, pick an element, save."
+                        : `No ${ticketFilter} tickets.`}
+                    </p>
+                  ) : (
+                    <ul className="max-h-48 space-y-1.5 overflow-y-auto">
+                      {filteredTickets.map((t) => (
                         <li
                           key={t.id}
                           className="rounded-xl border border-border bg-elevated/50 px-3 py-2 text-left"
                         >
-                          <p className="text-xs font-semibold">{t.note}</p>
+                          <div className="flex items-start justify-between gap-2">
+                            <p className="text-xs font-semibold">{t.note}</p>
+                            <span
+                              className={cn(
+                                "shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase",
+                                t.status === "fixed"
+                                  ? "bg-success/15 text-success"
+                                  : "panel-wash text-romance-deep"
+                              )}
+                            >
+                              {t.status}
+                            </span>
+                          </div>
+                          <p className="mt-0.5 text-[10px] text-subtle">
+                            {t.route}
+                          </p>
                           <p className="mt-0.5 font-mono text-[10px] text-secondary">
-                            {t.target.sourceLabel}
+                            {t.target?.sourceLabel ?? "—"}
                           </p>
                           <p className="mt-0.5 truncate font-mono text-[10px] text-subtle">
-                            {t.target.selector}
+                            {t.target?.selector ?? "—"}
                           </p>
+                          <div className="mt-1.5 flex flex-wrap gap-2">
+                            {t.status === "open" ? (
+                              <button
+                                type="button"
+                                data-qa-chrome
+                                onClick={() => markTicket(t.id, "fixed")}
+                                className="text-[10px] font-bold text-success"
+                              >
+                                Mark fixed
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                data-qa-chrome
+                                onClick={() => markTicket(t.id, "open")}
+                                className="text-[10px] font-bold text-wing-deep"
+                              >
+                                Reopen
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              data-qa-chrome
+                              onClick={() => {
+                                removeTicket(t.id);
+                                setTickets(loadTickets());
+                                showToast("Ticket removed");
+                              }}
+                              className="text-[10px] font-bold text-romance"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </li>
                       ))}
                     </ul>
-                  </section>
-                )}
+                  )}
+                </section>
 
                 <section>
                   <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-subtle">
